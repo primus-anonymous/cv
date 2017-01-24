@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "877179912459",
+    "firebase_url": "https://androiddevcv-4a751.firebaseio.com",
+    "project_id": "androiddevcv-4a751",
+    "storage_bucket": "androiddevcv-4a751.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877179912459:android:10da216162672682",
+        "android_client_info": {
+          "package_name": "com.neocaptainnemo.cv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877179912459-m0t4ihf7epjsuoa5pu82mp57kv9fkptd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBanQQt2pMMowLGP8M8kO4JGYBpaIrtln4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
