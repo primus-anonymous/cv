@@ -18,14 +18,13 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ActivityProjectDetailsBinding;
 import com.neocaptainnemo.cv.model.Project;
 import com.squareup.picasso.Picasso;
 
-public class ProjectDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProjectDetailsActivity extends AppCompatActivity {
 
     public static final String ICON_TRANSITION = "ICON_TRANSITION";
     public static final String PLATFORM_TRANSITION = "PLATFORM_TRANSITION";
@@ -91,8 +90,6 @@ public class ProjectDetailsActivity extends AppCompatActivity implements View.On
             binding.platform.setTransitionName(PLATFORM_TRANSITION);
         }
 
-        binding.store.setOnClickListener(this);
-
         binding.description.setText(project.description);
         binding.duties.setText(project.duties);
         binding.stack.setText(project.stack);
@@ -101,6 +98,30 @@ public class ProjectDetailsActivity extends AppCompatActivity implements View.On
             binding.store.show();
         } else {
             binding.store.hide();
+        }
+
+        if (TextUtils.isEmpty(project.gitHub)) {
+            binding.sourceCodeTitle.setVisibility(View.GONE);
+            binding.sourceCode.setVisibility(View.GONE);
+        } else {
+            binding.sourceCodeTitle.setVisibility(View.VISIBLE);
+            binding.sourceCode.setVisibility(View.VISIBLE);
+
+            binding.sourceCode.setText(project.gitHub);
+
+            binding.sourceCode.setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(project.gitHub));
+                try {
+                    startActivity(intent);
+
+                } catch (ActivityNotFoundException exception) {
+
+                    Snackbar snackbar = Snackbar
+                            .make(binding.coordinatorLayout, R.string.cant_help_it, Snackbar.LENGTH_LONG);
+
+                    snackbar.show();
+                }
+            });
         }
 
         binding.store.setOnClickListener(view -> {
@@ -130,7 +151,26 @@ public class ProjectDetailsActivity extends AppCompatActivity implements View.On
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "This is the text that will be shared.");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getString(R.string.project));
+        stringBuilder.append(' ');
+        stringBuilder.append(project.name);
+
+        if (!TextUtils.isEmpty(project.storeUrl)) {
+            stringBuilder.append(' ');
+            stringBuilder.append(project.storeUrl);
+        }
+
+        if (!TextUtils.isEmpty(project.gitHub)) {
+            stringBuilder.append(' ');
+            stringBuilder.append(getString(R.string.code));
+            stringBuilder.append(' ');
+            stringBuilder.append(project.gitHub);
+        }
+
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
 
         shareActionProvider.setShareIntent(shareIntent);
 
@@ -149,16 +189,4 @@ public class ProjectDetailsActivity extends AppCompatActivity implements View.On
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.store:
-                Toast.makeText(this, "Store", Toast.LENGTH_LONG).show();
-                break;
-
-            default:
-                //do nothing
-                break;
-        }
-    }
 }

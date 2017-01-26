@@ -15,4 +15,7 @@
     <string name="title_cv">Резюме</string>
     <string name="title_contacts">Контакты</string>
     <string name="cant_help_it">Не могу открыть приложение</string>
+    <string name="source_code">Исходный код</string>
+    <string name="project">Проект</string>
+    <string name="code">исходный код</string>
 </resources>

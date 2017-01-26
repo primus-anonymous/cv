@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    tools:text="@string/tmp1" />
+                    tools:text="Описание" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    tools:text="@string/tmp2" />
+                    tools:text="Обязанности" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -140,7 +140,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    tools:text="@string/tmp3" />
+                    tools:text="Используемые технологии" />
+
+                <TextView
+                    android:id="@+id/source_code_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/source_code"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/source_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:clickable="true"
+                    android:textColor="@color/colorAccent"
+                    tools:text="Ссылка на гитхаб" />
+
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
