@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -104,6 +105,12 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     public void onProjectClicked(@NonNull Project project, View transitionView, View transitionView2) {
         Intent intent = new Intent(getContext(), ProjectDetailsActivity.class);
         intent.putExtra("project", project);
+
+        FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(getContext());
+        Bundle bundle = new Bundle();
+        bundle.putString("project", project.name);
+
+        analytics.logEvent("project_clicked", bundle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             transitionView.setTransitionName(ProjectDetailsActivity.ICON_TRANSITION);

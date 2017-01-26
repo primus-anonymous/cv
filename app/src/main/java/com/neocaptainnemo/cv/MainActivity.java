@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,10 +34,13 @@ public class MainActivity extends AppCompatActivity
     public static final String CONTACTS = "contacts";
     private ActivityMainBinding binding;
     private Contacts contacts;
+    private FirebaseAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics = FirebaseAnalytics.getInstance(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity
             if (contacts != null) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(contacts.cv));
                 startActivity(intent);
+                analytics.logEvent("download_cv_pressed", null);
             }
 
         });
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 getSupportActionBar().setTitle(R.string.projects);
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
+                analytics.logEvent("drawer_projects_selected", null);
                 break;
 
             case R.id.action_common:
@@ -98,6 +104,7 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 getSupportActionBar().setTitle(R.string.app_name);
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
+                analytics.logEvent("drawer_common_selected", null);
                 break;
 
             case R.id.action_email:
@@ -106,6 +113,7 @@ public class MainActivity extends AppCompatActivity
                             "mailto", contacts.email, null));
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Разработка мобильного приложения");
                     startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    analytics.logEvent("contact_email", null);
                 }
 
                 break;
@@ -114,6 +122,7 @@ public class MainActivity extends AppCompatActivity
                 if (contacts != null) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", contacts.phone, null));
                     startActivity(intent);
+                    analytics.logEvent("contact_phone", null);
                 }
                 break;
 
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity
                 if (contacts != null) {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(contacts.gitHub));
                     startActivity(intent);
+                    analytics.logEvent("contact_github", null);
                 }
                 break;
         }

@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ActivityProjectDetailsBinding;
 import com.neocaptainnemo.cv.model.Project;
@@ -29,6 +30,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     public static final String ICON_TRANSITION = "ICON_TRANSITION";
     public static final String PLATFORM_TRANSITION = "PLATFORM_TRANSITION";
     private ActivityProjectDetailsBinding binding;
+    private FirebaseAnalytics analytics;
 
     private Project project;
 
@@ -37,6 +39,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_project_details);
+        analytics = FirebaseAnalytics.getInstance(this);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -110,6 +113,10 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             binding.sourceCode.setText(project.gitHub);
 
             binding.sourceCode.setOnClickListener(view -> {
+                Bundle bundle = new Bundle();
+                bundle.putString("project", project.name);
+                analytics.logEvent("project_source_code_clicked", bundle);
+
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(project.gitHub));
                 try {
                     startActivity(intent);
@@ -125,6 +132,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         }
 
         binding.store.setOnClickListener(view -> {
+
+            Bundle bundle = new Bundle();
+            bundle.putString("project", project.name);
+            analytics.logEvent("project_details_clicked", bundle);
+
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(project.storeUrl));
             try {
                 startActivity(intent);
@@ -173,6 +185,10 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
 
         shareActionProvider.setShareIntent(shareIntent);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("project", project.name);
+        analytics.logEvent("project_share_clicked", bundle);
 
         return true;
     }
