@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/action_common"
-            android:icon="@drawable/ic_inbox_black_24px"
-            android:title="@string/action_common" />
-        <item
-            android:id="@+id/action_projects"
-            android:icon="@drawable/ic_shop_black_24px"
-            android:title="@string/projects" />
-        <item
-            android:id="@+id/action_contacts"
-            android:icon="@drawable/ic_contacts_black_24px"
-            android:title="@string/action_contacts" />
-    </group>
+    <item android:title="@string/title_cv">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/action_projects"
+                    android:icon="@drawable/ic_shop_black_24px"
+                    android:title="@string/projects" />
+                <item
+                    android:id="@+id/action_common"
+                    android:icon="@drawable/ic_inbox_black_24px"
+                    android:title="@string/action_common" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="@string/title_contacts">
+        <menu>
+            <group android:checkableBehavior="none">
+
+                <item
+                    android:id="@+id/action_email"
+                    android:icon="@drawable/ic_email_black_24px"
+                    android:title="@string/action_email" />
+                <item
+                    android:id="@+id/action_phone"
+                    android:icon="@drawable/ic_call_black_24px"
+                    android:title="@string/action_phone" />
+
+                <item
+                    android:id="@+id/action_github"
+                    android:icon="@drawable/ic_link_black_24px"
+                    android:title="@string/action_github" />
+
+            </group>
+        </menu>
+    </item>
 
 </menu>

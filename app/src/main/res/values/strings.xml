@@ -1,19 +1,18 @@
 <resources>
-    <string name="app_name">CV</string>
+    <string name="app_name">CV Андроид</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Открыть</string>
+    <string name="navigation_drawer_close">Закрыть</string>
 
     <string name="action_common">Общее</string>
     <string name="projects">Проекты</string>
-    <string name="action_contacts">Контакты</string>
     <string name="description_title">Описание</string>
-    <string name="tmp1">Очень часто случается, что поиск банкомата представляет собой нетривиальную задачу. Все эти проблемы с комиссией, расположением могут усложнить жизнь и стоить денег. Приложение \"Банкоматы\" призвано решить эту проблему.</string>
     <string name="duties">Обязанности</string>
-    <string name="tmp2" >И еще одна немаловажная рекомендация. Ни в коем случае не указывайте в своем резюме недостоверную информацию! Не стоит придумывать несуществующих мест работы, обязанностей и навыков. Едва ли с помощью лжи вам удастся устроиться на работу своей мечты: опытный рекрутер легко вычислит обман, а первые же дни в компании сделают его очевидным
-    И еще одна немаловажная рекомендация. Ни в коем случае не указывайте в своем резюме недостоверную информацию! Не стоит придумывать несуществующих мест работы, обязанностей и навыков. Едва ли с помощью лжи вам удастся устроиться на работу своей мечты: опытный рекрутер легко вычислит обман, а первые же дни в компании сделают его очевидным</string>
     <string name="stack">Используемые технологии</string>
-    <string name="tmp3">Если в ходе работы в какой-то компании вас повысили, обязательно отразите это в резюме. Для этого добавьте новое место работы, введите прежнее название компании и в соответствующих графах укажите название новой должности, период работы и список изменившихся обязанностей и достижений.</string>
-    <string name="name">Василий Понтелеев</string>
-    <string name="position">Мобильный разработчик</string>
+    <string name="action_email">Email</string>
+    <string name="action_phone">Телефон</string>
+    <string name="action_github">GitHub</string>
+    <string name="title_cv">Резюме</string>
+    <string name="title_contacts">Контакты</string>
+    <string name="cant_help_it">Не могу открыть приложение</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.neocaptainnemo.cv.ui.projects;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -14,17 +15,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.FragmentProjectsBinding;
+import com.neocaptainnemo.cv.model.Project;
+import com.neocaptainnemo.cv.ui.IMainView;
 
-public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProjectClicked {
+import java.util.List;
+
+public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProjectClicked, ValueEventListener {
 
     public static final String TAG = "ProjectsFragment";
+    private static final String PROJECTS = "projects";
     private ProjectsAdapter adapter;
     private FragmentProjectsBinding binding;
+    private boolean loaded;
+
+    private IMainView mainView;
+
 
     public static ProjectsFragment instance() {
         return new ProjectsFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IMainView) {
+            mainView = (IMainView) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainView = null;
     }
 
     @Override
@@ -48,32 +77,32 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
 
         binding.projects.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.projects.setAdapter(adapter);
-
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-        adapter.add(new Object());
-
-        adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseDatabase.getInstance().getReference(PROJECTS)
+                .addValueEventListener(this);
+        if (mainView != null) {
+            mainView.showProgress();
+        }
+    }
 
     @Override
-    public void onProjectClicked(@NonNull Object project, View transitionView, View transitionView2) {
+    public void onStop() {
+        super.onStop();
+        FirebaseDatabase.getInstance().getReference(PROJECTS)
+                .removeEventListener(this);
+        if (mainView != null) {
+            mainView.hideProgress();
+        }
+    }
+
+    @Override
+    public void onProjectClicked(@NonNull Project project, View transitionView, View transitionView2) {
         Intent intent = new Intent(getContext(), ProjectDetailsActivity.class);
+        intent.putExtra("project", project);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             transitionView.setTransitionName(ProjectDetailsActivity.ICON_TRANSITION);
@@ -88,5 +117,30 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
             getContext().startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        if (mainView != null) {
+            mainView.hideProgress();
+        }
+
+        if (!loaded) {
+            GenericTypeIndicator<List<Project>> t = new GenericTypeIndicator<List<Project>>() {
+            };
+
+            List<Project> data = dataSnapshot.getValue(t);
+            adapter.clear();
+            adapter.add(data);
+            adapter.notifyDataSetChanged();
+            loaded = true;
+        }
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+        if (mainView != null) {
+            mainView.hideProgress();
+        }
     }
 }

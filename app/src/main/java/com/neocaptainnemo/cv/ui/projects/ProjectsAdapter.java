@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ItemProjectBinding;
+import com.neocaptainnemo.cv.model.Project;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
 
     private Context context;
 
-    private List<Object> data = new ArrayList<>();
+    private List<Project> data = new ArrayList<>();
     private OnProjectClicked onProjectClicked;
 
     ProjectsAdapter(Context context) {
@@ -31,11 +32,11 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
         data.clear();
     }
 
-    void add(Collection dataToAdd) {
+    void add(Collection<Project> dataToAdd) {
         data.addAll(dataToAdd);
     }
 
-    void add(Object item) {
+    void add(Project item) {
         data.add(item);
     }
 
@@ -51,11 +52,19 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
     @Override
     public void onBindViewHolder(ProjectViewHolder holder, int position) {
 
-        holder.binding.infoText.setText("Project");
+        Project project = data.get(position);
+
+        holder.binding.infoText.setText(project.name);
         Picasso.with(context)
-                .load("http://risovach.ru/upload/2013/04/mem/golub_15869510_orig_.jpg")
+                .load(project.webPic)
                 .placeholder(R.drawable.placeholder)
                 .into(holder.binding.projImage);
+
+        if (project.platform.equals(Project.PLATFORM_ANDROID)) {
+            holder.binding.platform.setImageResource(R.drawable.ic_android);
+        } else {
+            holder.binding.platform.setImageResource(R.drawable.ic_apple);
+        }
     }
 
     @Override
@@ -68,7 +77,7 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
     }
 
     interface OnProjectClicked {
-        void onProjectClicked(@NonNull Object project, View transitionView, View transitionView2);
+        void onProjectClicked(@NonNull Project project, View transitionView, View transitionView2);
     }
 
     static class ProjectViewHolder extends RecyclerView.ViewHolder {

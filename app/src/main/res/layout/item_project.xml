@@ -19,7 +19,10 @@
                 android:id="@+id/proj_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:src="@mipmap/ic_launcher" />
+                android:layout_alignParentTop="true"
+                android:scaleType="fitXY"
+                android:minHeight="160dp"
+                tools:src="@drawable/placeholder" />
 
             <ImageView
                 android:id="@+id/platform"
@@ -28,7 +31,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingRight="8dp"
                 android:paddingTop="8dp"
-                android:src="@drawable/ic_android_black_24px" />
+                android:src="@drawable/ic_android" />
 
             <TextView
                 android:id="@+id/info_text"
@@ -37,6 +40,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/proj_image"
                 android:layout_centerHorizontal="true"
+                android:gravity="bottom"
                 android:padding="4dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/textPrimary"
