@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -116,6 +117,8 @@ public class CommonFragment extends Fragment implements ValueEventListener {
         if (mainView != null) {
             mainView.hideProgress();
         }
+
+        FirebaseCrash.report(databaseError.toException());
 
     }
 }

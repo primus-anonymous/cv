@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-
+        FirebaseCrash.report(databaseError.toException());
     }
 
     @Override
