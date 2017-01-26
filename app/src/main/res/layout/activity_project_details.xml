@@ -85,8 +85,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@+id/proj_image"
+                        android:gravity="right"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        tools:text="Very Good Transfer" />
+                        tools:text="Very Good Transfer Very Good Transfer" />
 
                     <TextView
                         android:id="@+id/company"

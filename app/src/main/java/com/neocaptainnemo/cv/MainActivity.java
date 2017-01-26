@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
                         .beginTransaction()
                         .replace(R.id.content_main, CommonFragment.instance(), CommonFragment.TAG)
                         .commit();
-                getSupportActionBar().setTitle(R.string.app_name);
+                getSupportActionBar().setTitle(R.string.action_common);
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 analytics.logEvent("drawer_common_selected", null);
                 break;
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity
                 if (contacts != null) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             "mailto", contacts.email, null));
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Разработка мобильного приложения");
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject));
+                    startActivity(Intent.createChooser(emailIntent, getString(R.string.mail_chooser)));
                     analytics.logEvent("contact_email", null);
                 }
 

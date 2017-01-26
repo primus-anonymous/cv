@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:indeterminateOnly="true"
                 android:paddingTop="6dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_anchor="@id/appbar"
                 app:layout_anchorGravity="bottom"
                 tools:visibility="visible" />

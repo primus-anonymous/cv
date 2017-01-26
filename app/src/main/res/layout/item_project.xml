@@ -20,7 +20,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:scaleType="fitXY"
                 android:minHeight="160dp"
                 tools:src="@drawable/placeholder" />
 
@@ -40,7 +39,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/proj_image"
                 android:layout_centerHorizontal="true"
-                android:gravity="bottom"
+                android:gravity="bottom|center_horizontal"
                 android:padding="4dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/textPrimary"
