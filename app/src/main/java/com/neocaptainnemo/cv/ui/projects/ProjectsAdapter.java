@@ -58,6 +58,7 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
         Picasso.with(context)
                 .load(project.webPic)
                 .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(holder.binding.projImage);
 
         if (project.platform.equals(Project.PLATFORM_ANDROID)) {

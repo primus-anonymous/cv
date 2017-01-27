@@ -14,6 +14,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,11 +51,13 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(project.webPic)
                 .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(binding.projImage);
 
         Picasso.with(this)
                 .load(project.coverPic)
                 .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(binding.logo);
 
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "extra_image");
@@ -93,9 +96,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             binding.platform.setTransitionName(PLATFORM_TRANSITION);
         }
 
-        binding.description.setText(project.description);
-        binding.duties.setText(project.duties);
-        binding.stack.setText(project.stack);
+        binding.description.setText(Html.fromHtml(project.description));
+        binding.duties.setText(Html.fromHtml(project.duties));
+        binding.stack.setText(Html.fromHtml(project.stack));
 
         if (!TextUtils.isEmpty(project.storeUrl)) {
             binding.store.show();

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding binding;
     private Contacts contacts;
     private FirebaseAnalytics analytics;
+    private int selectedSection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +56,14 @@ public class MainActivity extends AppCompatActivity
         binding.navView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
             binding.navView.setCheckedItem(R.id.action_projects);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_main, ProjectsFragment.instance(), ProjectsFragment.TAG)
-                    .commit();
-            getSupportActionBar().setTitle(R.string.projects);
+            showProjects();
+        } else {
+            int section = savedInstanceState.getInt("section", R.id.action_projects);
+            if (section == R.id.action_projects) {
+                showProjects();
+            } else {
+                showCommon();
+            }
         }
 
         binding.download.setOnClickListener(view -> {
@@ -68,8 +72,22 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 analytics.logEvent("download_cv_pressed", null);
             }
-
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("section", selectedSection);
+    }
+
+    private void showProjects() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, ProjectsFragment.instance(), ProjectsFragment.TAG)
+                .commit();
+        getSupportActionBar().setTitle(R.string.projects);
+        selectedSection = R.id.action_projects;
     }
 
     @Override
@@ -88,23 +106,19 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.action_projects:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_main, ProjectsFragment.instance(), ProjectsFragment.TAG)
-                        .commit();
-                getSupportActionBar().setTitle(R.string.projects);
+                if (selectedSection != R.id.action_projects) {
+                    showProjects();
+                    analytics.logEvent("drawer_projects_selected", null);
+                }
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
-                analytics.logEvent("drawer_projects_selected", null);
                 break;
 
             case R.id.action_common:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_main, CommonFragment.instance(), CommonFragment.TAG)
-                        .commit();
-                getSupportActionBar().setTitle(R.string.action_common);
+                if (selectedSection != R.id.action_common) {
+                    showCommon();
+                    analytics.logEvent("drawer_common_selected", null);
+                }
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
-                analytics.logEvent("drawer_common_selected", null);
                 break;
 
             case R.id.action_email:
@@ -139,6 +153,15 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void showCommon() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, CommonFragment.instance(), CommonFragment.TAG)
+                .commit();
+        getSupportActionBar().setTitle(R.string.action_common);
+        selectedSection = R.id.action_common;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -169,6 +192,7 @@ public class MainActivity extends AppCompatActivity
         Picasso.with(MainActivity.this)
                 .load(contacts.userPic)
                 .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(userPic);
 
     }
