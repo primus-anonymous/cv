@@ -20,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_margin="8dp"
                 android:minHeight="160dp"
                 tools:src="@drawable/placeholder" />
 
@@ -28,9 +29,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingRight="8dp"
-                android:paddingTop="8dp"
-                android:src="@drawable/ic_android" />
+                android:paddingRight="16dp"
+                android:paddingTop="16dp"
+                card_view:srcCompat="@drawable/ic_android" />
 
             <TextView
                 android:id="@+id/info_text"
@@ -40,7 +41,9 @@
                 android:layout_below="@+id/proj_image"
                 android:layout_centerHorizontal="true"
                 android:gravity="bottom|center_horizontal"
-                android:padding="4dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/textPrimary"
                 tools:text="Very Good Transfer" />

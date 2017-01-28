@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="102dp"
                         android:paddingTop="8dp"
-                        android:src="@drawable/ic_android" />
+                        app:srcCompat="@drawable/ic_android" />
 
                     <TextView
                         android:id="@+id/title"
