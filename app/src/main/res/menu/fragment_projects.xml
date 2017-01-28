@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_all"
+            android:checked="true"
+            android:title="@string/action_all" />
+        <item
+            android:id="@+id/action_android"
+            android:title="@string/action_android" />
+        <item
+            android:id="@+id/action_ios"
+            android:title="@string/action_ios" />
+    </group>
+</menu>

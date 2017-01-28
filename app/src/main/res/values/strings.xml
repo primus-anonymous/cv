@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CV Mobile</string>
+    <string name="app_name">Резюме</string>
 
     <string name="navigation_drawer_open">Открыть</string>
     <string name="navigation_drawer_close">Закрыть</string>
@@ -20,4 +20,8 @@
     <string name="code">исходный код</string>
     <string name="mail_subject">Разработка мобильного приложения</string>
     <string name="mail_chooser">Отправить email...</string>
+    <string name="action_all">Все</string>
+    <string name="action_android">Только Android</string>
+    <string name="action_ios">Только iOS</string>
+    <string name="empty">А здесь пока пусто</string>
 </resources>

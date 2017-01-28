@@ -10,24 +10,18 @@ import android.view.ViewGroup;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ItemSectionBinding;
 import com.neocaptainnemo.cv.model.CommonSection;
+import com.neocaptainnemo.cv.ui.ArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.ViewHolder> {
-
-    private Context context;
-
-    private List<CommonSection> data = new ArrayList<>();
+class CommonAdapter extends ArrayAdapter<CommonSection, CommonAdapter.ViewHolder> {
 
     CommonAdapter(Context context) {
-        this.context = context;
+        super(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemSectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_section, parent, false);
+        ItemSectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+                R.layout.item_section, parent, false);
         return new ViewHolder(binding);
     }
 
@@ -41,29 +35,11 @@ class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.ViewHolder> {
 
     }
 
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
-    void clear() {
-        data.clear();
-    }
-
-    void add(Collection<CommonSection> dataToAdd) {
-        data.addAll(dataToAdd);
-    }
-
-    void add(CommonSection item) {
-        data.add(item);
-    }
-
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ItemSectionBinding binding;
 
-        public ViewHolder(ItemSectionBinding binding) {
+        ViewHolder(ItemSectionBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

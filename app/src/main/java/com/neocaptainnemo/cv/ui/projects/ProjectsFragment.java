@@ -12,6 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +30,7 @@ import com.neocaptainnemo.cv.databinding.FragmentProjectsBinding;
 import com.neocaptainnemo.cv.model.Project;
 import com.neocaptainnemo.cv.ui.IMainView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProjectClicked, ValueEventListener {
@@ -36,9 +40,10 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     private ProjectsAdapter adapter;
     private FragmentProjectsBinding binding;
     private boolean loaded;
+    private Filter filter;
 
     private IMainView mainView;
-
+    private List<Project> cachedData;
 
     public static ProjectsFragment instance() {
         return new ProjectsFragment();
@@ -62,8 +67,12 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         adapter = new ProjectsAdapter(getContext());
         adapter.setOnProjectClicked(this);
+
+        filter = Filter.ALL;
     }
 
     @Nullable
@@ -79,6 +88,37 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
 
         binding.projects.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.projects.setAdapter(adapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_projects, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_all:
+                item.setChecked(true);
+
+                filter = Filter.ALL;
+                filterData();
+                return true;
+
+            case R.id.action_android:
+                item.setChecked(true);
+
+                filter = Filter.ANDROID;
+                filterData();
+                return true;
+            case R.id.action_ios:
+                item.setChecked(true);
+
+                filter = Filter.IOS;
+                filterData();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -137,11 +177,10 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
             GenericTypeIndicator<List<Project>> t = new GenericTypeIndicator<List<Project>>() {
             };
 
-            List<Project> data = dataSnapshot.getValue(t);
-            adapter.clear();
-            adapter.add(data);
-            adapter.notifyDataSetChanged();
+            cachedData = dataSnapshot.getValue(t);
             loaded = true;
+
+            filterData();
         }
     }
 
@@ -152,4 +191,35 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
         }
         FirebaseCrash.report(databaseError.toException());
     }
+
+    private void filterData() {
+
+        List<Project> res = new ArrayList<>();
+
+        for (Project project : cachedData) {
+            if (filter.equals(Filter.ALL)) {
+                res.add(project);
+            }
+
+            if (filter.equals(Filter.ANDROID) && project.platform.equals(Project.PLATFORM_ANDROID)) {
+                res.add(project);
+            }
+
+            if (filter.equals(Filter.IOS) && project.platform.equals(Project.PLATFORM_IOS)) {
+                res.add(project);
+            }
+        }
+
+        adapter.clear();
+        adapter.add(res);
+        adapter.notifyDataSetChanged();
+
+        if (res.isEmpty()) {
+            binding.empty.setVisibility(View.VISIBLE);
+        } else {
+            binding.empty.setVisibility(View.GONE);
+        }
+    }
+
+    enum Filter {ALL, ANDROID, IOS}
 }

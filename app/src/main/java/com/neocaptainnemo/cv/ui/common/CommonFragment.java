@@ -110,6 +110,12 @@ public class CommonFragment extends Fragment implements ValueEventListener {
         adapter.add(data);
         adapter.notifyDataSetChanged();
 
+        if (data.isEmpty()) {
+            binding.empty.setVisibility(View.VISIBLE);
+        } else {
+            binding.empty.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

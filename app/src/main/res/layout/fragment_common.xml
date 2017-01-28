@@ -13,5 +13,13 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
 
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/empty"
+            android:textColor="@color/textPrimary" />
+
     </FrameLayout>
 </layout>

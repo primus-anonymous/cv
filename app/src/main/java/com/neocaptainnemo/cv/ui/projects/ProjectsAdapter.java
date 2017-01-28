@@ -11,33 +11,16 @@ import android.view.ViewGroup;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ItemProjectBinding;
 import com.neocaptainnemo.cv.model.Project;
+import com.neocaptainnemo.cv.ui.ArrayAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+class ProjectsAdapter extends ArrayAdapter<Project, ProjectsAdapter.ProjectViewHolder> {
 
-class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHolder> {
-
-    private Context context;
-
-    private List<Project> data = new ArrayList<>();
     private OnProjectClicked onProjectClicked;
 
     ProjectsAdapter(Context context) {
+        super(context);
         this.context = context;
-    }
-
-    void clear() {
-        data.clear();
-    }
-
-    void add(Collection<Project> dataToAdd) {
-        data.addAll(dataToAdd);
-    }
-
-    void add(Project item) {
-        data.add(item);
     }
 
     @Override
@@ -68,14 +51,11 @@ class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectViewHo
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
 
     void setOnProjectClicked(OnProjectClicked onProjectClicked) {
         this.onProjectClicked = onProjectClicked;
     }
+
 
     interface OnProjectClicked {
         void onProjectClicked(@NonNull Project project, View transitionView, View transitionView2);

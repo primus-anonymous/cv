@@ -22,6 +22,7 @@ public class Project implements Parcelable {
             return new Project[size];
         }
     };
+    public static final String PLATFORM_IOS = "ios";
     @PropertyName("name")
     public String name;
     @PropertyName("description")
