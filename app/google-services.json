@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "877179912459-0pki5tnbrk835v66vctpieh4iapqcc6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neocaptainnemo.cv",
+            "certificate_hash": "4D729FCCB8E7115321F64ECC01229FFF583B33F2"
+          }
+        },
+        {
           "client_id": "877179912459-m0t4ihf7epjsuoa5pu82mp57kv9fkptd.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877179912459-m0t4ihf7epjsuoa5pu82mp57kv9fkptd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

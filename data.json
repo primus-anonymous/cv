@@ -1,0 +1,176 @@
+{
+  "common" : {
+    "sections" : [ {
+      "description" : "Разработка нативных мобильных приложений под <b>Android</b> и <b>iOS</b>",
+      "title" : "Род деятельности"
+    }, {
+      "description" : "<b>Платформы</b><br/>Android SDK, Android NDK, iOS SDK<br/><br/><b>Языки программирование</b><br/>Java, C++, C, Objective-C, Swift, Python (знаком), Kotlin (знаком)<br/><br/><b>Системы контроля версий</b><br/>Git, SVN<br/><br/><b>Библиотеки Android</b><br/>RxJava, Retrofit, Realm, Picasso, EventBus, OrmLite, Content Providers, Dagger, Dagger 2, JUint, Espresso, Google Play Services, Gson, Firebase, Mixpanel, Adjust, Google Analytics, Gradle<br/><br/><b>Библиотеки iOS</b><br/>Alomofire, AfNetworking, CoocoaPods, CoreData<br/><br/><b>Публикация</b><br/>Google Play, App Store, HockeyApp<br/><br/><b>Continious Integration</b><br/>Jenkins, BuddyBuild, TeamCity, Bamboo<br/><br/><b>Общее</b><br>OpenGL ES (база), SonarQube, SwaggerCodeGenerator, GitHub, BitBucket, Jira, Readmine",
+      "title" : "Используемые технологии"
+    }, {
+      "description" : "<b>Коротко</b><br/>3,5+ года разработки под мобильные приложения, опыт работы в стартапах, опыт работы удаленно<br/><br/><b>Full Time и не очень</b><br/><br/><b>CarJump</b><br/>&nbsp;&nbsp;Android Developer<br/>&nbsp;&nbsp;октябрь 2015 - по н.в<br/><b>Энтерра-Софт</b><br/>&nbsp;&nbsp;Mobile Developer<br/>&nbsp;&nbsp;июнь - 2013 - октябрь 2014<br/><br/><b>Сотрудничество</b><br/><br/><b>Freematiq</b><br/>&nbsp;&nbsp;Mobile Developer<br/>&nbsp;&nbsp;декабрь 2014 - по н.в<br/><b>Enterra Gmbh</b><br/>&nbsp;&nbsp;Mobile Developer<br/>&nbsp;&nbsp;январь 2015 - октябрь 2015",
+      "title" : "Опыт работы"
+    }, {
+      "description" : "<b>Учебное заведение</b><br/>Алтайский государственный университет, г. Барнаул<br/><br/><b>Дата окончания</b><br/>Июль 2014 года<br/><br/><b>Факультет</b><br/>Физико-технический<br/><br/><b>Специальность</b><br/>Специалист по защите информации",
+      "title" : "Образование"
+    }, {
+      "description" : "<b>Английский язык</b><br/>Advanced (C1)<br/><br/><b>Немецкий язык</b><br/>Pre-Intermediate (A2-B1)",
+      "title" : "Иностранные языки"
+    }, {
+      "description" : "<b>Хобби</b><br/>Музыка<br/><br/><b>И на последок</b><br/>Характер стойкий, нордический-сибирский, исполнительный и отвественный. Всеяден ко всем видам проектов.",
+      "title" : "Дополнительно"
+    } ]
+  },
+  "contacts" : {
+    "cv_url" : "https://drive.google.com/open?id=0B8BL8ss3RY7ldk4tSFFLTWVYQjA",
+    "email" : "neocaptainnemo@gmail.com",
+    "github" : "https://github.com/primus-anonymous",
+    "name" : "Василий Понтелеев",
+    "phone" : "+49 1573 293 15 26",
+    "pic_url" : "https://i.imgsafe.org/c4a0793bf3.jpg",
+    "profession" : "Мобильный разработчик"
+  },
+  "projects" : [ {
+    "cover_pic" : "https://i.imgsafe.org/b71f61f45f.png",
+    "description" : "Carjump - агрегатор сервисов каршеринга в Германии и других городах Европы, с помощью которого можно используя одно приложение легко найти, сравнить и забронировать автомобиль.<br/>Интегрированы такие крупные провайдеры как Car2Go, Zipcar, DriveNow, Enterprise Car Club и многие другие.",
+    "duties" : "Планирование архитекруты, рефакторинг в больших объемах, реализация поставленных задач, тестирвоание, организация и настройка Continious Integration (JUnit + TeamCity), аналитика, оценка, код-ревью",
+    "git_hub" : "",
+    "name" : "Carjump - The Carsharing App",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, Google Maps, Retrofit, RxJava, Sqlite, Junit, Mockito, SonarQube, TeamCity, Firebase, Parse",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.ghm.carjump",
+    "vendor" : "CarJump",
+    "web_pic" : "https://i.imgsafe.org/b70a49e945.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f713973.png",
+    "description" : "Слишком много мессенджеров. Этих обычных мессенджеров, которые мало друг от друга отличаются. Слишком мало чего-то по-настоящему Дичайшего!<br/>Да, мы сделали мессенджер, в котором нельзя отправлять слова. Да, тут можно отправлять только мемасики. Да, ты прав - это Дичь!<br/>Втирать какую-то дичь своим друзьям и знакомым - катастрофически просто. У кого-то установлено приложение? Выбирай мемасик и отправляй! Звук проиграется автоматически, что будет вдвойне круто, если твой собеседник сидит на паре или на рабочем совещании и его телефон не выключен на беззвучный режим :)<br/>Эпический Мессенджер Дичь. Зачем нужны слова, когда есть мемасики?",
+    "duties" : "Синхронизация диких контактов, экран выбора мемасов, обработка диких ошибок",
+    "git_hub" : "",
+    "name" : "Дичь",
+    "platform" : "ios",
+    "stack" : "Swift, iOS SDK, Realm, Alomofire",
+    "store_url" : "https://itunes.apple.com/us/app/dic/id1144059248?ls=1&mt=8",
+    "vendor" : "Dmitriy Zavarzin",
+    "web_pic" : "https://i.imgsafe.org/b70a5df94e.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f5baf9a.png",
+    "description" : "«Морской бой: Противостояние» – это классический морской бой, в который мы добавили игру по Wi-Fi/Bluetooth сети, однопользовательский режим, управление игровым процессом с помощью пальца руки, авторасстановку для ленивых, доску почета, звуки для остроты ощущений и дополнительное вооружение.",
+    "duties" : "Добавление покупок дополнительной аммуниции через Google Play, добавление доски почета и доски достижений, оценка, код-ревью",
+    "git_hub" : "",
+    "name" : "Морской бой: Противостояние",
+    "platform" : "android",
+    "stack" : "Java, Google Play Services, Google Game Services",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.enterra.android.apps.battleship",
+    "vendor" : "Enterra, Inc.",
+    "web_pic" : "https://i.imgsafe.org/b70a417c96.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f6af4bd.png",
+    "description" : "Приложение позволяющее сэкономить потребителю США. Содержит купоны от местного производителя для целого ряда категорий и целого ряда штататов. Работает полностью offline, что позволяет использовать купоны везде.",
+    "duties" : "Реализация фич, рефакторинг (в гигантских объемах с полной синхронизацией и СУБД), оценка, код-ревью",
+    "git_hub" : "",
+    "name" : "Chinook Book ",
+    "platform" : "android",
+    "stack" : "Java, Android, OrmLite, Content Providers, JUnit, Mockito",
+    "store_url" : "https://play.google.com/store/apps/details?id=net.chinookbook.android",
+    "vendor" : "Chinook Book ",
+    "web_pic" : "https://i.imgsafe.org/b70a523ccf.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f545978.png",
+    "description" : "Очень часто случается, что поиск банкомата представляет собой нетривиальную задачу. Все эти проблемы с комиссией, расположением могут усложнить жизнь и стоить денег.<br/>Приложение \"Банкоматы\" призвано решить эту проблему.<br/>Используя открытые источники данных Open Street Map, приложение отображает банкоматы на карте в любой точке мира.",
+    "duties" : "Диpайн, разработка с нуля до публикации в Google Play, unit и интеграционное тестирование, публикация исходного кода в Git Hub",
+    "git_hub" : "https://github.com/primus-anonymous/testing",
+    "name" : "Банкоматы",
+    "platform" : "android",
+    "stack" : "Android SDK, Java, JUnit, Espresso, Retrofit, Mockito, OSM Api, Google Maps, Dagger 2, Clustering",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.neocaptainnemo.atms",
+    "vendor" : "neocaptainnemo",
+    "web_pic" : "https://i.imgsafe.org/b709466971.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b6e918114c.png",
+    "description" : "Покер Таймер – бесплатное приложение для организации собственных покерных турниров. Теперь легко следить за ходом игры и удобно в любой момент иметь под рукой всю необходимую статистику.",
+    "duties" : "Планирование архитекруты мобильного приложения, разработка модели и пользовательского интерфейса, тестирование, помощь команде, локализация",
+    "git_hub" : "",
+    "name" : "Poker Timer",
+    "platform" : "android",
+    "stack" : "Android SDK, Java, JUnit, Mockito, Sqlite, Gson",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.enterra.android.apps.pokertimer",
+    "vendor" : "Enterra, Inc.",
+    "web_pic" : "https://i.imgsafe.org/b70a679a3e.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b6e918114c.png",
+    "description" : "Покер Таймер – бесплатное приложение для организации собственных покерных турниров. Теперь легко следить за ходом игры и удобно в любой момент иметь под рукой всю необходимую статистику.",
+    "duties" : "Планирование архитекруты мобильного приложения, разработка модели и пользовательского интерфейса, тестирование, локализация, публикация в App Store",
+    "git_hub" : "",
+    "name" : "Enterra Poker Timer",
+    "platform" : "ios",
+    "stack" : "Objective-C, iOS SDK, CoreData",
+    "store_url" : "https://itunes.apple.com/us/app/enterra-poker-timer/id886501588?mt=8",
+    "vendor" : "Enterra, Inc",
+    "web_pic" : "https://i.imgsafe.org/b70a679a3e.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f7e0dc0.png",
+    "description" : "Как часто мы замечаем, что наши кошельки переполнены бонусными картами разных брендов, идет «борьба за место». Компания Sulpak запустила мобильное приложение «Клуб Sulpak», которое станет альтернативой бонусной картой, в рамках программы выгодных покупок «Бонус». Новое приложение позволит вам без труда в удобный момент проверить ваш баланс, а также узнать срок действия накопившихся бонусов и определить месторасположение ближайшего магазина. Кроме этого вы сможете первым узнавать про акции и новости компании, получать индивидуальные скидки на представленный ассортимент товаров в сети магазинов электроники Sulpak.",
+    "duties" : "Разработка модели и интерфейса, оценка, код-ревью",
+    "git_hub" : "",
+    "name" : "Sulpak",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, SOAP, Google Maps, Google Places",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.enterra.android.apps.sulpak",
+    "vendor" : "Enterra, Inc.",
+    "web_pic" : "https://i.imgsafe.org/b70a76eff7.png"
+  }, {
+    "cover_pic" : "https://firebasestorage.googleapis.com/v0/b/androiddevcv-4a751.appspot.com/o/app_pic%2Fweb_pic_clickphone.png?alt=media&token=a6ec39cf-b158-4746-8278-23b6b8cf48e1",
+    "description" : "<p>ClickPhone &ndash; <b>Звонки, SMS </b>и<b> MMS</b> по лучшим ценам для Вас и Вашего  бизнеса !<br />Везде, где есть Wi-Fi и 3G, &ndash; <b>звонки,  SMS и MMS</b> - гораздо дешевле или вообще бесплатно.<br />С КликФон даже с медленным интернетом связь отличная благодаря <b>Callback</b>.<br />Посекундная тарификация, гибкая система скидок, бизнес-опции,  кроссплатформенное решение &ndash; всё это КликФон.<br />Попробуйте прямо сейчас &ndash; стартовый <b>баланс  в подарок</b> !</p><p><b>Для Вас:</b><br />- Международные звонки по низким тарифам или бесплатно внутри сети;<br />- SMS и MMS;<br />- Возможность создать несколько записей к одному аккаунту.</p><p><b>Для Бизнеса:</b><br />- Массовая рассылка SMS;<br />- SMS с заменой номера на название вашей компании;<br />- Виртуальная АТС, IVR;<br />- Виртуальные номера в любой стране;<br />- Услуга 8-800;<br />-  Прием звонков с виртуального номера - на КликФон или с переадресацией на Ваш  телефон.</p>",
+    "duties" : "Разработка модели, интерфейса, сервиса телефонии, участие в проектировании API, тестирование, оценка, код-ревью",
+    "git_hub" : "",
+    "name" : "Clickphone ",
+    "platform" : "android",
+    "stack" : "Java, C++, Android SDK, Android NDK, Retrofit, Gson, Sqlite, PJSIP 2",
+    "store_url" : "http://www.clickphone.net/",
+    "vendor" : "Clickphone ",
+    "web_pic" : "https://i.imgsafe.org/c81db12893.png"
+  }, {
+    "cover_pic" : "https://firebasestorage.googleapis.com/v0/b/androiddevcv-4a751.appspot.com/o/app_pic%2Fweb%2Bpic_vgt.webp?alt=media&token=56f6d8df-64e6-4c1f-863e-9f34ef0574e9",
+    "description" : "С помощью приложения VGT Вы сможете планировать встречи или проводы в любом городе мира. Заказав трансфер заранее перед предстоящей командировкой или самостоятельной поездкой, Вы избавите себя от переживаний, как Вам доставить до места встречи партнеров или добраться туда самому. Все стоимости трансферов фиксированные, и Вы будете заранее знать, сколько стоит та или иная поездка.",
+    "duties" : "Разработка модели и интерфейса приложения с нуля по ТЗ и спецификации протокола, тестирование, код-ревью",
+    "git_hub" : "",
+    "name" : "Very Good Transfer",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, Retrofit",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.enterra.android.apps.vgtransfer",
+    "vendor" : "Enterra, Inc.",
+    "web_pic" : "https://i.imgsafe.org/b70a867e5c.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f545авы978.png",
+    "description" : "",
+    "duties" : "Диpайн, разработка с нуля до публикации в Google Play, unit и интеграционное тестирование, публикация исходного кода в Git Hub",
+    "git_hub" : "https://github.com/primus-anonymous/cv",
+    "name" : "Резюме",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, Firebase, Picasso",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.neocaptainnemo.cv",
+    "vendor" : "neocaptainnemo",
+    "web_pic" : "https://i.imgsafe.org/c813f8a799.png"
+  }, {
+    "cover_pic" : "https://i.imgsafe.org/b71f773f4c.png",
+    "description" : "Russian Gaming Week (RGW - 2015) - Международная игорно-развлекательная выставка-форум, ежегодно собирающая производителей, дистрибьюторов и операторов, работающих в сфере индустрии развлечений и представляющая следующие разделы: интернет терминалы, лотереи, лотерейные терминалы, интернет казино, on-line системы.",
+    "duties" : "Планирование архитекруты приложения, разработка модели и интерфейса, помощь команде, код-ревью, оценка",
+    "git_hub" : "",
+    "name" : "Russian Gaming Week (2015)",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, Retrofit, Sqlite, EventBus",
+    "store_url" : "https://play.google.com/store/apps/details?id=com.enterra.android.apps.confpro",
+    "vendor" : "Enterra, Inc.",
+    "web_pic" : "https://i.imgsafe.org/b70a6e5e0a.png"
+  }, {
+    "cover_pic" : "https://firebasestorage.googleapis.com/v0/b/androiddevcv-4a751.appspot.com/o/app_pic%2Fweb_pic_video_notion.png?alt=media&token=e4cefd37-d278-4aa1-bfb5-fdba83c8bdca",
+    "description" : "Демо приложение, демонстрирующее возможности портала VideoNotion. Позволяет просматривать и загружать файлы, проигрывать видео.",
+    "duties" : "Оценка проекта, разработка модели и интерфейса, взаимодействие с заказчиком.",
+    "git_hub" : "",
+    "name" : "Video Notion ",
+    "platform" : "android",
+    "stack" : "Java, Android SDK, Retrofit",
+    "store_url" : "http://www.videonotion.com/de/",
+    "vendor" : "VN Video Notion GmbH ",
+    "web_pic" : "https://i.imgsafe.org/c82898bb86.png"
+  } ]
+}
