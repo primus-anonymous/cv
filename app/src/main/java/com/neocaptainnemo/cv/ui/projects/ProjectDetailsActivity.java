@@ -153,7 +153,6 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override
