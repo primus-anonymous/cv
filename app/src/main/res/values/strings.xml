@@ -2,7 +2,7 @@
     <string name="app_name">CV</string>
 
     <string name="navigation_drawer_open">Open drawer</string>
-    <string name="navigation_drawer_close">Close drower</string>
+    <string name="navigation_drawer_close">Close drawer</string>
 
     <string name="action_common">Common</string>
     <string name="projects">Projects</string>
@@ -18,7 +18,7 @@
     <string name="source_code">Source code</string>
     <string name="project">Project</string>
     <string name="code">source code</string>
-    <string name="mail_subject">Mobile Developer</string>
+    <string name="mail_subject">Android/iOS Developer</string>
     <string name="mail_chooser">Send email...</string>
     <string name="action_all">All</string>
     <string name="action_android">Android only</string>
