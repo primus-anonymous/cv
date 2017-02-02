@@ -20,23 +20,26 @@ import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
+import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import com.neocaptainnemo.cv.LocaleService;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.FragmentProjectsBinding;
 import com.neocaptainnemo.cv.model.Project;
+import com.neocaptainnemo.cv.model.ProjectsResponse;
 import com.neocaptainnemo.cv.ui.IMainView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProjectClicked, ValueEventListener {
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProjectClicked {
 
     public static final String TAG = "ProjectsFragment";
-    private static final String PROJECTS = "projects";
     private ProjectsAdapter adapter;
     private FragmentProjectsBinding binding;
     private boolean loaded;
@@ -44,6 +47,7 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
 
     private IMainView mainView;
     private List<Project> cachedData;
+    private Subscription subscription;
 
     public static ProjectsFragment instance() {
         return new ProjectsFragment();
@@ -124,8 +128,44 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseDatabase.getInstance().getReference(PROJECTS)
-                .addValueEventListener(this);
+
+        subscription = RxFirebaseDatabase
+                .observeValueEvent(FirebaseDatabase.getInstance().getReference(), ProjectsResponse.class)
+                .map(projectsResponse -> {
+
+                    Map<String, String> strings = projectsResponse.resources.get(
+                            LocaleService.getInstance().getLocale(getContext()));
+
+                    for (Project project : projectsResponse.projects) {
+                        project.name = strings.get(project.nameKey);
+                        project.description = strings.get(project.descriptionKey);
+                        project.duties = strings.get(project.dutiesKey);
+                    }
+
+                    return projectsResponse.projects;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(projects -> {
+                    if (mainView != null) {
+                        mainView.hideProgress();
+                    }
+
+                    if (!loaded) {
+
+                        cachedData = projects;
+                        loaded = true;
+
+                        filterData();
+                    }
+
+                }, throwable -> {
+                    if (mainView != null) {
+                        mainView.hideProgress();
+                    }
+                    FirebaseCrash.report(throwable);
+                });
+
         if (mainView != null) {
             mainView.showProgress();
         }
@@ -134,10 +174,11 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     @Override
     public void onStop() {
         super.onStop();
-        FirebaseDatabase.getInstance().getReference(PROJECTS)
-                .removeEventListener(this);
         if (mainView != null) {
             mainView.hideProgress();
+        }
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
         }
     }
 
@@ -167,30 +208,6 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
 
     }
 
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        if (mainView != null) {
-            mainView.hideProgress();
-        }
-
-        if (!loaded) {
-            GenericTypeIndicator<List<Project>> t = new GenericTypeIndicator<List<Project>>() {
-            };
-
-            cachedData = dataSnapshot.getValue(t);
-            loaded = true;
-
-            filterData();
-        }
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        if (mainView != null) {
-            mainView.hideProgress();
-        }
-        FirebaseCrash.report(databaseError.toException());
-    }
 
     private void filterData() {
 

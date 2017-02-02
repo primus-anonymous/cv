@@ -47,6 +47,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${support}"
 
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.kelvinapps:rxfirebase:0.0.15'
 
     def firebase = "10.0.1"
 
@@ -54,6 +55,9 @@ dependencies {
     compile "com.google.firebase:firebase-crash:${firebase}"
 
     testCompile 'junit:junit:4.12'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
 }
 
 apply plugin: 'com.google.gms.google-services'

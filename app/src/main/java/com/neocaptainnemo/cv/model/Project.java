@@ -11,6 +11,7 @@ public class Project implements Parcelable {
 
     public static final String PLATFORM_ANDROID = "android";
 
+    public static final String PLATFORM_IOS = "ios";
     public static final Creator<Project> CREATOR = new Creator<Project>() {
         @Override
         public Project createFromParcel(Parcel in) {
@@ -22,7 +23,6 @@ public class Project implements Parcelable {
             return new Project[size];
         }
     };
-    public static final String PLATFORM_IOS = "ios";
     @PropertyName("name")
     public String name;
     @PropertyName("description")
@@ -43,6 +43,13 @@ public class Project implements Parcelable {
     public String storeUrl;
     @PropertyName("git_hub")
     public String gitHub;
+    @PropertyName("description_key")
+    public String descriptionKey;
+    @PropertyName("duties_key")
+    public String dutiesKey;
+    @PropertyName("name_key")
+    public String nameKey;
+
 
     public Project() {
         //do nothing
@@ -59,8 +66,10 @@ public class Project implements Parcelable {
         duties = in.readString();
         storeUrl = in.readString();
         gitHub = in.readString();
+        descriptionKey = in.readString();
+        dutiesKey = in.readString();
+        nameKey = in.readString();
     }
-
 
     @Override
     public int describeContents() {
@@ -79,5 +88,8 @@ public class Project implements Parcelable {
         parcel.writeString(duties);
         parcel.writeString(storeUrl);
         parcel.writeString(gitHub);
+        parcel.writeString(descriptionKey);
+        parcel.writeString(dutiesKey);
+        parcel.writeString(nameKey);
     }
 }

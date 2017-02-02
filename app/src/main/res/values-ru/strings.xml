@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Резюме</string>
+
+    <string name="navigation_drawer_open">Открыть</string>
+    <string name="navigation_drawer_close">Закрыть</string>
+
+    <string name="action_common">Общее</string>
+    <string name="projects">Проекты</string>
+    <string name="description_title">Описание</string>
+    <string name="duties">Обязанности</string>
+    <string name="stack">Используемые технологии</string>
+    <string name="action_email">Email</string>
+    <string name="action_phone">Телефон</string>
+    <string name="action_github">GitHub</string>
+    <string name="title_cv">Резюме</string>
+    <string name="title_contacts">Контакты</string>
+    <string name="cant_help_it">Не могу открыть приложение</string>
+    <string name="source_code">Исходный код</string>
+    <string name="project">Проект</string>
+    <string name="code">исходный код</string>
+    <string name="mail_subject">Разработка мобильного приложения</string>
+    <string name="mail_chooser">Отправить email...</string>
+    <string name="action_all">Все</string>
+    <string name="action_android">Только Android</string>
+    <string name="action_ios">Только iOS</string>
+    <string name="empty">А здесь пока пусто</string>
+</resources>

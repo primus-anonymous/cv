@@ -11,26 +11,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
+import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import com.neocaptainnemo.cv.LocaleService;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.FragmentCommonBinding;
+import com.neocaptainnemo.cv.model.CommonResponse;
 import com.neocaptainnemo.cv.model.CommonSection;
 import com.neocaptainnemo.cv.ui.IMainView;
 
-import java.util.List;
+import java.util.Map;
 
-public class CommonFragment extends Fragment implements ValueEventListener {
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class CommonFragment extends Fragment {
 
     public static final String TAG = "CommonFragment";
-    public static final String COMMON = "common";
-    public static final String SECTIONS = "sections";
     private FragmentCommonBinding binding;
     private CommonAdapter adapter;
     private IMainView mainView;
+    private Subscription subscription;
 
     public static CommonFragment instance() {
         return new CommonFragment();
@@ -76,9 +78,46 @@ public class CommonFragment extends Fragment implements ValueEventListener {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseDatabase.getInstance().getReference(COMMON)
-                .child(SECTIONS)
-                .addValueEventListener(this);
+
+        subscription = RxFirebaseDatabase
+                .observeValueEvent(FirebaseDatabase.getInstance().getReference(), CommonResponse.class)
+                .map(commonResponse -> {
+
+                    Map<String, String> strings = commonResponse.resources.get(
+                            LocaleService.getInstance().getLocale(getContext()));
+
+                    for (CommonSection section : commonResponse.common.sections) {
+                        section.description = strings.get(section.descriptionKey);
+                        section.title = strings.get(section.titleKey);
+                    }
+
+                    return commonResponse.common.sections;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(projects -> {
+                    if (mainView != null) {
+                        mainView.hideProgress();
+                    }
+                    adapter.clear();
+                    adapter.add(projects);
+                    adapter.notifyDataSetChanged();
+
+                    if (projects.isEmpty()) {
+                        binding.empty.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.empty.setVisibility(View.GONE);
+                    }
+
+
+                }, throwable -> {
+                    if (mainView != null) {
+                        mainView.hideProgress();
+                    }
+                    FirebaseCrash.report(throwable);
+                });
+
+
         if (mainView != null) {
             mainView.showProgress();
         }
@@ -87,44 +126,12 @@ public class CommonFragment extends Fragment implements ValueEventListener {
     @Override
     public void onStop() {
         super.onStop();
-        FirebaseDatabase.getInstance().getReference(COMMON)
-                .child(SECTIONS)
-                .removeEventListener(this);
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
         if (mainView != null) {
             mainView.hideProgress();
         }
-
-    }
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        if (mainView != null) {
-            mainView.hideProgress();
-        }
-
-        GenericTypeIndicator<List<CommonSection>> t = new GenericTypeIndicator<List<CommonSection>>() {
-        };
-
-        List<CommonSection> data = dataSnapshot.getValue(t);
-        adapter.clear();
-        adapter.add(data);
-        adapter.notifyDataSetChanged();
-
-        if (data.isEmpty()) {
-            binding.empty.setVisibility(View.VISIBLE);
-        } else {
-            binding.empty.setVisibility(View.GONE);
-        }
-
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        if (mainView != null) {
-            mainView.hideProgress();
-        }
-
-        FirebaseCrash.report(databaseError.toException());
 
     }
 }

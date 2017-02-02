@@ -10,6 +10,13 @@ public class CommonSection {
     @PropertyName("description")
     public String description;
 
+    @PropertyName("title_key")
+    public String titleKey;
+
+    @PropertyName("description_key")
+    public String descriptionKey;
+
+
     public CommonSection() {
         //do nothing
     }

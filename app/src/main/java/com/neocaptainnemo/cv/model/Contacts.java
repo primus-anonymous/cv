@@ -25,6 +25,15 @@ public class Contacts {
     @PropertyName("pic_url")
     public String userPic;
 
+    @PropertyName("cv_url_key")
+    public String cvKey;
+
+    @PropertyName("name_key")
+    public String nameKey;
+
+    @PropertyName("profession_key")
+    public String professionKey;
+
     public Contacts() {
         //do nothing
     }

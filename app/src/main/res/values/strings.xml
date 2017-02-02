@@ -1,27 +1,27 @@
 <resources>
-    <string name="app_name">Резюме</string>
+    <string name="app_name">CV</string>
 
-    <string name="navigation_drawer_open">Открыть</string>
-    <string name="navigation_drawer_close">Закрыть</string>
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drower</string>
 
-    <string name="action_common">Общее</string>
-    <string name="projects">Проекты</string>
-    <string name="description_title">Описание</string>
-    <string name="duties">Обязанности</string>
-    <string name="stack">Используемые технологии</string>
+    <string name="action_common">Common</string>
+    <string name="projects">Projects</string>
+    <string name="description_title">Description</string>
+    <string name="duties">Duties</string>
+    <string name="stack">Technologies used</string>
     <string name="action_email">Email</string>
-    <string name="action_phone">Телефон</string>
+    <string name="action_phone">Phone</string>
     <string name="action_github">GitHub</string>
-    <string name="title_cv">Резюме</string>
-    <string name="title_contacts">Контакты</string>
-    <string name="cant_help_it">Не могу открыть приложение</string>
-    <string name="source_code">Исходный код</string>
-    <string name="project">Проект</string>
-    <string name="code">исходный код</string>
-    <string name="mail_subject">Разработка мобильного приложения</string>
-    <string name="mail_chooser">Отправить email...</string>
-    <string name="action_all">Все</string>
-    <string name="action_android">Только Android</string>
-    <string name="action_ios">Только iOS</string>
-    <string name="empty">А здесь пока пусто</string>
+    <string name="title_cv">CV</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="cant_help_it">Can\'t open the app</string>
+    <string name="source_code">Source code</string>
+    <string name="project">Project</string>
+    <string name="code">source code</string>
+    <string name="mail_subject">Mobile Developer</string>
+    <string name="mail_chooser">Send email...</string>
+    <string name="action_all">All</string>
+    <string name="action_android">Android only</string>
+    <string name="action_ios">iOS only</string>
+    <string name="empty">There is nothing here yet</string>
 </resources>

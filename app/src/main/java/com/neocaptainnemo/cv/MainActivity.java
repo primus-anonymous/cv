@@ -17,25 +17,30 @@ import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import com.neocaptainnemo.cv.databinding.ActivityMainBinding;
 import com.neocaptainnemo.cv.model.Contacts;
+import com.neocaptainnemo.cv.model.ContactsResponse;
 import com.neocaptainnemo.cv.ui.IMainView;
 import com.neocaptainnemo.cv.ui.common.CommonFragment;
 import com.neocaptainnemo.cv.ui.projects.ProjectsFragment;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener, IMainView {
+import java.util.Map;
 
-    public static final String CONTACTS = "contacts";
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, IMainView {
+
     private ActivityMainBinding binding;
     private Contacts contacts;
     private FirebaseAnalytics analytics;
     private int selectedSection;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,41 +171,50 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        FirebaseDatabase.getInstance().getReference(CONTACTS)
-                .addValueEventListener(this);
+        subscription = RxFirebaseDatabase
+                .observeValueEvent(FirebaseDatabase.getInstance().getReference(), ContactsResponse.class)
+                .map(contactsResponse -> {
+
+                    Map<String, String> strings = contactsResponse.resources.get(
+                            LocaleService.getInstance().getLocale(MainActivity.this));
+
+                    Contacts contacts = contactsResponse.contacts;
+                    contacts.cv = strings.get(contacts.cvKey);
+                    contacts.name = strings.get(contacts.nameKey);
+                    contacts.profession = strings.get(contacts.professionKey);
+
+                    return contacts;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(cont -> {
+                    contacts = cont;
+
+                    TextView name = (TextView) binding.navView.findViewById(R.id.name);
+                    name.setText(contacts.name);
+
+                    TextView prof = (TextView) binding.navView.findViewById(R.id.profession);
+                    prof.setText(contacts.profession);
+
+                    ImageView userPic = (ImageView) binding.navView.findViewById(R.id.user_pic);
+                    Picasso.with(MainActivity.this)
+                            .load(contacts.userPic)
+                            .placeholder(R.drawable.placeholder)
+                            .error(R.drawable.placeholder)
+                            .into(userPic);
+
+                }, FirebaseCrash::report);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FirebaseDatabase.getInstance().getReference(CONTACTS)
-                .removeEventListener(this);
-
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        contacts = dataSnapshot.getValue(Contacts.class);
-
-        TextView name = (TextView) binding.navView.findViewById(R.id.name);
-        name.setText(contacts.name);
-
-        TextView prof = (TextView) binding.navView.findViewById(R.id.profession);
-        prof.setText(contacts.profession);
-
-        ImageView userPic = (ImageView) binding.navView.findViewById(R.id.user_pic);
-        Picasso.with(MainActivity.this)
-                .load(contacts.userPic)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(userPic);
-
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        FirebaseCrash.report(databaseError.toException());
-    }
 
     @Override
     public void showProgress() {
