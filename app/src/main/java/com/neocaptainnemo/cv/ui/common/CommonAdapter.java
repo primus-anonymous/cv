@@ -3,7 +3,6 @@ package com.neocaptainnemo.cv.ui.common;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -27,12 +26,7 @@ class CommonAdapter extends ArrayAdapter<CommonSection, CommonAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        CommonSection section = data.get(position);
-
-        holder.binding.title.setText(section.title);
-        holder.binding.description.setText(Html.fromHtml(section.description));
-
+        holder.binding.setViewModel(new CommonViewModel(data.get(position)));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

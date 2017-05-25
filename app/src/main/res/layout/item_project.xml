@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <data>
+        <variable
+            name="viewModel"
+            type="com.neocaptainnemo.cv.ui.projects.ProjectViewModel" />
+
+    </data>
+
+    <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        card_view:cardCornerRadius="1dp"
+        card_view:cardCornerRadius="2dp"
         card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="true">
 
@@ -22,6 +30,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_margin="8dp"
                 android:minHeight="160dp"
+                android:src="@{viewModel.pic}"
                 tools:src="@drawable/placeholder" />
 
             <ImageView
@@ -31,6 +40,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingRight="16dp"
                 android:paddingTop="16dp"
+                android:src="@{viewModel.platform}"
                 card_view:srcCompat="@drawable/ic_android" />
 
             <TextView
@@ -44,6 +54,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:text="@{viewModel.name}"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/textPrimary"
                 tools:text="Very Good Transfer" />

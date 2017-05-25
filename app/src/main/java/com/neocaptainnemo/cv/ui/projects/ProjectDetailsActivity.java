@@ -14,13 +14,10 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ActivityProjectDetailsBinding;
@@ -41,37 +38,16 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_project_details);
         analytics = FirebaseAnalytics.getInstance(this);
+        project = getIntent().getParcelableExtra("project");
+
+        ProjectDetailsViewModel projectDetailsViewModel = new ProjectDetailsViewModel(this, project, analytics);
+        binding.setViewModel(projectDetailsViewModel);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        project = getIntent().getParcelableExtra("project");
-
-        Glide.with(this)
-                .load(project.webPic)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(binding.projImage);
-
-        Glide.with(this)
-                .load(project.coverPic)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(binding.logo);
-
-        ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "extra_image");
-
-
-        if (project.platform.equals(Project.PLATFORM_ANDROID)) {
-            binding.platform.setImageResource(R.drawable.ic_android);
-        } else {
-            binding.platform.setImageResource(R.drawable.ic_apple);
-        }
         binding.collapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-
-        binding.title.setText(project.name);
-        binding.company.setText(project.vendor);
 
         binding.nestedScroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -90,48 +66,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             }
         });
 
+        ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "extra_image");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding.projImage.setTransitionName(ICON_TRANSITION);
             binding.platform.setTransitionName(PLATFORM_TRANSITION);
-        }
-
-        binding.description.setText(Html.fromHtml(project.description));
-        binding.duties.setText(Html.fromHtml(project.duties));
-        binding.stack.setText(Html.fromHtml(project.stack));
-
-        if (!TextUtils.isEmpty(project.storeUrl)) {
-            binding.store.show();
-        } else {
-            binding.store.hide();
-        }
-
-        if (TextUtils.isEmpty(project.gitHub)) {
-            binding.sourceCodeTitle.setVisibility(View.GONE);
-            binding.sourceCode.setVisibility(View.GONE);
-        } else {
-            binding.sourceCodeTitle.setVisibility(View.VISIBLE);
-            binding.sourceCode.setVisibility(View.VISIBLE);
-
-            binding.sourceCode.setText(project.gitHub);
-
-            binding.sourceCode.setOnClickListener(view -> {
-                Bundle bundle = new Bundle();
-                bundle.putString("project", project.name);
-                analytics.logEvent("project_source_code_clicked", bundle);
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(project.gitHub));
-                try {
-                    startActivity(intent);
-
-                } catch (ActivityNotFoundException exception) {
-
-                    Snackbar snackbar = Snackbar
-                            .make(binding.coordinatorLayout, R.string.cant_help_it, Snackbar.LENGTH_LONG);
-
-                    snackbar.show();
-                }
-            });
         }
 
         binding.store.setOnClickListener(view -> {
