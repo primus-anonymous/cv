@@ -56,6 +56,7 @@ public class CommonFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setRetainInstance(true);
         adapter = new CommonAdapter(getContext());
     }
 

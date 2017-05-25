@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,7 +26,6 @@ import com.neocaptainnemo.cv.model.ContactsResponse;
 import com.neocaptainnemo.cv.ui.IMainView;
 import com.neocaptainnemo.cv.ui.common.CommonFragment;
 import com.neocaptainnemo.cv.ui.projects.ProjectsFragment;
-import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             int section = savedInstanceState.getInt("section", R.id.action_projects);
             if (section == R.id.action_projects) {
-                showProjects();
+                getSupportActionBar().setTitle(R.string.projects);
             } else {
-                showCommon();
+                getSupportActionBar().setTitle(R.string.action_common);
             }
         }
 
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity
                     prof.setText(contacts.profession);
 
                     ImageView userPic = (ImageView) binding.navView.findViewById(R.id.user_pic);
-                    Picasso.with(MainActivity.this)
+                    Glide.with(MainActivity.this)
                             .load(contacts.userPic)
                             .placeholder(R.drawable.placeholder)
                             .error(R.drawable.placeholder)

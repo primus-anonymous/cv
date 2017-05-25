@@ -42,7 +42,6 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     public static final String TAG = "ProjectsFragment";
     private ProjectsAdapter adapter;
     private FragmentProjectsBinding binding;
-    private boolean loaded;
     private Filter filter;
 
     private IMainView mainView;
@@ -72,6 +71,7 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        setRetainInstance(true);
 
         adapter = new ProjectsAdapter(getContext());
         adapter.setOnProjectClicked(this);
@@ -90,7 +90,8 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.projects.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        binding.projects.setLayoutManager(new GridLayoutManager(getContext(),
+                getContext().getResources().getInteger(R.integer.project_columns)));
         binding.projects.setAdapter(adapter);
     }
 
@@ -151,13 +152,10 @@ public class ProjectsFragment extends Fragment implements ProjectsAdapter.OnProj
                         mainView.hideProgress();
                     }
 
-                    if (!loaded) {
 
-                        cachedData = projects;
-                        loaded = true;
+                    cachedData = projects;
 
-                        filterData();
-                    }
+                    filterData();
 
                 }, throwable -> {
                     if (mainView != null) {

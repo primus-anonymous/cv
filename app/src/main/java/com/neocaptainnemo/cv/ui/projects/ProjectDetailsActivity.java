@@ -20,11 +20,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ActivityProjectDetailsBinding;
 import com.neocaptainnemo.cv.model.Project;
-import com.squareup.picasso.Picasso;
 
 public class ProjectDetailsActivity extends AppCompatActivity {
 
@@ -48,13 +48,13 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
         project = getIntent().getParcelableExtra("project");
 
-        Picasso.with(this)
+        Glide.with(this)
                 .load(project.webPic)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .into(binding.projImage);
 
-        Picasso.with(this)
+        Glide.with(this)
                 .load(project.coverPic)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)

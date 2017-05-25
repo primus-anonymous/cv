@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.neocaptainnemo.cv.R;
 import com.neocaptainnemo.cv.databinding.ItemProjectBinding;
 import com.neocaptainnemo.cv.model.Project;
 import com.neocaptainnemo.cv.ui.ArrayAdapter;
-import com.squareup.picasso.Picasso;
 
 class ProjectsAdapter extends ArrayAdapter<Project, ProjectsAdapter.ProjectViewHolder> {
 
@@ -38,7 +38,7 @@ class ProjectsAdapter extends ArrayAdapter<Project, ProjectsAdapter.ProjectViewH
         Project project = data.get(position);
 
         holder.binding.infoText.setText(project.name);
-        Picasso.with(context)
+        Glide.with(context.getApplicationContext())
                 .load(project.webPic)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
