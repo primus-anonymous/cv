@@ -11,11 +11,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.util.Pair
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.daggerInject
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
+import com.neocaptainnemo.cv.services.AnalyticsService
+import com.neocaptainnemo.cv.services.IAnalyticsService
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_projects.*
 import javax.inject.Inject
@@ -27,6 +28,9 @@ class ProjectsFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analyticsService: IAnalyticsService
 
     private lateinit var viewModel: ProjectsViewModel
 
@@ -53,11 +57,7 @@ class ProjectsFragment : Fragment() {
             val intent = Intent(context, ProjectDetailsActivity::class.java)
             intent.putExtra(ProjectDetailsActivity.projectKey, project)
 
-            val analytics = FirebaseAnalytics.getInstance(context!!)
-            val bundle = Bundle()
-            bundle.putString("project", project.name)
-
-            analytics.logEvent("project_clicked", bundle)
+            analyticsService.log(AnalyticsService.projectClicked)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 transitionView.transitionName = ProjectDetailsActivity.ICON_TRANSITION

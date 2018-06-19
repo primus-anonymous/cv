@@ -21,6 +21,7 @@ class AnalyticsService @Inject constructor(context: Context) : IAnalyticsService
         const val projectSourceCodeClicked = "projectSourceCodeClicked"
         const val projectStoreClicked = "projectSoreClicked"
         const val projectShareClicked = "projectShareClicked"
+        const val projectClicked = "projectClicked"
     }
 
 }
