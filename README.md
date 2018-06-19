@@ -1,4 +1,6 @@
-# cv
+[![Build Status](https://travis-ci.org/primus-anonymous/cv.svg?branch=master)](https://travis-ci.org/primus-anonymous/cv)
+
+# Резюме
 
 Интерактивное резюме мобильного разработчика программного обеспечения, построенного на Firebase. Образец базы данных для конфигурации тут https://github.com/primus-anonymous/cv/blob/master/data.json. Возможна горячая замена данных в консоли Firebase.
 
@@ -6,6 +8,7 @@
 
 Сслыка на приложение в Play Store https://play.google.com/store/apps/details?id=com.neocaptainnemo.cv
 
+# CV
 
 Interactive mobile developer CV built on Firebase. Firebase database template is here https://github.com/primus-anonymous/cv/blob/master/data.json. Hot changes via Firebase Console are possible.
 
