@@ -24,4 +24,9 @@
     <string name="action_android">Android only</string>
     <string name="action_ios">iOS only</string>
     <string name="empty">There is nothing here yet</string>
+    <string name="tap_to_call">Tap here to call</string>
+    <string name="action_cv">CV</string>
+    <string name="tap_to_send_email">Tap to write an email</string>
+    <string name="tap_to_view_github">Tap to see Github profile</string>
+    <string name="tap_to_save_cv">Tap to see PDF version of CV</string>
 </resources>
