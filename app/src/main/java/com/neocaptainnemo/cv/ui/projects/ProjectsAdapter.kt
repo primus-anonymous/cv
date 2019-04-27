@@ -1,19 +1,17 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.ui.ArrayAdapter
-import kotlinx.android.synthetic.main.activity_project_details.view.*
 import kotlinx.android.synthetic.main.item_project.view.*
-import javax.inject.Inject
 
-class ProjectsAdapter @Inject constructor() : ArrayAdapter<Project, ProjectsAdapter.ProjectViewHolder>() {
+class ProjectsAdapter : ArrayAdapter<Project, ProjectsAdapter.ProjectViewHolder>() {
 
     var onProjectClicked: ((project: Project, transitionView: View, transitionView2: View) -> Unit)? = null
 
@@ -43,7 +41,7 @@ class ProjectsAdapter @Inject constructor() : ArrayAdapter<Project, ProjectsAdap
     }
 
 
-    class ProjectViewHolder(var root: View, adapter: ProjectsAdapter) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root) {
+    class ProjectViewHolder(var root: View, adapter: ProjectsAdapter) : RecyclerView.ViewHolder(root) {
 
         init {
             root

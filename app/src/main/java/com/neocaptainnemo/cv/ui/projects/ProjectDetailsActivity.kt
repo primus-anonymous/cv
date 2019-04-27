@@ -21,24 +21,20 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.daggerInject
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import kotlinx.android.synthetic.main.activity_project_details.*
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class ProjectDetailsActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var analyticsService: IAnalyticsService
+    private val analyticsService: IAnalyticsService by inject()
 
     private lateinit var project: Project
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        daggerInject()
 
         super.onCreate(savedInstanceState)
 

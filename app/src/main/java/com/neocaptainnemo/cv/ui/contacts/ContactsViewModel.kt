@@ -8,9 +8,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import javax.inject.Inject
 
-class ContactsViewModel @Inject constructor(dataService: IDataService) : ViewModel() {
+class ContactsViewModel(dataService: IDataService) : ViewModel() {
 
     private val progressSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 

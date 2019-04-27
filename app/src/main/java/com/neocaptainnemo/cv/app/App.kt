@@ -1,33 +1,54 @@
 package com.neocaptainnemo.cv.app
 
-import android.app.Activity
 import android.app.Application
-import androidx.fragment.app.Fragment
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.support.HasSupportFragmentInjector
-import javax.inject.Inject
+import com.neocaptainnemo.cv.services.*
+import com.neocaptainnemo.cv.ui.common.CommonViewModel
+import com.neocaptainnemo.cv.ui.contacts.ContactsViewModel
+import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
-class App : Application(), HasSupportFragmentInjector, HasActivityInjector {
+private val appModule = module {
 
-    @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    single<IDataService> {
+        DataService(get())
+    }
+    single<ILocaleService> {
+        LocaleService(get())
+    }
+    single<IAnalyticsService> {
+        AnalyticsService(get())
+    }
 
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+    viewModel {
+        CommonViewModel(get())
+    }
 
+    viewModel {
+        ContactsViewModel(get())
+    }
+
+    viewModel {
+        ProjectsViewModel(get())
+    }
+}
+
+
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        DaggerAppComponent.builder()
-                .application(this)
-                .build()
-                .inject(this)
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(appModule)
+        }
     }
-
-    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = fragmentInjector
-
-    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 }
+
+
+

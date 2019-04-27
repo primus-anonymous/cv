@@ -1,19 +1,17 @@
 package com.neocaptainnemo.cv.ui.common
 
 import android.os.Build
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.CommonSection
 import com.neocaptainnemo.cv.ui.ArrayAdapter
 import kotlinx.android.synthetic.main.item_section.view.*
-import javax.inject.Inject
 
-class CommonAdapter @Inject constructor() : ArrayAdapter<CommonSection, CommonAdapter.ViewHolder>() {
+class CommonAdapter : ArrayAdapter<CommonSection, CommonAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_section, parent, false))
@@ -34,5 +32,5 @@ class CommonAdapter @Inject constructor() : ArrayAdapter<CommonSection, CommonAd
 
     }
 
-    class ViewHolder(val root: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root)
+    class ViewHolder(val root: View) : RecyclerView.ViewHolder(root)
 }

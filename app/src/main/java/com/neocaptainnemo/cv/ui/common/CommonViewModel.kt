@@ -7,14 +7,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import javax.inject.Inject
 
-class CommonViewModel @Inject constructor(private val dataService: IDataService) : ViewModel() {
+class CommonViewModel(private val dataService: IDataService) : ViewModel() {
 
     private val progressSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 
     private val emptySubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
-
 
     fun commons(): Observable<List<CommonSection>> = dataService
             .commons()

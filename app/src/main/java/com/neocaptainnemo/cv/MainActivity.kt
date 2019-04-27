@@ -8,20 +8,16 @@ import com.neocaptainnemo.cv.ui.common.CommonFragment
 import com.neocaptainnemo.cv.ui.contacts.ContactsFragment
 import com.neocaptainnemo.cv.ui.projects.ProjectsFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
     private var selectedSection = 0
 
-    @Inject
-    lateinit var analyticsService: IAnalyticsService
+    private val analyticsService: IAnalyticsService by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        daggerInject()
-
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)

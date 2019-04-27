@@ -2,9 +2,8 @@ package com.neocaptainnemo.cv.services
 
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
-import javax.inject.Inject
 
-class AnalyticsService @Inject constructor(context: Context) : IAnalyticsService {
+class AnalyticsService(context: Context) : IAnalyticsService {
 
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
 

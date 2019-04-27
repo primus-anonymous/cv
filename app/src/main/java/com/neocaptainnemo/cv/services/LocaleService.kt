@@ -3,9 +3,8 @@ package com.neocaptainnemo.cv.services
 import android.content.Context
 import android.os.Build
 import java.util.*
-import javax.inject.Inject
 
-class LocaleService @Inject constructor(private val context: Context) : ILocaleService {
+class LocaleService(private val context: Context) : ILocaleService {
 
     override val locale: String
         get() {

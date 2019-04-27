@@ -6,9 +6,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.neocaptainnemo.cv.model.*
 import io.reactivex.Observable
-import javax.inject.Inject
 
-class DataService @Inject constructor(private val localeService: ILocaleService) : IDataService {
+class DataService(private val localeService: ILocaleService) : IDataService {
 
     init {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)

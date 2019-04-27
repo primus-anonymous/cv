@@ -1,53 +1,28 @@
 package com.neocaptainnemo.cv.ui.common
 
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.daggerInject
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_common.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class CommonFragment : androidx.fragment.app.Fragment() {
 
-    @Inject
-    lateinit var adapter: CommonAdapter
+    private val adapter: CommonAdapter = CommonAdapter()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: CommonViewModel
+    private val vModel: CommonViewModel by viewModel()
 
     private val compositeDisposable = CompositeDisposable()
-
-
-    override fun onAttach(context: Context?) {
-
-        daggerInject()
-
-        super.onAttach(context)
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CommonViewModel::class.java)
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        commonList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        commonList.layoutManager = LinearLayoutManager(context)
         commonList.adapter = adapter
     }
 
@@ -58,15 +33,15 @@ class CommonFragment : androidx.fragment.app.Fragment() {
         super.onStart()
 
 
-        compositeDisposable.add(viewModel.progress().subscribe {
+        compositeDisposable.add(vModel.progress().subscribe {
             commonsProgress.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        compositeDisposable.add(viewModel.empty().subscribe {
+        compositeDisposable.add(vModel.empty().subscribe {
             commonsEmpty.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        compositeDisposable.add(viewModel.commons().subscribe({
+        compositeDisposable.add(vModel.commons().subscribe({
 
             adapter.clear()
             adapter.add(it)

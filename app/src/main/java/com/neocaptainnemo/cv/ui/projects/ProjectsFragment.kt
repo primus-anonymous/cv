@@ -1,54 +1,35 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.core.app.ActivityOptionsCompat
-import androidx.fragment.app.Fragment
-import androidx.core.util.Pair
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
+import androidx.fragment.app.Fragment
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.daggerInject
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_projects.*
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class ProjectsFragment : androidx.fragment.app.Fragment() {
+class ProjectsFragment : Fragment() {
 
-    @Inject
-    lateinit var adapter: ProjectsAdapter
+    private val adapter: ProjectsAdapter = ProjectsAdapter()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val analyticsService: IAnalyticsService by inject()
 
-    @Inject
-    lateinit var analyticsService: IAnalyticsService
-
-    private lateinit var viewModel: ProjectsViewModel
+    private val vModel: ProjectsViewModel by viewModel()
 
     private val compositeDisposable = CompositeDisposable()
 
 
-    override fun onAttach(context: Context?) {
-
-        daggerInject()
-
-        super.onAttach(context)
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProjectsViewModel::class.java)
 
         setHasOptionsMenu(true)
 
@@ -94,20 +75,20 @@ class ProjectsFragment : androidx.fragment.app.Fragment() {
             R.id.action_all -> {
                 item.isChecked = true
 
-                viewModel.filter = Filter.ALL
+                vModel.filter = Filter.ALL
                 return true
             }
 
             R.id.action_android -> {
                 item.isChecked = true
 
-                viewModel.filter = Filter.ANDROID
+                vModel.filter = Filter.ANDROID
                 return true
             }
             R.id.action_ios -> {
                 item.isChecked = true
 
-                viewModel.filter = Filter.IOS
+                vModel.filter = Filter.IOS
                 return true
             }
         }
@@ -117,15 +98,15 @@ class ProjectsFragment : androidx.fragment.app.Fragment() {
     override fun onStart() {
         super.onStart()
 
-        compositeDisposable.add(viewModel.progress().subscribe {
+        compositeDisposable.add(vModel.progress().subscribe {
             projectsProgress.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        compositeDisposable.add(viewModel.empty().subscribe {
+        compositeDisposable.add(vModel.empty().subscribe {
             projectsEmpty.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        compositeDisposable.add(viewModel.projects().subscribe({
+        compositeDisposable.add(vModel.projects().subscribe({
 
             adapter.clear()
             adapter.add(it)
