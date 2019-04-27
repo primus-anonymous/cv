@@ -15,6 +15,7 @@ import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.MainFragmentDirections
+import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_projects.*
 import org.koin.android.ext.android.inject
@@ -22,7 +23,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class ProjectsFragment : BaseFragment() {
 
-    private val adapter: ProjectsAdapter = ProjectsAdapter()
+    private val projectBinder = ProjectsBinder()
+
+    private val adapter: DiffAdapter = DiffAdapter(listOf(projectBinder))
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -34,7 +37,7 @@ class ProjectsFragment : BaseFragment() {
 
         setHasOptionsMenu(true)
 
-        adapter.onProjectClicked = { project: Project, transitionView: View, transitionView2: View ->
+        projectBinder.onProjectClicked = { project: Project, transitionView: View, transitionView2: View ->
 
             analyticsService.log(AnalyticsService.projectClicked)
 
@@ -112,10 +115,7 @@ class ProjectsFragment : BaseFragment() {
 
         autoDispose {
             vModel.projects().subscribe({
-                adapter.clear()
-                adapter.add(it)
-
-                adapter.notifyDataSetChanged()
+                adapter.swapData(it)
             }, {
                 //do nothing
             })

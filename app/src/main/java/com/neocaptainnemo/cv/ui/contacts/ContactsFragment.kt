@@ -10,6 +10,9 @@ import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.ui.BaseFragment
+import com.neocaptainnemo.cv.ui.adapter.AdapterItem
+import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
+import com.neocaptainnemo.cv.visibleIf
 import io.reactivex.Observable
 import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.fragment_contacts.*
@@ -20,14 +23,21 @@ class ContactsFragment : BaseFragment() {
 
     private val analyticsService: IAnalyticsService by inject()
 
-    private val adapter: ContactsAdapter = ContactsAdapter()
+    private val contactsBinder = ContactsBinder()
+
+    private val adapter: DiffAdapter = DiffAdapter(
+            listOf(
+                    contactsBinder,
+                    ContactsHeaderBinder()
+            )
+    )
 
     private val vModel: ContactsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        adapter.itemClicked = {
+        contactsBinder.itemClicked = {
             when (it.type) {
                 ContactType.EMAIL -> {
                     val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -78,7 +88,7 @@ class ContactsFragment : BaseFragment() {
 
         autoDispose {
             vModel.progress().subscribe {
-                contactsProgress.visibility = if (it) View.VISIBLE else View.GONE
+                contactsProgress.visibleIf { it }
             }
         }
 
@@ -92,12 +102,11 @@ class ContactsFragment : BaseFragment() {
 
                         ContactsHeader(image = pic, name = name, profession = profession) to contacts
 
-                    }).subscribe {
+                    }).subscribe { res ->
 
-                adapter.contactsHeader = it.first
-                adapter.clear()
-                adapter.add(it.second)
-                adapter.notifyDataSetChanged()
+                adapter.swapData(arrayListOf<AdapterItem>(res.first).also {
+                    it.addAll(res.second)
+                })
             }
         }
 

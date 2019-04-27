@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.ui.BaseFragment
+import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_common.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -14,7 +15,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class CommonFragment : BaseFragment() {
 
-    private val adapter: CommonAdapter = CommonAdapter()
+    private val adapter: DiffAdapter = DiffAdapter(
+            listOf(CommonBinder())
+    )
 
     private val vModel: CommonViewModel by viewModel()
 
@@ -46,17 +49,10 @@ class CommonFragment : BaseFragment() {
 
         autoDispose {
             vModel.commons().subscribe({
-
-                adapter.clear()
-                adapter.add(it)
-
-                adapter.notifyDataSetChanged()
+                adapter.swapData(it)
             }, {
 
             })
         }
-
-
     }
-
 }
