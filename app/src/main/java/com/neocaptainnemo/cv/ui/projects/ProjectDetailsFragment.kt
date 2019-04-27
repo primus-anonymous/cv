@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.transition.ChangeTransform
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import androidx.core.view.MenuItemCompat
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
@@ -39,6 +39,9 @@ class ProjectDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        }
         project = args.project
     }
 
@@ -121,13 +124,6 @@ class ProjectDetailsFragment : BaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             projImage.transitionName = ICON_TRANSITION
             platform.transitionName = PLATFORM_TRANSITION
-
-            sharedElementEnterTransition = ChangeTransform().apply {
-                duration = 600
-            }
-            sharedElementReturnTransition = ChangeTransform().apply {
-                duration = 600
-            }
         }
 
         val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
