@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.ui.contacts
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ import javax.inject.Inject
 typealias ContactClicked = (contact: ContactSection) -> Unit
 
 
-class ContactsAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactsAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
 
     private val typeHeader = 0
     private val typeItem = 1
@@ -35,7 +35,7 @@ class ContactsAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     override fun getItemViewType(position: Int): Int = if (position == 0) typeHeader else typeItem
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         if (viewType == typeItem) {
             return ContactsAdapter.ContactsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false), this)
         }
@@ -44,7 +44,7 @@ class ContactsAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     }
 
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
 
         if (holder is ContactsAdapter.ContactsViewHolder) {
             val item = data[position - 1]
@@ -70,12 +70,12 @@ class ContactsAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     }
 
 
-    class ContactsViewHolder(val root: View, adapter: ContactsAdapter) : RecyclerView.ViewHolder(root) {
+    class ContactsViewHolder(val root: View, adapter: ContactsAdapter) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root) {
         init {
             root.setOnClickListener { adapter.itemClicked?.invoke(adapter.data[adapterPosition - 1]) }
         }
     }
 
-    class ContactsHeaderViewHolder(val root: View) : RecyclerView.ViewHolder(root)
+    class ContactsHeaderViewHolder(val root: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root)
 
 }

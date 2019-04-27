@@ -2,7 +2,7 @@ package com.neocaptainnemo.cv.app
 
 import android.app.Activity
 import android.app.Application
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -15,7 +15,7 @@ class App : Application(), HasSupportFragmentInjector, HasActivityInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
 
     override fun onCreate() {
@@ -27,7 +27,7 @@ class App : Application(), HasSupportFragmentInjector, HasActivityInjector {
                 .inject(this)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = fragmentInjector
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 }

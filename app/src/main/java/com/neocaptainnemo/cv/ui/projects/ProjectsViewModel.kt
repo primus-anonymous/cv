@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.IDataService
@@ -20,7 +20,7 @@ class ProjectsViewModel @Inject constructor(private val dataService: IDataServic
     private val filterSubject: BehaviorSubject<Filter> = BehaviorSubject.createDefault(Filter.ALL)
 
     var filter: Filter
-        get() = filterSubject.value
+        get() = filterSubject.value!!
         set(value) = filterSubject.onNext(value)
 
     fun progress(): Observable<Boolean> = progressSubject

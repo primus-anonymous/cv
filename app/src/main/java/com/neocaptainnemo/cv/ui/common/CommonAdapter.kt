@@ -1,7 +1,7 @@
 package com.neocaptainnemo.cv.ui.common
 
 import android.os.Build
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -34,5 +34,5 @@ class CommonAdapter @Inject constructor() : ArrayAdapter<CommonSection, CommonAd
 
     }
 
-    class ViewHolder(val root: View) : RecyclerView.ViewHolder(root)
+    class ViewHolder(val root: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root)
 }

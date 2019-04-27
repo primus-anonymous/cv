@@ -1,7 +1,7 @@
 package com.neocaptainnemo.cv
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.ui.common.CommonFragment

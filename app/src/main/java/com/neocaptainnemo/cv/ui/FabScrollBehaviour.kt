@@ -1,11 +1,11 @@
 package com.neocaptainnemo.cv.ui
 
 import android.content.Context
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.neocaptainnemo.cv.R
 
 class FabScrollBehaviour(context: Context, attrs: AttributeSet) : CoordinatorLayout.Behavior<FloatingActionButton>(context, attrs) {
@@ -15,13 +15,14 @@ class FabScrollBehaviour(context: Context, attrs: AttributeSet) : CoordinatorLay
         this.toolbarHeight = getToolbarHeight(context)
     }
 
-    override fun layoutDependsOn(parent: CoordinatorLayout?, fab: FloatingActionButton?, dependency: View?): Boolean {
+    override fun layoutDependsOn(parent: CoordinatorLayout, child: FloatingActionButton, dependency: View): Boolean {
         return dependency is AppBarLayout
     }
 
-    override fun onDependentViewChanged(parent: CoordinatorLayout?, fab: FloatingActionButton?, dependency: View?): Boolean {
+
+    override fun onDependentViewChanged(parent: CoordinatorLayout, fab: FloatingActionButton, dependency: View): Boolean {
         if (dependency is AppBarLayout) {
-            val lp = fab!!.layoutParams as CoordinatorLayout.LayoutParams
+            val lp = fab.layoutParams as CoordinatorLayout.LayoutParams
             val fabBottomMargin = lp.bottomMargin
             val distanceToScroll = fab.height + fabBottomMargin
             val ratio = dependency.y / toolbarHeight.toFloat()

@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.ui.contacts
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Contacts
 import com.neocaptainnemo.cv.services.IDataService

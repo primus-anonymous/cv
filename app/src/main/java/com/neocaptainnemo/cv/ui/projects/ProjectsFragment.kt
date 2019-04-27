@@ -1,15 +1,15 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
-import android.support.v7.widget.GridLayoutManager
+import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.Fragment
+import androidx.core.util.Pair
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.daggerInject
@@ -21,7 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_projects.*
 import javax.inject.Inject
 
-class ProjectsFragment : Fragment() {
+class ProjectsFragment : androidx.fragment.app.Fragment() {
 
     @Inject
     lateinit var adapter: ProjectsAdapter
@@ -81,7 +81,7 @@ class ProjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        projects.layoutManager = GridLayoutManager(context,
+        projects.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context,
                 context!!.resources.getInteger(R.integer.project_columns))
         projects.adapter = adapter
     }

@@ -1,9 +1,9 @@
 package com.neocaptainnemo.cv.ui
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-abstract class ArrayAdapter<T, V : RecyclerView.ViewHolder>() : RecyclerView.Adapter<V>() {
+abstract class ArrayAdapter<T, V : androidx.recyclerview.widget.RecyclerView.ViewHolder>() : androidx.recyclerview.widget.RecyclerView.Adapter<V>() {
 
     protected var data: MutableList<T> = ArrayList()
 

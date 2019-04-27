@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.ui.common
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.model.CommonSection
 import com.neocaptainnemo.cv.services.IDataService
 import io.reactivex.Observable

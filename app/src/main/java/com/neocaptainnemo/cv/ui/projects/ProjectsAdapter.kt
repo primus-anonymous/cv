@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +43,7 @@ class ProjectsAdapter @Inject constructor() : ArrayAdapter<Project, ProjectsAdap
     }
 
 
-    class ProjectViewHolder(var root: View, adapter: ProjectsAdapter) : RecyclerView.ViewHolder(root) {
+    class ProjectViewHolder(var root: View, adapter: ProjectsAdapter) : androidx.recyclerview.widget.RecyclerView.ViewHolder(root) {
 
         init {
             root
