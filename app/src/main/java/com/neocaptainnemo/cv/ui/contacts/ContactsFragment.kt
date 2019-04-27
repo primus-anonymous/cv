@@ -6,20 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
+import com.neocaptainnemo.cv.ui.BaseFragment
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class ContactsFragment : Fragment() {
-
-    private val compositeDisposable = CompositeDisposable()
+class ContactsFragment : BaseFragment() {
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -29,7 +26,6 @@ class ContactsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         adapter.itemClicked = {
             when (it.type) {
@@ -80,33 +76,30 @@ class ContactsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        compositeDisposable.add(vModel.progress().subscribe {
-            contactsProgress.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        autoDispose {
+            vModel.progress().subscribe {
+                contactsProgress.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
 
-        compositeDisposable.add(Observable.combineLatest(
-                vModel.name(),
-                vModel.profession(),
-                vModel.profilePic(),
-                vModel.contacts(),
-                Function4<String, String, String, List<ContactSection>, Pair<ContactsHeader, List<ContactSection>>> { name, profession, pic, contacts ->
+        autoDispose {
+            Observable.combineLatest(
+                    vModel.name(),
+                    vModel.profession(),
+                    vModel.profilePic(),
+                    vModel.contacts(),
+                    Function4<String, String, String, List<ContactSection>, Pair<ContactsHeader, List<ContactSection>>> { name, profession, pic, contacts ->
 
-                    ContactsHeader(image = pic, name = name, profession = profession) to contacts
+                        ContactsHeader(image = pic, name = name, profession = profession) to contacts
 
-                }).subscribe {
+                    }).subscribe {
 
-            adapter.contactsHeader = it.first
-            adapter.clear()
-            adapter.add(it.second)
-            adapter.notifyDataSetChanged()
-        })
+                adapter.contactsHeader = it.first
+                adapter.clear()
+                adapter.add(it.second)
+                adapter.notifyDataSetChanged()
+            }
+        }
 
-    }
-
-
-    override fun onStop() {
-        super.onStop()
-
-        compositeDisposable.clear()
     }
 }

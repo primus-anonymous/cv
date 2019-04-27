@@ -22,21 +22,23 @@ class ProjectsAdapter : ArrayAdapter<Project, ProjectsAdapter.ProjectViewHolder>
 
         val project = data[position]
 
-        holder.root.infoText.text = project.name
+        with(holder.root) {
+            holder.root.infoText.text = project.name
 
-        val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
+            val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
 
-        Glide.with(holder.root)
-                .applyDefaultRequestOptions(requestOption)
-                .load(project.webPic)
-                .into(holder.root.image)
+            Glide.with(this)
+                    .applyDefaultRequestOptions(requestOption)
+                    .load(project.webPic)
+                    .into(image)
 
-        if (project.platform == Project.PLATFORM_ANDROID) {
-            holder.root.itemPlatform.setImageResource(R.drawable.ic_android)
-        }
+            if (project.platform == Project.PLATFORM_ANDROID) {
+                itemPlatform.setImageResource(R.drawable.ic_android)
+            }
 
-        if (project.platform == Project.PLATFORM_IOS) {
-            holder.root.itemPlatform.setImageResource(R.drawable.ic_apple)
+            if (project.platform == Project.PLATFORM_IOS) {
+                itemPlatform.setImageResource(R.drawable.ic_apple)
+            }
         }
     }
 

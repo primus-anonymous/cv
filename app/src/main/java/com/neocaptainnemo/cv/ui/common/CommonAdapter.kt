@@ -1,12 +1,11 @@
 package com.neocaptainnemo.cv.ui.common
 
-import android.os.Build
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.neocaptainnemo.cv.R
+import com.neocaptainnemo.cv.fromHtml
 import com.neocaptainnemo.cv.model.CommonSection
 import com.neocaptainnemo.cv.ui.ArrayAdapter
 import kotlinx.android.synthetic.main.item_section.view.*
@@ -21,15 +20,10 @@ class CommonAdapter : ArrayAdapter<CommonSection, CommonAdapter.ViewHolder>() {
 
         val item = data[position]
 
-        holder.root.commonTitle.text = item.title
-
-        holder.root.commonDescription.text =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(item.description, Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    Html.fromHtml(item.description)
-                }
-
+        with(holder.root) {
+            commonTitle.text = item.title
+            commonDescription.text = item.description.fromHtml()
+        }
     }
 
     class ViewHolder(val root: View) : RecyclerView.ViewHolder(root)

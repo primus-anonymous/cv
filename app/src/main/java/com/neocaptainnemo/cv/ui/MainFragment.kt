@@ -14,7 +14,7 @@ import com.neocaptainnemo.cv.services.IAnalyticsService
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.inject
 
-class MainFragment : Fragment() {
+class MainFragment : BaseFragment() {
 
     private val analyticsService: IAnalyticsService  by inject()
 

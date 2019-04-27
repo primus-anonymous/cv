@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.transition.ChangeTransform
 import android.view.LayoutInflater
 import android.view.View
@@ -15,21 +14,21 @@ import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
-import com.neocaptainnemo.cv.R
+import com.neocaptainnemo.cv.*
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
+import com.neocaptainnemo.cv.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_project_details.*
 import org.koin.android.ext.android.inject
 
 
-class ProjectDetailsFragment : Fragment() {
+class ProjectDetailsFragment : BaseFragment() {
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -152,41 +151,25 @@ class ProjectDetailsFragment : Fragment() {
             R.drawable.ic_apple
         })
 
-        detailsDescription.text =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(project.description, Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    Html.fromHtml(project.description)
-                }
+        detailsDescription.text = project.description.fromHtml()
 
-        duties.text =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(project.duties, Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    Html.fromHtml(project.duties)
-                }
+        duties.text = project.duties.fromHtml()
 
-
-        stack.text =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(project.stack, Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    Html.fromHtml(project.stack)
-                }
+        stack.text = project.stack.fromHtml()
 
         if (project.gitHub.isNullOrEmpty().not()) {
 
-            sourceCode.visibility = View.VISIBLE
-            sourceCodeTitle.visibility = View.VISIBLE
+            sourceCode.visible()
+            sourceCodeTitle.visible()
 
             sourceCode.text = project.gitHub
 
         } else {
-            sourceCode.visibility = View.GONE
-            sourceCodeTitle.visibility = View.GONE
+            sourceCode.gone()
+            sourceCodeTitle.gone()
         }
 
-        store.visibility = if (project.storeUrl?.isNotEmpty() == true) View.VISIBLE else View.GONE
+        store.visibleIf { project.storeUrl.isNullOrEmpty().not() }
 
         store.setOnClickListener {
 
@@ -210,8 +193,6 @@ class ProjectDetailsFragment : Fragment() {
 
         const val ICON_TRANSITION = "ICON_TRANSITION"
         const val PLATFORM_TRANSITION = "PLATFORM_TRANSITION"
-
-        const val projectKey = "project"
     }
 
 }

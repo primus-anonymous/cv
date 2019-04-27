@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neocaptainnemo.cv.R
-import io.reactivex.disposables.CompositeDisposable
+import com.neocaptainnemo.cv.ui.BaseFragment
+import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_common.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
-class CommonFragment : androidx.fragment.app.Fragment() {
+class CommonFragment : BaseFragment() {
 
     private val adapter: CommonAdapter = CommonAdapter()
 
     private val vModel: CommonViewModel by viewModel()
 
-    private val compositeDisposable = CompositeDisposable()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,31 +32,31 @@ class CommonFragment : androidx.fragment.app.Fragment() {
     override fun onStart() {
         super.onStart()
 
+        autoDispose {
+            vModel.progress().subscribe {
+                commonsProgress.visibleIf { it }
+            }
+        }
 
-        compositeDisposable.add(vModel.progress().subscribe {
-            commonsProgress.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        autoDispose {
+            vModel.empty().subscribe {
+                commonsEmpty.visibleIf { it }
+            }
+        }
 
-        compositeDisposable.add(vModel.empty().subscribe {
-            commonsEmpty.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        autoDispose {
+            vModel.commons().subscribe({
 
-        compositeDisposable.add(vModel.commons().subscribe({
+                adapter.clear()
+                adapter.add(it)
 
-            adapter.clear()
-            adapter.add(it)
+                adapter.notifyDataSetChanged()
+            }, {
 
-            adapter.notifyDataSetChanged()
-        }, {
-
-        }))
+            })
+        }
 
 
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        compositeDisposable.clear()
-    }
 }

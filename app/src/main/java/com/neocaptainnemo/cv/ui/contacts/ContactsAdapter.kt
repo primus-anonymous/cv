@@ -34,13 +34,10 @@ class ContactsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = if (position == 0) typeHeader else typeItem
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == typeItem) {
-            return ContactsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false), this)
-        }
-
-        return ContactsHeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_contacts_header, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+            if (viewType == typeItem) {
+                ContactsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false), this)
+            } else ContactsHeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_contacts_header, parent, false))
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -48,22 +45,26 @@ class ContactsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is ContactsViewHolder) {
             val item = data[position - 1]
 
-            holder.root.contactTitle.setText(item.title)
-            holder.root.contactDescription.setText(item.subTitle)
-            holder.root.contactIcon.setImageResource(item.img)
+            with(holder.root) {
+                contactTitle.setText(item.title)
+                contactDescription.setText(item.subTitle)
+                contactIcon.setImageResource(item.img)
+            }
         }
 
         if (holder is ContactsHeaderViewHolder) {
 
             val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
 
-            Glide.with(holder.root.profilePicture)
-                    .load(contactsHeader.image)
-                    .apply(requestOption)
-                    .into(holder.root.profilePicture)
+            with(holder.root) {
+                Glide.with(profilePicture)
+                        .load(contactsHeader.image)
+                        .apply(requestOption)
+                        .into(profilePicture)
 
-            holder.root.profileName.text = contactsHeader.name
-            holder.root.profileProfession.text = contactsHeader.profession
+                profileName.text = contactsHeader.name
+                profileProfession.text = contactsHeader.profession
+            }
         }
 
     }
