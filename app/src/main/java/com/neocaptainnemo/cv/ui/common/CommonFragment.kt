@@ -59,11 +59,4 @@ class CommonFragment : androidx.fragment.app.Fragment() {
 
         compositeDisposable.clear()
     }
-
-    companion object {
-
-        const val tag = "CommonFragment"
-
-        fun instance(): CommonFragment = CommonFragment()
-    }
 }

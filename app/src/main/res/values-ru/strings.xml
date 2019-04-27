@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Резюме</string>
 
-    <string name="navigation_drawer_open">Открыть</string>
-    <string name="navigation_drawer_close">Закрыть</string>
-
     <string name="action_common">Общее</string>
     <string name="projects">Проекты</string>
     <string name="description_title">Описание</string>

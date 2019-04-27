@@ -3,15 +3,19 @@ package com.neocaptainnemo.cv.ui.projects
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.GridLayoutManager
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.AnalyticsService
 import com.neocaptainnemo.cv.services.IAnalyticsService
+import com.neocaptainnemo.cv.ui.MainFragmentDirections
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_projects.*
 import org.koin.android.ext.android.inject
@@ -35,25 +39,26 @@ class ProjectsFragment : Fragment() {
 
         adapter.onProjectClicked = { project: Project, transitionView: View, transitionView2: View ->
 
-            val intent = Intent(context, ProjectDetailsActivity::class.java)
-            intent.putExtra(ProjectDetailsActivity.projectKey, project)
+            val intent = Intent(context, ProjectDetailsFragment::class.java)
+            intent.putExtra(ProjectDetailsFragment.projectKey, project)
 
             analyticsService.log(AnalyticsService.projectClicked)
 
+            val mainNavigation = Navigation.findNavController(requireActivity(), R.id.mainNavHostFragment)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                transitionView.transitionName = ProjectDetailsActivity.ICON_TRANSITION
-                transitionView2.transitionName = ProjectDetailsActivity.PLATFORM_TRANSITION
+                transitionView.transitionName = ProjectDetailsFragment.ICON_TRANSITION
+                transitionView2.transitionName = ProjectDetailsFragment.PLATFORM_TRANSITION
 
-                val pair1 = Pair.create(transitionView, transitionView.transitionName)
-                val pair2 = Pair.create(transitionView2, transitionView2.transitionName)
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, pair1, pair2)
-                context!!.startActivity(intent, options.toBundle())
+                val extras = FragmentNavigatorExtras(
+                        transitionView to transitionView.transitionName,
+                        transitionView2 to transitionView2.transitionName)
+
+                mainNavigation.navigate(MainFragmentDirections.projectDetailsAction(project), extras)
             } else {
-                context!!.startActivity(intent)
+                mainNavigation.navigate(MainFragmentDirections.projectDetailsAction(project))
             }
-
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -62,38 +67,39 @@ class ProjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        projects.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context,
-                context!!.resources.getInteger(R.integer.project_columns))
+        projects.layoutManager = GridLayoutManager(context, requireContext().resources.getInteger(R.integer.project_columns))
         projects.adapter = adapter
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) = inflater!!.inflate(R.menu.fragment_projects, menu)
+        toolbar.inflateMenu(R.menu.fragment_projects)
 
+        toolbar.setOnMenuItemClickListener { item ->
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_all -> {
-                item.isChecked = true
+            when (item.itemId) {
+                R.id.action_all -> {
+                    item.isChecked = true
 
-                vModel.filter = Filter.ALL
-                return true
+                    vModel.filter = Filter.ALL
+                }
+
+                R.id.action_android -> {
+                    item.isChecked = true
+
+                    vModel.filter = Filter.ANDROID
+                }
+                R.id.action_ios -> {
+                    item.isChecked = true
+
+                    vModel.filter = Filter.IOS
+                }
+                else -> {
+                    //do nothing
+                }
             }
 
-            R.id.action_android -> {
-                item.isChecked = true
-
-                vModel.filter = Filter.ANDROID
-                return true
-            }
-            R.id.action_ios -> {
-                item.isChecked = true
-
-                vModel.filter = Filter.IOS
-                return true
-            }
+            true
         }
-        return super.onOptionsItemSelected(item)
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -122,13 +128,5 @@ class ProjectsFragment : Fragment() {
         super.onStop()
 
         compositeDisposable.clear()
-    }
-
-
-    companion object {
-
-        const val tag = "ProjectsFragment"
-
-        fun instance(): ProjectsFragment = ProjectsFragment()
     }
 }

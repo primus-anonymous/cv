@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/title_contacts"
+        android:id="@+id/contactsFragment"
         android:icon="@drawable/ic_call_black_24px"
         android:title="@string/title_contacts" />
 
     <item
-        android:id="@+id/action_projects"
+        android:id="@+id/projectsFragment"
         android:icon="@drawable/ic_shop_black_24px"
         android:title="@string/projects" />
     <item
-        android:id="@+id/action_common"
+        android:id="@+id/commonFragment"
         android:icon="@drawable/ic_inbox_black_24px"
         android:title="@string/action_common" />
 

@@ -91,7 +91,7 @@ class ContactsFragment : Fragment() {
                 vModel.contacts(),
                 Function4<String, String, String, List<ContactSection>, Pair<ContactsHeader, List<ContactSection>>> { name, profession, pic, contacts ->
 
-                    Pair(ContactsHeader(image = pic, name = name, profession = profession), contacts)
+                    ContactsHeader(image = pic, name = name, profession = profession) to contacts
 
                 }).subscribe {
 
@@ -109,12 +109,4 @@ class ContactsFragment : Fragment() {
 
         compositeDisposable.clear()
     }
-
-    companion object {
-
-        const val tag = "ContactsFragment"
-
-        fun instance(): ContactsFragment = ContactsFragment()
-    }
-
 }

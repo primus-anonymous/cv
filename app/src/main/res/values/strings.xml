@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">CV</string>
 
-    <string name="navigation_drawer_open">Open drawer</string>
-    <string name="navigation_drawer_close">Close drawer</string>
-
     <string name="action_common">Common</string>
     <string name="projects">Projects</string>
     <string name="description_title">Description</string>

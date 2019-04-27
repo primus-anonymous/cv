@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 28
@@ -60,6 +61,12 @@ dependencies {
 
     implementation "org.koin:koin-core:$koinVersion"
     implementation "org.koin:koin-android-viewmodel:$koinVersion"
+
+    def navVersion = "2.0.0"
+
+    implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
+
 
     testImplementation 'junit:junit:4.12'
     testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
