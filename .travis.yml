@@ -16,7 +16,7 @@ android:
     - tools
 
     # The BuildTools version used by your project
-    - build-tools-29.0.0
+    - build-tools-29.0.2
 
     # The SDK version used to compile your project
     - android-29
@@ -28,5 +28,9 @@ android:
     - extra-android-m2repository
     - addon-google_apis-google-29
 
+before_install:
+  - yes | sdkmanager "platforms;android-28"
+
 script:
+  - ./gradlew clean build
   - ./gradlew test
