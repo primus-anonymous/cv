@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import java.util.*
 
-class LocaleService(private val context: Context) : ILocaleService {
+internal class LocaleService(private val context: Context) : ILocaleService {
 
     override val locale: String
         get() {

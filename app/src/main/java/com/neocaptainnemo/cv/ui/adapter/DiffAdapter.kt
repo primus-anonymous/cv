@@ -12,7 +12,7 @@ interface AdapterItem {
 
 class DiffAdapter(private val binders: List<AdapterBinder<*>>) : RecyclerView.Adapter<DiffViewHolder>() {
 
-    private var data = ArrayList<AdapterItem>()
+    private val data = ArrayList<AdapterItem>()
 
     override fun getItemCount(): Int = data.size
 
@@ -37,14 +37,14 @@ class DiffAdapter(private val binders: List<AdapterBinder<*>>) : RecyclerView.Ad
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiffViewHolder =
-            binders.find { it.layout() == viewType }!!.createHolder(parent)
+            binders.find { it.layout == viewType }!!.createHolder(parent)
 
     override fun onBindViewHolder(holder: DiffViewHolder, position: Int) {
         val item = data[position]
         binders.find { it.shouldIProcess(item) }!!.onBindViewHolder(item, holder)
     }
 
-    override fun getItemViewType(position: Int): Int = binders.find { it.shouldIProcess(data[position]) }!!.layout()
+    override fun getItemViewType(position: Int): Int = binders.find { it.shouldIProcess(data[position]) }!!.layout
 }
 
 class DiffViewHolder(root: View) : RecyclerView.ViewHolder(root)

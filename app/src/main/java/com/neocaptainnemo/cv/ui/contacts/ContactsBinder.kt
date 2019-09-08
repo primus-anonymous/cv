@@ -28,7 +28,7 @@ class ContactsBinder : AdapterBinder<ContactSection>() {
         }
     }
 
-    override fun layout(): Int = R.layout.item_contact
+    override val layout: Int = R.layout.item_contact
 
     override fun shouldIProcess(item: AdapterItem): Boolean = item is ContactSection
 }
@@ -51,7 +51,7 @@ class ContactsHeaderBinder : AdapterBinder<ContactsHeader>() {
         }
     }
 
-    override fun layout(): Int = R.layout.item_contacts_header
+    override val layout: Int = R.layout.item_contacts_header
 
     override fun shouldIProcess(item: AdapterItem): Boolean = item is ContactsHeader
 

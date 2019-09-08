@@ -1,6 +1,6 @@
 package com.neocaptainnemo.cv.app
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.neocaptainnemo.cv.services.*
 import com.neocaptainnemo.cv.ui.common.CommonViewModel
 import com.neocaptainnemo.cv.ui.contacts.ContactsViewModel
@@ -37,7 +37,7 @@ private val appModule = module {
 }
 
 
-class App : Application() {
+class App : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

@@ -26,4 +26,5 @@
     <string name="tap_to_send_email">Tap to write an email</string>
     <string name="tap_to_view_github">Tap to see Github profile</string>
     <string name="tap_to_save_cv">Tap to see PDF version of CV</string>
+    <string name="action_share">Share</string>
 </resources>

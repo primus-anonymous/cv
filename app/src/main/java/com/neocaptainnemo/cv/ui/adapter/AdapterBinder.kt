@@ -9,9 +9,9 @@ abstract class AdapterBinder<in T : AdapterItem> {
 
     fun onBindViewHolder(item: AdapterItem, holder: DiffViewHolder) = bindItem(item as T, holder)
 
-    abstract fun layout(): Int
+    abstract val layout: Int
 
-    fun createHolder(container: ViewGroup) = DiffViewHolder(LayoutInflater.from(container.context).inflate(layout(), container, false))
+    fun createHolder(container: ViewGroup) = DiffViewHolder(LayoutInflater.from(container.context).inflate(layout, container, false))
 
     abstract fun shouldIProcess(item: AdapterItem): Boolean
 }

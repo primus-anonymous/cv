@@ -35,9 +35,9 @@ class CommonViewModelTest {
 
         whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
 
-        val testable = viewModel.progress().test()
+        val testable = viewModel.progress.test()
 
-        viewModel.commons().test().assertNoErrors()
+        viewModel.commons.test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
@@ -48,9 +48,9 @@ class CommonViewModelTest {
 
         whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
 
-        val testable = viewModel.progress().test()
+        val testable = viewModel.progress.test()
 
-        viewModel.commons().test().assertNoErrors()
+        viewModel.commons.test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
@@ -59,9 +59,9 @@ class CommonViewModelTest {
     fun empty() {
         whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
 
-        val testable = viewModel.empty().test()
+        val testable = viewModel.empty.test()
 
-        viewModel.commons().test().assertNoErrors()
+        viewModel.commons.test().assertNoErrors()
 
         testable.assertValues(false, true)
 
@@ -71,9 +71,9 @@ class CommonViewModelTest {
     fun notEmpty() {
         whenever(dataService.commons()).then { Observable.just(listOf(CommonSection(), CommonSection())) }
 
-        val testable = viewModel.empty().test()
+        val testable = viewModel.empty.test()
 
-        viewModel.commons().test().assertNoErrors()
+        viewModel.commons.test().assertNoErrors()
 
         testable.assertValues(false, false)
 
@@ -87,7 +87,7 @@ class CommonViewModelTest {
 
         whenever(dataService.commons()).then { Observable.just(listOf(commonSection1, commonSection2)) }
 
-        viewModel.commons().test().assertValue(listOf(commonSection1, commonSection2))
+        viewModel.commons.test().assertValue(listOf(commonSection1, commonSection2))
     }
 
 
@@ -96,7 +96,7 @@ class CommonViewModelTest {
 
         whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
 
-        viewModel.commons().test().assertValue(listOf())
+        viewModel.commons.test().assertValue(listOf())
     }
 
 }

@@ -36,9 +36,9 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
 
-        val testable = viewModel.progress().test()
+        val testable = viewModel.progress.test()
 
-        viewModel.projects().test().assertNoErrors()
+        viewModel.projects.test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
@@ -48,9 +48,9 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
 
-        val testable = viewModel.progress().test()
+        val testable = viewModel.progress.test()
 
-        viewModel.projects().test().assertNoErrors()
+        viewModel.projects.test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
@@ -60,9 +60,9 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
 
-        val testable = viewModel.empty().test()
+        val testable = viewModel.empty.test()
 
-        viewModel.projects().test().assertNoErrors()
+        viewModel.projects.test().assertNoErrors()
 
         testable.assertValues(false, true)
     }
@@ -72,9 +72,9 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.just(listOf(Project(), Project())) }
 
-        val testable = viewModel.empty().test()
+        val testable = viewModel.empty.test()
 
-        viewModel.projects().test().assertNoErrors()
+        viewModel.projects.test().assertNoErrors()
 
         testable.assertValues(false, false)
     }
@@ -96,7 +96,7 @@ class ProjectsViewModelTest {
 
         viewModel.filter = Filter.ALL
 
-        viewModel.projects().test().assertValues(listOf(project1, project2, project3))
+        viewModel.projects.test().assertValues(listOf(project1, project2, project3))
     }
 
     @Test
@@ -115,7 +115,7 @@ class ProjectsViewModelTest {
 
         viewModel.filter = Filter.ANDROID
 
-        viewModel.projects().test().assertValues(listOf(project1, project3))
+        viewModel.projects.test().assertValues(listOf(project1, project3))
     }
 
     @Test
@@ -134,7 +134,7 @@ class ProjectsViewModelTest {
 
         viewModel.filter = Filter.IOS
 
-        viewModel.projects().test().assertValues(listOf(project2))
+        viewModel.projects.test().assertValues(listOf(project2))
     }
 
     @Test
@@ -145,7 +145,7 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.just(listOf(project1, project2)) }
 
-        viewModel.projects().test().assertValue(listOf(project1, project2))
+        viewModel.projects.test().assertValue(listOf(project1, project2))
     }
 
 
@@ -154,7 +154,7 @@ class ProjectsViewModelTest {
 
         whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
 
-        viewModel.projects().test().assertValue(listOf())
+        viewModel.projects.test().assertValue(listOf())
 
     }
 

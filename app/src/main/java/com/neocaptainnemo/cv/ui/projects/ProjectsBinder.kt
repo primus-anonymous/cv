@@ -40,7 +40,7 @@ class ProjectsBinder : AdapterBinder<Project>() {
         }
     }
 
-    override fun layout(): Int = R.layout.item_project
+    override val layout: Int = R.layout.item_project
 
     override fun shouldIProcess(item: AdapterItem): Boolean = item is Project
 }

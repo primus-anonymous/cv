@@ -22,26 +22,26 @@ class ProjectsViewModel(private val dataService: IDataService) : ViewModel() {
         get() = filterSubject.value!!
         set(value) = filterSubject.onNext(value)
 
-    fun progress(): Observable<Boolean> = progressSubject
+    val progress: Observable<Boolean> = progressSubject
 
-    fun empty(): Observable<Boolean> = emptySubject
+    val empty: Observable<Boolean> = emptySubject
 
-    fun projects(): Observable<List<Project>> = Observable.combineLatest(dataService.projects(), filterSubject,
-            BiFunction<List<Project>, Filter, List<Project>> { projects, filter ->
+    val projects: Observable<List<Project>>
+        get() = Observable.combineLatest(dataService.projects(), filterSubject,
+                BiFunction<List<Project>, Filter, List<Project>> { projects, filter ->
 
-                projects.filter {
-                    filter == Filter.ALL ||
-                            it.platform == Project.PLATFORM_ANDROID && filter == Filter.ANDROID ||
-                            it.platform == Project.PLATFORM_IOS && filter == Filter.IOS
+                    projects.filter {
+                        filter == Filter.ALL ||
+                                it.platform == Project.PLATFORM_ANDROID && filter == Filter.ANDROID ||
+                                it.platform == Project.PLATFORM_IOS && filter == Filter.IOS
+                    }
+                })
+                .onErrorReturnItem(listOf())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { progressSubject.onNext(true) }
+                .doOnNext {
+                    progressSubject.onNext(false)
+                    emptySubject.onNext(it.isEmpty())
                 }
-            })
-            .onErrorReturnItem(listOf())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { progressSubject.onNext(true) }
-            .doOnNext {
-                progressSubject.onNext(false)
-                emptySubject.onNext(it.isEmpty())
-            }
-
 }

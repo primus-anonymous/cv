@@ -7,7 +7,7 @@ import com.google.firebase.database.ValueEventListener
 import com.neocaptainnemo.cv.model.*
 import io.reactivex.Observable
 
-class DataService(private val localeService: ILocaleService) : IDataService {
+internal class DataService(private val localeService: ILocaleService) : IDataService {
 
     init {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
@@ -20,10 +20,11 @@ class DataService(private val localeService: ILocaleService) : IDataService {
 
                         val strings = it.resources[localeService.locale]
 
-                        for (project in it.projects) {
+                        it.projects.forEach { project ->
                             project.name = strings?.get(project.nameKey)
                             project.description = strings?.get(project.descriptionKey)
                             project.duties = strings?.get(project.dutiesKey)
+
                         }
 
                         it.projects
@@ -39,12 +40,13 @@ class DataService(private val localeService: ILocaleService) : IDataService {
 
                         val strings = it.resources[localeService.locale]
 
-                        for (section in it.common!!.sections) {
+                        it.common?.sections?.forEach { section ->
                             section.title = strings?.get(section.titleKey)
                             section.description = strings?.get(section.descriptionKey)
+
                         }
 
-                        it.common!!.sections
+                        it.common?.sections
                     }
 
     override fun contacts(): Observable<Contacts> =

@@ -2,16 +2,14 @@ package com.neocaptainnemo.cv.ui.projects
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
-import com.neocaptainnemo.cv.services.AnalyticsService
+import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.MainFragmentDirections
@@ -21,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_projects.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class ProjectsFragment : BaseFragment() {
+class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
 
     private val projectBinder = ProjectsBinder()
 
@@ -39,7 +37,7 @@ class ProjectsFragment : BaseFragment() {
 
         projectBinder.onProjectClicked = { project: Project, transitionView: View, transitionView2: View ->
 
-            analyticsService.log(AnalyticsService.projectClicked)
+            analyticsService.log(AnalyticsEvent.PROJECT_DETAILS_CLICKED)
 
             val mainNavigation = Navigation.findNavController(requireActivity(), R.id.mainNavHostFragment)
 
@@ -58,8 +56,6 @@ class ProjectsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_projects, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,23 +98,15 @@ class ProjectsFragment : BaseFragment() {
         super.onStart()
 
         autoDispose {
-            vModel.progress().subscribe {
+            vModel.progress.subscribe {
                 projectsProgress.visibleIf { it }
             }
-        }
-
-        autoDispose {
-            vModel.empty().subscribe {
+            vModel.empty.subscribe {
                 projectsEmpty.visibleIf { it }
             }
-        }
-
-        autoDispose {
-            vModel.projects().subscribe({
+            vModel.projects.subscribe {
                 adapter.swapData(it)
-            }, {
-                //do nothing
-            })
+            }
         }
     }
 

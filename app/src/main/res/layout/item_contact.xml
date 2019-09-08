@@ -8,7 +8,7 @@
     android:clickable="true"
     android:focusable="true">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/contactIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_call_black_24px" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/contactTitle"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="0dp"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/contactDescription"
         style="@style/TextAppearance.AppCompat.Small"
         android:layout_width="0dp"

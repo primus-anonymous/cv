@@ -21,14 +21,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.neocaptainnemo.cv.*
 import com.neocaptainnemo.cv.model.Project
-import com.neocaptainnemo.cv.services.AnalyticsService
+import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_project_details.*
 import org.koin.android.ext.android.inject
 
 
-class ProjectDetailsFragment : BaseFragment() {
+class ProjectDetailsFragment : BaseFragment(R.layout.fragment_project_details) {
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -44,9 +44,6 @@ class ProjectDetailsFragment : BaseFragment() {
         }
         project = args.project
     }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_project_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,7 +84,7 @@ class ProjectDetailsFragment : BaseFragment() {
 
         toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.menu_item_share) {
-                analyticsService.log(AnalyticsService.projectShareClicked)
+                analyticsService.log(AnalyticsEvent.PROJECT_SHARED_CLICKED)
                 return@setOnMenuItemClickListener false
             }
 
@@ -110,7 +107,7 @@ class ProjectDetailsFragment : BaseFragment() {
 
         sourceCode.setOnClickListener {
 
-            analyticsService.log(AnalyticsService.projectSourceCodeClicked)
+            analyticsService.log(AnalyticsEvent.PROJECT_CODE_CLICKED)
 
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(project.gitHub))
             try {
@@ -147,11 +144,11 @@ class ProjectDetailsFragment : BaseFragment() {
             R.drawable.ic_apple
         })
 
-        detailsDescription.text = project.description.fromHtml()
+        detailsDescription.text = project.description.spanned
 
-        duties.text = project.duties.fromHtml()
+        duties.text = project.duties.spanned
 
-        stack.text = project.stack.fromHtml()
+        stack.text = project.stack.spanned
 
         if (project.gitHub.isNullOrEmpty().not()) {
 
@@ -169,7 +166,7 @@ class ProjectDetailsFragment : BaseFragment() {
 
         store.setOnClickListener {
 
-            analyticsService.log(AnalyticsService.projectStoreClicked)
+            analyticsService.log(AnalyticsEvent.PROJECT_STORE_CLICKED)
 
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(project.storeUrl))
             try {

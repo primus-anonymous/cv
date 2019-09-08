@@ -1,9 +1,7 @@
 package com.neocaptainnemo.cv.ui.common
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.ui.BaseFragment
@@ -13,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_common.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
-class CommonFragment : BaseFragment() {
+class CommonFragment : BaseFragment(R.layout.fragment_common) {
 
     private val adapter: DiffAdapter = DiffAdapter(
             listOf(CommonBinder())
@@ -29,30 +27,19 @@ class CommonFragment : BaseFragment() {
         commonList.adapter = adapter
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_common, container, false)
-
     override fun onStart() {
         super.onStart()
 
         autoDispose {
-            vModel.progress().subscribe {
+            vModel.progress.subscribe {
                 commonsProgress.visibleIf { it }
             }
-        }
-
-        autoDispose {
-            vModel.empty().subscribe {
+            vModel.empty.subscribe {
                 commonsEmpty.visibleIf { it }
             }
-        }
-
-        autoDispose {
-            vModel.commons().subscribe({
+            vModel.commons.subscribe {
                 adapter.swapData(it)
-            }, {
-
-            })
+            }
         }
     }
 }

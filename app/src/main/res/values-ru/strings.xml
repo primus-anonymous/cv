@@ -26,4 +26,5 @@
     <string name="tap_to_send_email">Нажми, чтобы написать письмо</string>
     <string name="tap_to_view_github">Нажми, чтобы посмотреть профиль Github</string>
     <string name="tap_to_save_cv">Нажми, чтобы просмотреть CV в PDF</string>
+    <string name="action_share">Поделиться</string>
 </resources>
