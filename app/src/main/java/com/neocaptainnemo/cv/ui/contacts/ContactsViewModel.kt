@@ -29,20 +29,20 @@ class ContactsViewModel(private val dataService: IDataService) : ViewModel() {
 
                     val sections = arrayListOf<ContactSection>()
 
-                    if (it.phone != null) {
-                        sections.add(ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, it.phone!!))
+                    it.phone?.let {
+                        sections.add(ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, it))
                     }
 
-                    if (it.email != null) {
-                        sections.add(ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, it.email!!))
+                    it.email?.let {
+                        sections.add(ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, it))
                     }
 
-                    if (it.gitHub != null) {
-                        sections.add(ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, it.gitHub!!))
+                    it.gitHub?.let {
+                        sections.add(ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, it))
                     }
 
-                    if (it.cv != null) {
-                        sections.add(ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, it.cv!!))
+                    it.cv?.let {
+                        sections.add(ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, it))
                     }
 
                     return@map mutableListOf<AdapterItem>(header).apply { addAll(sections) }.toList()
