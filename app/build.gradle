@@ -15,8 +15,9 @@ android {
         versionName "1.7.0"
         multiDexEnabled true
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'com.neocaptainnemo.cv.MockTestRunner'
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -82,6 +83,25 @@ dependencies {
     testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
     testImplementation 'org.assertj:assertj-core:2.6.0'
+
+    def espresos = "3.1.0"
+
+    androidTestImplementation "androidx.test.espresso:espresso-core:${espresos}"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${espresos}"
+
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${espresos}"
+
+    androidTestImplementation "org.mockito:mockito-android:2.11.0"
+    androidTestImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+
+    androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.9.0'
+
 
 }
 

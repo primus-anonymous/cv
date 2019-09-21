@@ -12,6 +12,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
 private val appModule = module {
@@ -25,6 +26,9 @@ private val appModule = module {
     single<IAnalyticsService> {
         AnalyticsService(get())
     }
+}
+
+val vmModule = module {
 
     viewModel {
         CommonViewModel(get())
@@ -41,10 +45,15 @@ private val appModule = module {
     viewModel { (project: Project) ->
         ProjectDetailsViewModel(androidApplication(), project)
     }
+
 }
 
 
-class App : MultiDexApplication() {
+open class App : MultiDexApplication() {
+
+    open val modules: List<Module>
+        get() = listOf(appModule, vmModule)
+
 
     override fun onCreate() {
         super.onCreate()
@@ -52,7 +61,7 @@ class App : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(appModule)
+            modules(modules)
         }
     }
 }
