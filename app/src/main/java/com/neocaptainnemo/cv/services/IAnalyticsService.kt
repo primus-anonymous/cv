@@ -2,6 +2,10 @@ package com.neocaptainnemo.cv.services
 
 interface IAnalyticsService {
 
+    /**
+     * Logs some triggered event.
+     * @param event - triggered event.
+     */
     fun log(event: AnalyticsEvent)
 
 }
@@ -18,6 +22,5 @@ enum class AnalyticsEvent(val eventValue: String) {
     CV_CLICKED("cvClicked"),
     PROJECT_CODE_CLICKED("projectSourceCodeClicked"),
     PROJECT_STORE_CLICKED("projectSoreClicked"),
-    PROJECT_SHARED_CLICKED("projectShareClicked"),
-    PROFILE_CLICKED("projectClicked")
+    PROJECT_SHARED_CLICKED("projectShareClicked")
 }

@@ -19,12 +19,13 @@ class CommonFragment : BaseFragment(R.layout.fragment_common) {
 
     private val vModel: CommonViewModel by viewModel()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        commonList.layoutManager = LinearLayoutManager(context)
-        commonList.adapter = adapter
+        commonList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = this@CommonFragment.adapter
+        }
     }
 
     override fun onStart() {
@@ -37,7 +38,7 @@ class CommonFragment : BaseFragment(R.layout.fragment_common) {
             vModel.empty.subscribe {
                 commonsEmpty.visibleIf { it }
             }
-            vModel.commons.subscribe {
+            vModel.commons().subscribe {
                 adapter.swapData(it)
             }
         }

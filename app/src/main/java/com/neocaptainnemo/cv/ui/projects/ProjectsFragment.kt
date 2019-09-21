@@ -60,36 +60,41 @@ class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        projects.layoutManager = GridLayoutManager(context, requireContext().resources.getInteger(R.integer.project_columns))
-        projects.adapter = adapter
+        projects.apply {
+            layoutManager = GridLayoutManager(context, requireContext().resources.getInteger(R.integer.project_columns))
+            adapter = this@ProjectsFragment.adapter
 
-        toolbar.inflateMenu(R.menu.fragment_projects)
+        }
 
-        toolbar.setOnMenuItemClickListener { item ->
+        toolbar.apply {
+            inflateMenu(R.menu.fragment_projects)
 
-            when (item.itemId) {
-                R.id.action_all -> {
-                    item.isChecked = true
+            setOnMenuItemClickListener { item ->
 
-                    vModel.filter = Filter.ALL
+                when (item.itemId) {
+                    R.id.action_all -> {
+                        item.isChecked = true
+
+                        vModel.filter = Filter.ALL
+                    }
+
+                    R.id.action_android -> {
+                        item.isChecked = true
+
+                        vModel.filter = Filter.ANDROID
+                    }
+                    R.id.action_ios -> {
+                        item.isChecked = true
+
+                        vModel.filter = Filter.IOS
+                    }
+                    else -> {
+                        //do nothing
+                    }
                 }
 
-                R.id.action_android -> {
-                    item.isChecked = true
-
-                    vModel.filter = Filter.ANDROID
-                }
-                R.id.action_ios -> {
-                    item.isChecked = true
-
-                    vModel.filter = Filter.IOS
-                }
-                else -> {
-                    //do nothing
-                }
+                true
             }
-
-            true
         }
     }
 

@@ -19,10 +19,12 @@ class MainFragment : BaseFragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
 
         val navController = Navigation.findNavController(requireActivity(), R.id.navHostFragment)
-        bottomNavigation.setupWithNavController(navController)
 
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(requireActivity(), R.id.navHostFragment))
+        bottomNavigation.apply {
+            setupWithNavController(navController)
+            setOnNavigationItemSelectedListener { item ->
+                NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(requireActivity(), R.id.navHostFragment))
+            }
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

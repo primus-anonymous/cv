@@ -14,17 +14,17 @@ class CommonViewModel(private val dataService: IDataService) : ViewModel() {
 
     private val emptySubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 
-    val commons: Observable<List<CommonSection>>
-        get() = dataService
-                .commons()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturnItem(listOf())
-                .doOnSubscribe { progressSubject.onNext(true) }
-                .doOnNext {
-                    progressSubject.onNext(false)
-                    emptySubject.onNext(it.isEmpty())
-                }
+    fun commons(): Observable<List<CommonSection>> =
+            dataService
+                    .commons()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturnItem(listOf())
+                    .doOnSubscribe { progressSubject.onNext(true) }
+                    .doOnNext {
+                        progressSubject.onNext(false)
+                        emptySubject.onNext(it.isEmpty())
+                    }
 
 
     val progress: Observable<Boolean> = progressSubject

@@ -1,10 +1,13 @@
 package com.neocaptainnemo.cv.app
 
 import androidx.multidex.MultiDexApplication
+import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.*
 import com.neocaptainnemo.cv.ui.common.CommonViewModel
 import com.neocaptainnemo.cv.ui.contacts.ContactsViewModel
+import com.neocaptainnemo.cv.ui.projects.ProjectDetailsViewModel
 import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.android.viewmodel.dsl.viewModel
@@ -33,6 +36,10 @@ private val appModule = module {
 
     viewModel {
         ProjectsViewModel(get())
+    }
+
+    viewModel { (project: Project) ->
+        ProjectDetailsViewModel(androidApplication(), project)
     }
 }
 

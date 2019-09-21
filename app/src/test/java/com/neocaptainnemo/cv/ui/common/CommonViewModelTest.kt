@@ -31,72 +31,72 @@ class CommonViewModelTest {
     }
 
     @Test
-    fun progressSuccess() {
+    fun `progress during successful fetch`() {
 
         whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
 
         val testable = viewModel.progress.test()
 
-        viewModel.commons.test().assertNoErrors()
+        viewModel.commons().test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
 
 
     @Test
-    fun progressFailure() {
+    fun `progress during failed fetch`() {
 
         whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
 
         val testable = viewModel.progress.test()
 
-        viewModel.commons.test().assertNoErrors()
+        viewModel.commons().test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
 
     @Test
-    fun empty() {
+    fun `empty state`() {
         whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
 
         val testable = viewModel.empty.test()
 
-        viewModel.commons.test().assertNoErrors()
+        viewModel.commons().test().assertNoErrors()
 
         testable.assertValues(false, true)
 
     }
 
     @Test
-    fun notEmpty() {
+    fun `not empty state`() {
         whenever(dataService.commons()).then { Observable.just(listOf(CommonSection(), CommonSection())) }
 
         val testable = viewModel.empty.test()
 
-        viewModel.commons.test().assertNoErrors()
+        viewModel.commons().test().assertNoErrors()
 
         testable.assertValues(false, false)
 
     }
 
     @Test
-    fun success() {
+    fun `successful fetch`() {
 
         val commonSection1 = CommonSection()
         val commonSection2 = CommonSection()
 
         whenever(dataService.commons()).then { Observable.just(listOf(commonSection1, commonSection2)) }
 
-        viewModel.commons.test().assertValue(listOf(commonSection1, commonSection2))
+        viewModel.commons().test().assertValue(listOf(commonSection1, commonSection2))
     }
 
 
     @Test
-    fun failure() {
+    fun `failed fetch`() {
 
         whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
 
-        viewModel.commons.test().assertValue(listOf())
+        viewModel.commons().test().assertValue(listOf())
     }
 
 }

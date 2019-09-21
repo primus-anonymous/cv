@@ -32,7 +32,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun progressSuccess() {
+    fun `progress during successful fetch`() {
 
         whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
 
@@ -44,7 +44,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun progressFailure() {
+    fun `progress during failed fetch`() {
 
         whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
 
@@ -56,7 +56,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun empty() {
+    fun `empty state`() {
 
         whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
 
@@ -68,7 +68,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun notEmpty() {
+    fun `not empty state`() {
 
         whenever(dataService.projects()).then { Observable.just(listOf(Project(), Project())) }
 
@@ -81,7 +81,7 @@ class ProjectsViewModelTest {
 
 
     @Test
-    fun filterAll() {
+    fun `filters set to all`() {
 
         val project1 = Project()
         project1.platform = Project.PLATFORM_ANDROID
@@ -100,7 +100,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun filterAndroid() {
+    fun `filters only android`() {
 
         val project1 = Project()
         project1.platform = Project.PLATFORM_ANDROID
@@ -119,7 +119,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun filteriOS() {
+    fun `filters only iOS`() {
 
         val project1 = Project()
         project1.platform = Project.PLATFORM_ANDROID
@@ -138,7 +138,7 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun success() {
+    fun `successful fetch`() {
 
         val project1 = Project()
         val project2 = Project()
@@ -150,7 +150,7 @@ class ProjectsViewModelTest {
 
 
     @Test
-    fun failure() {
+    fun `failed fetch`() {
 
         whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
 

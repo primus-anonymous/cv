@@ -11,6 +11,4 @@ class ContactsResponse {
 
     @PropertyName("resources")
     var resources: HashMap<String, Map<String, String>> = hashMapOf()
-
-
 }

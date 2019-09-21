@@ -36,9 +36,12 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
             when (it.type) {
                 ContactType.EMAIL -> {
                     val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", it.value, null))
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject))
-                    startActivity(Intent.createChooser(emailIntent, getString(R.string.mail_chooser)))
+                            "mailto", it.value, null)).apply {
+                        putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject))
+                    }
+
+                    startActivity(Intent.createChooser(emailIntent,
+                            getString(R.string.mail_chooser)))
 
                     analyticsService.log(AnalyticsEvent.EMAIL_CLICKED)
                 }
@@ -82,7 +85,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
             vModel.progress.subscribe {
                 contactsProgress.visibleIf { it }
             }
-            vModel.contacts.subscribe {
+            vModel.contacts().subscribe {
                 adapter.swapData(it)
             }
         }

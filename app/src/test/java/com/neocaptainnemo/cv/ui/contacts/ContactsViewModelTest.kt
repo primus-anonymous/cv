@@ -31,32 +31,32 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun progressSuccess() {
+    fun `progress during successful fetch`() {
 
         whenever(dataService.contacts()).then { Observable.just(Contacts()) }
 
         val testable = viewModel.progress.test()
 
-        viewModel.contacts.test().assertNoErrors()
+        viewModel.contacts().test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
 
     @Test
-    fun progressFailure() {
+    fun `progress during failed fetch`() {
 
         whenever(dataService.contacts()).then { Observable.error<Contacts>(RuntimeException()) }
 
         val testable = viewModel.progress.test()
 
-        viewModel.contacts.test().assertNoErrors()
+        viewModel.contacts().test().assertNoErrors()
 
         testable.assertValues(false, true, false)
     }
 
 
     @Test
-    fun contactsSuccess() {
+    fun `successful fetch`() {
 
         val response = Contacts()
 
@@ -82,7 +82,7 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
-        viewModel.contacts.test().assertValue(listOf(
+        viewModel.contacts().test().assertValue(listOf(
                 ContactsHeader(pic, name, profession),
                 ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
                 ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
@@ -92,7 +92,7 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun contactsNoEmail() {
+    fun `contacts list with no email`() {
 
         val response = Contacts()
 
@@ -116,7 +116,7 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
-        viewModel.contacts.test().assertValue(listOf(
+        viewModel.contacts().test().assertValue(listOf(
                 ContactsHeader(pic, name, profession),
                 ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
                 ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github),
@@ -127,7 +127,7 @@ class ContactsViewModelTest {
 
 
     @Test
-    fun contactsNoPhone() {
+    fun `contacts list with no phone`() {
 
         val response = Contacts()
 
@@ -150,7 +150,7 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
-        viewModel.contacts.test().assertValue(listOf(
+        viewModel.contacts().test().assertValue(listOf(
                 ContactsHeader(pic, name, profession),
                 ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
                 ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github),
@@ -160,7 +160,7 @@ class ContactsViewModelTest {
 
 
     @Test
-    fun contactsNoCv() {
+    fun `contacts list with no cv`() {
 
         val response = Contacts()
 
@@ -183,7 +183,7 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
-        viewModel.contacts.test().assertValue(listOf(
+        viewModel.contacts().test().assertValue(listOf(
                 ContactsHeader(pic, name, profession),
                 ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
                 ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
@@ -192,7 +192,7 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun contactsNoGithub() {
+    fun `contacts list with no github`() {
 
         val response = Contacts()
 
@@ -215,7 +215,7 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
-        viewModel.contacts.test().assertValue(listOf(
+        viewModel.contacts().test().assertValue(listOf(
                 ContactsHeader(pic, name, profession),
                 ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
                 ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
@@ -224,10 +224,10 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun contactsError() {
+    fun `failed fetch`() {
 
         whenever(dataService.contacts()).then { Observable.error<List<ContactSection>>(RuntimeException()) }
 
-        viewModel.contacts.test().assertValue(listOf())
+        viewModel.contacts().test().assertValue(listOf())
     }
 }

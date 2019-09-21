@@ -51,7 +51,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.0.0"
     implementation "androidx.multidex:multidex:2.0.1"
 
-    implementation "com.google.firebase:firebase-database:19.0.0"
+    implementation "com.google.firebase:firebase-database:19.1.0"
     implementation "com.google.firebase:firebase-core:17.2.0"
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
@@ -72,7 +72,7 @@ dependencies {
     implementation "org.koin:koin-core:$koinVersion"
     implementation "org.koin:koin-android-viewmodel:$koinVersion"
 
-    def navVersion = "2.2.0-alpha02"
+    def navVersion = "2.2.0-alpha03"
 
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"

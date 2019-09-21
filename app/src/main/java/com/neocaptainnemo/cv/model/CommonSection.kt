@@ -22,5 +22,5 @@ data class CommonSection(
         @get: PropertyName("description_key")
         var descriptionKey: String? = null
 ) : AdapterItem {
-    override fun uniqueTag(): String = "CommonSection$titleKey"
+    override val uniqueTag: String = "CommonSection$titleKey"
 }
