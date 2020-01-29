@@ -36,11 +36,11 @@ class ContactsViewModel(private val dataService: IDataService) : ViewModel() {
                             sections.add(ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, it))
                         }
 
-                        it.gitHub?.let {
+                        it.github?.let {
                             sections.add(ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, it))
                         }
 
-                        it.cv?.let {
+                        it.cvUrl?.let {
                             sections.add(ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, it))
                         }
 

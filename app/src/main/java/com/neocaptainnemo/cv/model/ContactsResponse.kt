@@ -6,7 +6,7 @@ import com.google.firebase.database.PropertyName
 @IgnoreExtraProperties
 class ContactsResponse {
 
-    @PropertyName("projects")
+    @PropertyName("contacts")
     var contacts: Contacts? = null
 
     @PropertyName("resources")

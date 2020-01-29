@@ -77,8 +77,8 @@ class ContactsViewModelTest {
 
         response.email = email
         response.phone = phone
-        response.cv = cvUrl
-        response.gitHub = github
+        response.cvUrl = cvUrl
+        response.github = github
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
@@ -111,8 +111,8 @@ class ContactsViewModelTest {
         val github = "http://github/fdfsd"
 
         response.phone = phone
-        response.cv = cvUrl
-        response.gitHub = github
+        response.cvUrl = cvUrl
+        response.github = github
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
@@ -145,8 +145,8 @@ class ContactsViewModelTest {
         val github = "http://github/fdfsd"
 
         response.email = email
-        response.cv = cvUrl
-        response.gitHub = github
+        response.cvUrl = cvUrl
+        response.github = github
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
@@ -179,7 +179,7 @@ class ContactsViewModelTest {
 
         response.email = email
         response.phone = phone
-        response.gitHub = github
+        response.github = github
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 
@@ -211,7 +211,7 @@ class ContactsViewModelTest {
 
         response.email = email
         response.phone = phone
-        response.cv = cvUrl
+        response.cvUrl = cvUrl
 
         whenever(dataService.contacts()).then { Observable.just(response) }
 

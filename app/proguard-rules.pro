@@ -15,3 +15,28 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes Signature
+-keepattributes *Annotation*
+
+#Firebase
+-keepclassmembers class com.neocaptainnemo.cv.model.** {
+   *;
+}
+
+#Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep class * extends com.bumptech.glide.module.AppGlideModule {
+ <init>(...);
+}
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+#Nav Controller
+-keep class * extends androidx.fragment.app.Fragment{}
+-keep class com.neocaptainnemo.cv.model.Project
+
+#Share
+-keep class androidx.appcompat.widget.ShareActionProvider { *; }

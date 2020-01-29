@@ -18,7 +18,7 @@
         android:id="@+id/mainFragment"
         android:name="com.neocaptainnemo.cv.ui.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/projectDetailsAction"
             app:destination="@id/projectDetailsFragment" />

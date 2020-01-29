@@ -28,14 +28,12 @@ class MainFragment : BaseFragment(R.layout.fragment_main) {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val event = when (destination.id) {
+             when (destination.id) {
                 R.id.contactsFragment -> AnalyticsEvent.CONTACTS_CLICKED
                 R.id.projectsFragment -> AnalyticsEvent.PROJECTS_CLICKED
                 R.id.commonFragment -> AnalyticsEvent.COMMON_CLICKED
                 else -> null
-            }
-
-            event?.let {
+            }?.also {
                 analyticsService.log(it)
             }
         }

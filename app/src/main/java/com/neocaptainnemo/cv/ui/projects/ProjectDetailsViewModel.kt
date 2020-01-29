@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Project
-import com.neocaptainnemo.cv.spanned
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
-class ProjectDetailsViewModel(private val app: Application, private val project: Project) : AndroidViewModel(app) {
+class ProjectDetailsViewModel(
+        private val app: Application,
+        private val project: Project
+) : AndroidViewModel(app) {
 
     private val projectSubj = BehaviorSubject.createDefault(project)
 

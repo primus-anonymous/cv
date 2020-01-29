@@ -50,8 +50,8 @@ class ContactsTest {
                 Contacts(
                         phone = "+7 907 76 54",
                         email = "email@email.com",
-                        gitHub = "http://www.github.com",
-                        cv = "http://cv.url.com",
+                        github = "http://www.github.com",
+                        cvUrl = "http://cv.url.com",
                         name = "Master of Puppets",
                         profession = "Master"
                 )

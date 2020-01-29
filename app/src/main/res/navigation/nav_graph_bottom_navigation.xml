@@ -13,7 +13,7 @@
         android:id="@+id/projectsFragment"
         android:name="com.neocaptainnemo.cv.ui.projects.ProjectsFragment"
         android:label="@string/projects"
-        tools:layout="@layout/fragment_projects"/>
+        tools:layout="@layout/fragment_projects" />
     <fragment
         android:id="@+id/commonFragment"
         android:name="com.neocaptainnemo.cv.ui.common.CommonFragment"

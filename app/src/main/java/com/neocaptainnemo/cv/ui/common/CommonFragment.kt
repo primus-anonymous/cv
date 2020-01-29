@@ -8,7 +8,7 @@ import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_common.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class CommonFragment : BaseFragment(R.layout.fragment_common) {
@@ -33,10 +33,10 @@ class CommonFragment : BaseFragment(R.layout.fragment_common) {
 
         autoDispose {
             vModel.progress.subscribe {
-                commonsProgress.visibleIf { it }
+                commonsProgress?.visibleIf { it }
             }
             vModel.empty.subscribe {
-                commonsEmpty.visibleIf { it }
+                commonsEmpty?.visibleIf { it }
             }
             vModel.commons().subscribe {
                 adapter.swapData(it)

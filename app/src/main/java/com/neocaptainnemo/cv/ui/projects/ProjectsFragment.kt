@@ -17,7 +17,7 @@ import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_projects.*
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
 
@@ -104,10 +104,10 @@ class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
 
         autoDispose {
             vModel.progress.subscribe {
-                projectsProgress.visibleIf { it }
+                projectsProgress?.visibleIf { it }
             }
             vModel.empty.subscribe {
-                projectsEmpty.visibleIf { it }
+                projectsEmpty?.visibleIf { it }
             }
             vModel.projects.subscribe {
                 adapter.swapData(it)

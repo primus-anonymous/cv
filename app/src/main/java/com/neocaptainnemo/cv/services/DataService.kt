@@ -20,33 +20,27 @@ internal class DataService(private val localeService: ILocaleService) : IDataSer
 
                         val strings = it.resources[localeService.locale]
 
-                        it.projects.forEach { project ->
-                            project.name = strings?.get(project.nameKey)
-                            project.description = strings?.get(project.descriptionKey)
-                            project.duties = strings?.get(project.dutiesKey)
-
+                        it.projects.map { project ->
+                            project.apply {
+                                name = strings?.get(name)
+                                description = strings?.get(description)
+                                duties = strings?.get(duties)
+                            }
                         }
-
-                        it.projects
                     }
 
     override fun commons(): Observable<List<CommonSection>> =
             databaseRequest<CommonResponse>()
                     .map {
 
-                        if (it.common == null) {
-                            return@map listOf<CommonSection>()
-                        }
-
                         val strings = it.resources[localeService.locale]
 
-                        it.common?.sections?.forEach { section ->
-                            section.title = strings?.get(section.titleKey)
-                            section.description = strings?.get(section.descriptionKey)
-
-                        }
-
-                        it.common?.sections
+                        it.common?.sections?.map { section ->
+                            section.apply {
+                                title = strings?.get(title)
+                                description = strings?.get(description)
+                            }
+                        } ?: listOf()
                     }
 
     override fun contacts(): Observable<Contacts> =
@@ -55,13 +49,12 @@ internal class DataService(private val localeService: ILocaleService) : IDataSer
 
                         val strings = it.resources[localeService.locale]
 
-                        val contacts = it.contacts ?: return@map Contacts()
+                        return@map it.contacts?.apply {
+                            cvUrl = strings?.get(cvUrl)
+                            name = strings?.get(name)
+                            profession = strings?.get(profession)
 
-                        contacts.cv = strings?.get(contacts.cvKey)
-                        contacts.name = strings?.get(contacts.nameKey)
-                        contacts.profession = strings?.get(contacts.professionKey)
-
-                        return@map contacts
+                        } ?: Contacts()
 
                     }
 

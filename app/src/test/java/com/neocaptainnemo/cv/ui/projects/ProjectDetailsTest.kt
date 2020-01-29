@@ -29,7 +29,7 @@ class ProjectDetailsTest {
 
         whenever(app.getString(R.string.project)).thenReturn("Project")
 
-        val project = Project("Name")
+        val project = Project(name = "Name")
 
         viewModel = ProjectDetailsViewModel(app, project)
 
@@ -41,7 +41,7 @@ class ProjectDetailsTest {
 
         whenever(app.getString(R.string.project)).thenReturn("Project")
 
-        val project = Project("Name", storeUrl = "www.some.com")
+        val project = Project(name ="Name", storeUrl = "www.some.com")
 
         viewModel = ProjectDetailsViewModel(app, project)
 
@@ -54,7 +54,7 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).thenReturn("Project")
         whenever(app.getString(R.string.code)).thenReturn("Code")
 
-        val project = Project("Name", gitHub = "github.com")
+        val project = Project(name = "Name", gitHub = "github.com")
 
         viewModel = ProjectDetailsViewModel(app, project)
 
@@ -67,7 +67,7 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).thenReturn("Project")
         whenever(app.getString(R.string.code)).thenReturn("Code")
 
-        val project = Project("Name", storeUrl = "www.some.com", gitHub = "github.com")
+        val project = Project(name = "Name", storeUrl = "www.some.com", gitHub = "github.com")
 
         viewModel = ProjectDetailsViewModel(app, project)
 

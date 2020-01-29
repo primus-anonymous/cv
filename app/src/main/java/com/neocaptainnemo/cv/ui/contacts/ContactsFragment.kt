@@ -12,7 +12,7 @@ import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 
@@ -83,7 +83,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 
         autoDispose {
             vModel.progress.subscribe {
-                contactsProgress.visibleIf { it }
+                contactsProgress?.visibleIf { it }
             }
             vModel.contacts().subscribe {
                 adapter.swapData(it)

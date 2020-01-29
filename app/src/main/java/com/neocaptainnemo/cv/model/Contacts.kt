@@ -1,15 +1,17 @@
 package com.neocaptainnemo.cv.model
 
+import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
 
+@IgnoreExtraProperties
 data class Contacts(
 
-        @get: PropertyName("name")
-        @set: PropertyName("name")
+        @get: PropertyName("name_key")
+        @set: PropertyName("name_key")
         var name: String? = null,
 
-        @get: PropertyName("profession")
-        @set: PropertyName("profession")
+        @get: PropertyName("profession_key")
+        @set: PropertyName("profession_key")
         var profession: String? = null,
 
         @get: PropertyName("phone")
@@ -22,11 +24,7 @@ data class Contacts(
 
         @get: PropertyName("github")
         @set: PropertyName("github")
-        var gitHub: String? = null,
-
-        @get: PropertyName("cv_url")
-        @set: PropertyName("cv_url")
-        var cv: String? = null,
+        var github: String? = null,
 
         @get: PropertyName("pic_url")
         @set: PropertyName("pic_url")
@@ -34,13 +32,5 @@ data class Contacts(
 
         @get: PropertyName("cv_url_key")
         @set: PropertyName("cv_url_key")
-        var cvKey: String? = null,
-
-        @get: PropertyName("name_key")
-        @set: PropertyName("name_key")
-        var nameKey: String? = null,
-
-        @get: PropertyName("profession_key")
-        @set: PropertyName("profession_key")
-        var professionKey: String? = null
+        var cvUrl: String? = null
 )

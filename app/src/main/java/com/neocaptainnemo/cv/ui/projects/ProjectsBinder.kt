@@ -30,12 +30,12 @@ class ProjectsBinder : AdapterBinder<Project>() {
                     .load(item.webPic)
                     .into(image)
 
-            if (item.platform == Project.PLATFORM_ANDROID) {
-                itemPlatform.setImageResource(R.drawable.ic_android)
-            }
-
-            if (item.platform == Project.PLATFORM_IOS) {
-                itemPlatform.setImageResource(R.drawable.ic_apple)
+            when(item.platform) {
+                Project.PLATFORM_ANDROID -> R.drawable.ic_android
+                Project.PLATFORM_IOS -> R.drawable.ic_apple
+                else -> null
+            }?.also {
+                itemPlatform.setImageResource(it)
             }
         }
     }

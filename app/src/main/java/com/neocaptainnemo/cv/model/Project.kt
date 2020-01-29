@@ -3,12 +3,11 @@ package com.neocaptainnemo.cv.model
 import android.os.Parcelable
 import com.google.firebase.database.PropertyName
 import com.neocaptainnemo.cv.ui.adapter.AdapterItem
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Project(
-        var name: String? = null,
-        var description: String? = null,
         @get: PropertyName("web_pic")
         @set: PropertyName("web_pic")
         var webPic: String? = null,
@@ -24,7 +23,6 @@ data class Project(
         @get: PropertyName("stack")
         @set: PropertyName("stack")
         var stack: String? = null,
-        var duties: String? = null,
         @get: PropertyName("store_url")
         @set: PropertyName("store_url")
         var storeUrl: String? = null,
@@ -33,16 +31,17 @@ data class Project(
         var gitHub: String? = null,
         @get: PropertyName("description_key")
         @set: PropertyName("description_key")
-        var descriptionKey: String? = null,
+        var description: String? = null,
         @get: PropertyName("duties_key")
         @set: PropertyName("duties_key")
-        var dutiesKey: String? = null,
+        var duties: String? = null,
         @get: PropertyName("name_key")
         @set: PropertyName("name_key")
-        var nameKey: String? = null
+        var name: String? = null
 ) : Parcelable, AdapterItem {
 
-    override val uniqueTag: String = "Project$nameKey"
+    @IgnoredOnParcel
+    override val uniqueTag: String = "Project$name"
 
 
     companion object {
