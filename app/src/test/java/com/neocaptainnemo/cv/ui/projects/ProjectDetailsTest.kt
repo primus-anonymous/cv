@@ -1,10 +1,16 @@
 package com.neocaptainnemo.cv.ui.projects
 
 import android.app.Application
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.RxTestRule
 import com.neocaptainnemo.cv.model.Project
-import com.nhaarman.mockito_kotlin.whenever
+import com.neocaptainnemo.cv.ui.TestCoroutineRule
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -12,6 +18,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ProjectDetailsTest {
 
@@ -20,14 +27,16 @@ class ProjectDetailsTest {
 
     lateinit var viewModel: ProjectDetailsViewModel
 
-    @JvmField
-    @Rule
-    val rxTestRule = RxTestRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = TestCoroutineRule()
 
     @Test
     fun `testing share url with only name`() {
 
-        whenever(app.getString(R.string.project)).thenReturn("Project")
+        whenever(app.getString(R.string.project)).doAnswer { "Project" }
 
         val project = Project(name = "Name")
 
@@ -39,9 +48,9 @@ class ProjectDetailsTest {
     @Test
     fun `testing share url with store url`() {
 
-        whenever(app.getString(R.string.project)).thenReturn("Project")
+        whenever(app.getString(R.string.project)).doAnswer { "Project" }
 
-        val project = Project(name ="Name", storeUrl = "www.some.com")
+        val project = Project(name = "Name", storeUrl = "www.some.com")
 
         viewModel = ProjectDetailsViewModel(app, project)
 
@@ -51,8 +60,8 @@ class ProjectDetailsTest {
     @Test
     fun `testing share url with github url`() {
 
-        whenever(app.getString(R.string.project)).thenReturn("Project")
-        whenever(app.getString(R.string.code)).thenReturn("Code")
+        whenever(app.getString(R.string.project)).doAnswer { "Project" }
+        whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
         val project = Project(name = "Name", gitHub = "github.com")
 
@@ -64,8 +73,8 @@ class ProjectDetailsTest {
     @Test
     fun `testing share url with store and github url`() {
 
-        whenever(app.getString(R.string.project)).thenReturn("Project")
-        whenever(app.getString(R.string.code)).thenReturn("Code")
+        whenever(app.getString(R.string.project)).doAnswer { "Project" }
+        whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
         val project = Project(name = "Name", storeUrl = "www.some.com", gitHub = "github.com")
 
@@ -81,7 +90,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.storeVisibility.test().assertValue(true)
+        val visibilityMock = mock<Observer<Boolean>>()
+        viewModel.storeVisibility.observeForever(visibilityMock)
+
+        verify(visibilityMock).onChanged(true)
 
     }
 
@@ -92,7 +104,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.storeVisibility.test().assertValue(false)
+        val visibilityMock = mock<Observer<Boolean>>()
+        viewModel.storeVisibility.observeForever(visibilityMock)
+
+        verify(visibilityMock).onChanged(false)
 
     }
 
@@ -103,7 +118,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.gitHubVisibility.test().assertValue(true)
+        val visibilityMock = mock<Observer<Boolean>>()
+        viewModel.gitHubVisibility.observeForever(visibilityMock)
+
+        verify(visibilityMock).onChanged(true)
 
     }
 
@@ -114,7 +132,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.gitHubVisibility.test().assertValue(false)
+        val visibilityMock = mock<Observer<Boolean>>()
+        viewModel.gitHubVisibility.observeForever(visibilityMock)
+
+        verify(visibilityMock).onChanged(false)
 
     }
 
@@ -125,7 +146,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.platformImage.test().assertValue(R.drawable.ic_android)
+        val imageMock = mock<Observer<Int>>()
+        viewModel.platformImage.observeForever(imageMock)
+
+        verify(imageMock).onChanged(R.drawable.ic_android)
     }
 
     @Test
@@ -135,7 +159,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.platformImage.test().assertValue(R.drawable.ic_apple)
+        val imageMock = mock<Observer<Int>>()
+        viewModel.platformImage.observeForever(imageMock)
+
+        verify(imageMock).onChanged(R.drawable.ic_apple)
     }
 
     @Test
@@ -145,7 +172,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.webPic.test().assertValue("picurl")
+        val picMock = mock<Observer<String>>()
+        viewModel.webPic.observeForever(picMock)
+
+        verify(picMock).onChanged("picurl")
     }
 
     @Test
@@ -155,7 +185,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.coverPic.test().assertValue("coverpic")
+        val picMock = mock<Observer<String>>()
+        viewModel.coverPic.observeForever(picMock)
+
+        verify(picMock).onChanged("coverpic")
     }
 
     @Test
@@ -165,7 +198,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.projectName.test().assertValue("name")
+        val nameMock = mock<Observer<String>>()
+        viewModel.projectName.observeForever(nameMock)
+
+        verify(nameMock).onChanged("name")
     }
 
     @Test
@@ -175,7 +211,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.stack.test().assertValue("stack")
+        val stackMock = mock<Observer<String>>()
+        viewModel.stack.observeForever(stackMock)
+
+        verify(stackMock).onChanged("stack")
     }
 
     @Test
@@ -185,7 +224,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.company.test().assertValue("company")
+        val companyMock = mock<Observer<String>>()
+        viewModel.company.observeForever(companyMock)
+
+        verify(companyMock).onChanged("company")
     }
 
     @Test
@@ -195,7 +237,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.duties.test().assertValue("duties")
+        val dutiesMock = mock<Observer<String>>()
+        viewModel.duties.observeForever(dutiesMock)
+
+        verify(dutiesMock).onChanged("duties")
     }
 
     @Test
@@ -205,7 +250,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.detailsDescription.test().assertValue("description")
+        val detailsMock = mock<Observer<String>>()
+        viewModel.detailsDescription.observeForever(detailsMock)
+
+        verify(detailsMock).onChanged("description")
     }
 
     @Test
@@ -215,7 +263,10 @@ class ProjectDetailsTest {
 
         viewModel = ProjectDetailsViewModel(app, project)
 
-        viewModel.sourceCode.test().assertValue("githuburl")
+        val sourceCodeMock = mock<Observer<String>>()
+        viewModel.sourceCode.observeForever(sourceCodeMock)
+
+        verify(sourceCodeMock).onChanged("githuburl")
     }
 }
 

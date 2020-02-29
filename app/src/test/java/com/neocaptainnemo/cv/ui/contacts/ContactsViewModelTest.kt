@@ -1,11 +1,16 @@
 package com.neocaptainnemo.cv.ui.contacts
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.RxTestRule
 import com.neocaptainnemo.cv.model.Contacts
 import com.neocaptainnemo.cv.services.IDataService
-import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Observable
+import com.neocaptainnemo.cv.ui.TestCoroutineRule
+import com.neocaptainnemo.cv.ui.adapter.AdapterItem
+import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -13,12 +18,16 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ContactsViewModelTest {
 
-    @JvmField
-    @Rule
-    val rxTestRule = RxTestRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = TestCoroutineRule()
 
     @Mock
     lateinit var dataService: IDataService
@@ -33,95 +42,115 @@ class ContactsViewModelTest {
     @Test
     fun `progress during successful fetch`() {
 
-        whenever(dataService.contacts()).then { Observable.just(Contacts()) }
+        whenever(dataService.contacts()).doAnswer { flowOf(Contacts()) }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        viewModel.contacts().test().assertNoErrors()
+        viewModel.progress.observeForever(progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.contacts().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
     @Test
     fun `progress during failed fetch`() {
 
-        whenever(dataService.contacts()).then { Observable.error<Contacts>(RuntimeException()) }
+        whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        viewModel.contacts().test().assertNoErrors()
+        viewModel.progress.observeForever(progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.contacts().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
 
     @Test
     fun `successful fetch`() {
 
-        val response = Contacts()
+        val professionValue = "professsion"
 
-        val profession = "professsion"
-        response.profession = profession
+        val nameValue = "name"
 
-        val name = "name"
-        response.name = name
+        val picValue = "http://userpicimage"
 
-        val pic = "http://userpicimage"
-        response.userPic = pic
+        val emailValue = "email@email.com"
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
 
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+            github = githubValue
+        }
 
-        val email = "email@email.com"
-        val phone = "89032345678"
-        val cvUrl = "http://www.fdfs.fsdfsd/pdf"
-        val github = "http://github/fdfsd"
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        response.email = email
-        response.phone = phone
-        response.cvUrl = cvUrl
-        response.github = github
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
 
-        whenever(dataService.contacts()).then { Observable.just(response) }
+        viewModel.contacts().observeForever(contactsObserver)
 
-        viewModel.contacts().test().assertValue(listOf(
-                ContactsHeader(pic, name, profession),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrl)
-        ))
+        val expected = listOf(
+                ContactsHeader(picValue, nameValue, professionValue),
+                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
+                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
+                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
+                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+        )
+
+        verify(contactsObserver).onChanged(expected)
     }
 
     @Test
     fun `contacts list with no email`() {
 
-        val response = Contacts()
+        val professionValue = "professsion"
 
-        val profession = "professsion"
-        response.profession = profession
+        val nameValue = "name"
 
-        val name = "name"
-        response.name = name
+        val picValue = "http://userpicimage"
 
-        val pic = "http://userpicimage"
-        response.userPic = pic
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
 
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+            github = githubValue
+        }
 
-        val phone = "89032345678"
-        val cvUrl = "http://www.fdfs.fsdfsd/pdf"
-        val github = "http://github/fdfsd"
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        response.phone = phone
-        response.cvUrl = cvUrl
-        response.github = github
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
 
-        whenever(dataService.contacts()).then { Observable.just(response) }
+        viewModel.contacts().observeForever(contactsObserver)
 
-        viewModel.contacts().test().assertValue(listOf(
-                ContactsHeader(pic, name, profession),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrl)
-        ))
+        val expected = listOf(
+                ContactsHeader(picValue, nameValue, professionValue),
+                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
+                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
+                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+        )
+
+        verify(contactsObserver).onChanged(expected)
 
     }
 
@@ -129,105 +158,127 @@ class ContactsViewModelTest {
     @Test
     fun `contacts list with no phone`() {
 
-        val response = Contacts()
+        val professionValue = "professsion"
 
-        val profession = "professsion"
-        response.profession = profession
+        val nameValue = "name"
 
-        val name = "name"
-        response.name = name
+        val picValue = "http://userpicimage"
 
-        val pic = "http://userpicimage"
-        response.userPic = pic
+        val emailValue = "email@email.com"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
 
-        val email = "email@email.com"
-        val cvUrl = "http://www.fdfs.fsdfsd/pdf"
-        val github = "http://github/fdfsd"
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            cvUrl = cvUrlValue
+            github = githubValue
+        }
 
-        response.email = email
-        response.cvUrl = cvUrl
-        response.github = github
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        whenever(dataService.contacts()).then { Observable.just(response) }
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
 
-        viewModel.contacts().test().assertValue(listOf(
-                ContactsHeader(pic, name, profession),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrl)
-        ))
+        viewModel.contacts().observeForever(contactsObserver)
+
+        val expected = listOf(
+                ContactsHeader(picValue, nameValue, professionValue),
+                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
+                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
+                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+        )
+
+        verify(contactsObserver).onChanged(expected)
     }
 
 
     @Test
     fun `contacts list with no cv`() {
+        val professionValue = "professsion"
 
-        val response = Contacts()
+        val nameValue = "name"
 
-        val profession = "professsion"
-        response.profession = profession
+        val picValue = "http://userpicimage"
 
-        val name = "name"
-        response.name = name
+        val emailValue = "email@email.com"
+        val phoneValue = "89032345678"
+        val githubValue = "http://github/fdfsd"
 
-        val pic = "http://userpicimage"
-        response.userPic = pic
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            phone = phoneValue
+            github = githubValue
+        }
 
-        val email = "email@email.com"
-        val phone = "89032345678"
-        val github = "http://github/fdfsd"
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        response.email = email
-        response.phone = phone
-        response.github = github
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
 
-        whenever(dataService.contacts()).then { Observable.just(response) }
+        viewModel.contacts().observeForever(contactsObserver)
 
-        viewModel.contacts().test().assertValue(listOf(
-                ContactsHeader(pic, name, profession),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, github)
-        ))
+        val expected = listOf(
+                ContactsHeader(picValue, nameValue, professionValue),
+                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
+                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
+                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue)
+        )
+
+        verify(contactsObserver).onChanged(expected)
+
     }
 
     @Test
     fun `contacts list with no github`() {
+        val professionValue = "professsion"
 
-        val response = Contacts()
+        val nameValue = "name"
 
-        val profession = "professsion"
-        response.profession = profession
+        val picValue = "http://userpicimage"
 
-        val name = "name"
-        response.name = name
+        val emailValue = "email@email.com"
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
 
-        val pic = "http://userpicimage"
-        response.userPic = pic
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+        }
 
-        val email = "email@email.com"
-        val phone = "89032345678"
-        val cvUrl = "http://www.fdfs.fsdfsd/pdf"
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        response.email = email
-        response.phone = phone
-        response.cvUrl = cvUrl
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
 
-        whenever(dataService.contacts()).then { Observable.just(response) }
+        viewModel.contacts().observeForever(contactsObserver)
 
-        viewModel.contacts().test().assertValue(listOf(
-                ContactsHeader(pic, name, profession),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phone),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, email),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrl)
-        ))
+        val expected = listOf(
+                ContactsHeader(picValue, nameValue, professionValue),
+                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
+                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
+                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+        )
+
+        verify(contactsObserver).onChanged(expected)
+
     }
 
     @Test
     fun `failed fetch`() {
 
-        whenever(dataService.contacts()).then { Observable.error<List<ContactSection>>(RuntimeException()) }
+        whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
 
-        viewModel.contacts().test().assertValue(listOf())
+        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+
+        viewModel.contacts().observeForever(contactsObserver)
+
+        verify(contactsObserver).onChanged(listOf())
     }
 }

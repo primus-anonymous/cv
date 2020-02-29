@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.extensions.LayoutContainer
 import java.util.*
 
 interface AdapterItem {
@@ -47,4 +48,4 @@ class DiffAdapter(private val binders: List<AdapterBinder<*>>) : RecyclerView.Ad
     override fun getItemViewType(position: Int): Int = binders.find { it.shouldIProcess(data[position]) }!!.layout
 }
 
-class DiffViewHolder(root: View) : RecyclerView.ViewHolder(root)
+class DiffViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer

@@ -1,10 +1,14 @@
 package com.neocaptainnemo.cv.ui.common
 
-import com.neocaptainnemo.cv.RxTestRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.model.CommonSection
 import com.neocaptainnemo.cv.services.IDataService
-import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Observable
+import com.neocaptainnemo.cv.ui.TestCoroutineRule
+import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -12,12 +16,16 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class CommonViewModelTest {
 
-    @JvmField
-    @Rule
-    val rxTestRule = RxTestRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = TestCoroutineRule()
 
     @Mock
     lateinit var dataService: IDataService
@@ -33,50 +41,63 @@ class CommonViewModelTest {
     @Test
     fun `progress during successful fetch`() {
 
-        whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
+        whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        viewModel.progress.observeForever(progressObserver)
 
-        viewModel.commons().test().assertNoErrors()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.commons().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
 
     @Test
     fun `progress during failed fetch`() {
 
-        whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
+        whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        viewModel.progress.observeForever(progressObserver)
 
-        viewModel.commons().test().assertNoErrors()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.commons().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
     @Test
     fun `empty state`() {
-        whenever(dataService.commons()).then { Observable.just(listOf<CommonSection>()) }
+        whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
 
-        val testable = viewModel.empty.test()
+        val emptyObserver = mock<Observer<Boolean>>()
+        viewModel.empty.observeForever(emptyObserver)
 
-        viewModel.commons().test().assertNoErrors()
+        val order = inOrder(emptyObserver, emptyObserver)
 
-        testable.assertValues(false, true)
+        viewModel.commons().observeForever { }
 
+        order.verify(emptyObserver).onChanged(false)
+        order.verify(emptyObserver).onChanged(true)
     }
 
     @Test
     fun `not empty state`() {
-        whenever(dataService.commons()).then { Observable.just(listOf(CommonSection(), CommonSection())) }
+        whenever(dataService.commons()).doAnswer { flowOf(listOf(CommonSection(), CommonSection())) }
 
-        val testable = viewModel.empty.test()
+        val emptyObserver = mock<Observer<Boolean>>()
+        viewModel.empty.observeForever(emptyObserver)
 
-        viewModel.commons().test().assertNoErrors()
+        viewModel.commons().observeForever { }
 
-        testable.assertValues(false, false)
-
+        verify(emptyObserver, times(2)).onChanged(false)
     }
 
     @Test
@@ -85,18 +106,25 @@ class CommonViewModelTest {
         val commonSection1 = CommonSection()
         val commonSection2 = CommonSection()
 
-        whenever(dataService.commons()).then { Observable.just(listOf(commonSection1, commonSection2)) }
+        whenever(dataService.commons()).doAnswer { flowOf(listOf(commonSection1, commonSection2)) }
 
-        viewModel.commons().test().assertValue(listOf(commonSection1, commonSection2))
+        val sectionsObserver = mock<Observer<List<CommonSection>>>()
+
+        viewModel.commons().observeForever(sectionsObserver)
+
+        verify(sectionsObserver).onChanged(listOf(commonSection1, commonSection2))
     }
 
 
     @Test
     fun `failed fetch`() {
 
-        whenever(dataService.commons()).then { Observable.error<List<CommonSection>>(RuntimeException()) }
+        whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
 
-        viewModel.commons().test().assertValue(listOf())
+        val sectionsObserver = mock<Observer<List<CommonSection>>>()
+
+        viewModel.commons().observeForever(sectionsObserver)
+
+        verify(sectionsObserver).onChanged(listOf())
     }
-
 }

@@ -3,6 +3,8 @@ package com.neocaptainnemo.cv.ui.projects
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,15 +13,16 @@ import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.neocaptainnemo.cv.services.IAnalyticsService
-import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.MainFragmentDirections
 import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_projects.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
+@ExperimentalCoroutinesApi
+class ProjectsFragment : Fragment(R.layout.fragment_projects) {
 
     private val projectBinder = ProjectsBinder()
 
@@ -96,22 +99,17 @@ class ProjectsFragment : BaseFragment(R.layout.fragment_projects) {
                 true
             }
         }
-    }
 
+        vModel.projects().observe(viewLifecycleOwner) {
+            adapter.swapData(it)
+        }
 
-    override fun onStart() {
-        super.onStart()
+        vModel.empty.observe(viewLifecycleOwner) {
+            projectsEmpty.visibleIf { it }
+        }
 
-        autoDispose {
-            vModel.progress.subscribe {
-                projectsProgress?.visibleIf { it }
-            }
-            vModel.empty.subscribe {
-                projectsEmpty?.visibleIf { it }
-            }
-            vModel.projects.subscribe {
-                adapter.swapData(it)
-            }
+        vModel.progress.observe(viewLifecycleOwner) {
+            projectsProgress.visibleIf { it }
         }
     }
 

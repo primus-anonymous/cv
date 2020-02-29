@@ -4,17 +4,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.neocaptainnemo.cv.services.IAnalyticsService
-import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
+class ContactsFragment : Fragment(R.layout.fragment_contacts) {
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -76,18 +77,13 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
         super.onViewCreated(view, savedInstanceState)
 
         contactsList.adapter = adapter
-    }
 
-    override fun onStart() {
-        super.onStart()
+        vModel.contacts().observe(viewLifecycleOwner) {
+            adapter.swapData(it)
+        }
 
-        autoDispose {
-            vModel.progress.subscribe {
-                contactsProgress?.visibleIf { it }
-            }
-            vModel.contacts().subscribe {
-                adapter.swapData(it)
-            }
+        vModel.progress.observe(viewLifecycleOwner) {
+            contactsProgress.visibleIf { it }
         }
     }
 }

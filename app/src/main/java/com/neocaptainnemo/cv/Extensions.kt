@@ -5,7 +5,7 @@ import android.text.Html
 import android.text.Spanned
 import android.view.View
 import androidx.core.widget.NestedScrollView
-import io.reactivex.Observable
+import androidx.lifecycle.LiveData
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -26,11 +26,25 @@ val String?.spanned: Spanned
         Html.fromHtml(this)
     }
 
-data class Scrollevent(val scrollX: Int, val scrollY: Int, val oldScrollX: Int, val oldScrollY: Int)
+data class Scrollevent(
+        val scrollX: Int,
+        val scrollY: Int,
+        val oldScrollX: Int,
+        val oldScrollY: Int
+)
+fun NestedScrollView.scrollChangeLiveData() = object : LiveData<Scrollevent>() {
 
-fun NestedScrollView.scrollChangeObservable() = Observable.create<Scrollevent> {
+    override fun onActive() {
+        super.onActive()
+        setOnScrollChangeListener { _: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            value = Scrollevent(scrollX, scrollY, oldScrollX, oldScrollY)
+        }
+    }
 
-    setOnScrollChangeListener { _: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-        it.onNext(Scrollevent(scrollX, scrollY, oldScrollX, oldScrollY))
+    override fun onInactive() {
+        super.onInactive()
+
+        val listener: NestedScrollView.OnScrollChangeListener? = null
+        setOnScrollChangeListener(listener)
     }
 }

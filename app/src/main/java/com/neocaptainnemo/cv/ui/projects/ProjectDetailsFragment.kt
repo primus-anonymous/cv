@@ -10,6 +10,11 @@ import android.view.View
 import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.observe
+import androidx.lifecycle.switchMap
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
@@ -17,20 +22,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.scrollChangeObservable
+import com.neocaptainnemo.cv.scrollChangeLiveData
 import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.neocaptainnemo.cv.services.IAnalyticsService
 import com.neocaptainnemo.cv.spanned
-import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.visibleIf
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_project_details.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
-class ProjectDetailsFragment : BaseFragment(R.layout.fragment_project_details) {
+class ProjectDetailsFragment : Fragment(R.layout.fragment_project_details) {
 
     private val analyticsService: IAnalyticsService by inject()
 
@@ -83,6 +86,72 @@ class ProjectDetailsFragment : BaseFragment(R.layout.fragment_project_details) {
 
         collapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
 
+
+        viewModel.storeVisibility.observe(viewLifecycleOwner) {
+            store.visibleIf { it }
+        }
+
+        viewModel.gitHubVisibility.observe(viewLifecycleOwner) {
+            sourceCode.visibleIf { it }
+            sourceCodeTitle.visibleIf { it }
+        }
+
+        viewModel.platformImage.observe(viewLifecycleOwner) {
+            platform.setImageResource(it)
+        }
+
+        viewModel.webPic.observe(viewLifecycleOwner) {
+            val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
+
+            Glide.with(this)
+                    .applyDefaultRequestOptions(requestOption)
+                    .load(it)
+                    .into(projImage)
+        }
+
+        viewModel.coverPic.observe(viewLifecycleOwner) {
+            val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
+
+            Glide.with(this)
+                    .applyDefaultRequestOptions(requestOption)
+                    .load(it)
+                    .into(logo)
+        }
+
+        viewModel.projectName.observe(viewLifecycleOwner) {
+            projTitle.text = it
+        }
+
+        viewModel.stack.observe(viewLifecycleOwner) {
+            stack.text = it.spanned
+        }
+
+        viewModel.company.observe(viewLifecycleOwner) {
+            company.text = it
+        }
+
+        viewModel.duties.observe(viewLifecycleOwner) {
+            duties.text = it.spanned
+        }
+
+        viewModel.detailsDescription.observe(viewLifecycleOwner) {
+            detailsDescription.text = it.spanned
+        }
+
+        viewModel.sourceCode.observe(viewLifecycleOwner) {
+            sourceCode.text = it
+        }
+
+        nestedScroll.scrollChangeLiveData().map {
+            val scrollBounds = Rect()
+            nestedScroll.getHitRect(scrollBounds)
+            projTitle.getLocalVisibleRect(scrollBounds)
+        }.switchMap {
+            if (it) MutableLiveData("") else viewModel.projectName
+        }.observe(viewLifecycleOwner) {
+            collapsingToolbar.title = it
+        }
+
         sourceCode.setOnClickListener {
 
             analyticsService.log(AnalyticsEvent.PROJECT_CODE_CLICKED)
@@ -109,78 +178,6 @@ class ProjectDetailsFragment : BaseFragment(R.layout.fragment_project_details) {
                 Snackbar
                         .make(coordinatorLayout, R.string.cant_help_it, Snackbar.LENGTH_LONG).show()
 
-            }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        autoDispose {
-
-            viewModel.storeVisibility.subscribe {
-                store.visibleIf { it }
-            }
-
-            viewModel.gitHubVisibility.subscribe {
-                sourceCode.visibleIf { it }
-                sourceCodeTitle.visibleIf { it }
-            }
-
-            viewModel.platformImage.subscribe {
-                platform.setImageResource(it)
-            }
-
-            viewModel.webPic.subscribe {
-                val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
-
-                Glide.with(this)
-                        .applyDefaultRequestOptions(requestOption)
-                        .load(it)
-                        .into(projImage)
-            }
-
-            viewModel.coverPic.subscribe {
-                val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
-
-                Glide.with(this)
-                        .applyDefaultRequestOptions(requestOption)
-                        .load(it)
-                        .into(logo)
-            }
-
-            viewModel.projectName.subscribe {
-                projTitle.text = it
-            }
-
-            viewModel.stack.subscribe {
-                stack.text = it.spanned
-            }
-
-            viewModel.company.subscribe {
-                company.text = it
-            }
-
-            viewModel.duties.subscribe {
-                duties.text = it.spanned
-            }
-
-            viewModel.detailsDescription.subscribe {
-                detailsDescription.text = it.spanned
-            }
-
-            viewModel.sourceCode.subscribe {
-                sourceCode.text = it
-            }
-
-            nestedScroll.scrollChangeObservable().map {
-                val scrollBounds = Rect()
-                nestedScroll.getHitRect(scrollBounds)
-                projTitle.getLocalVisibleRect(scrollBounds)
-            }.flatMap {
-                if (it) Observable.just("") else viewModel.projectName
-            }.subscribe {
-                collapsingToolbar.title = it
             }
         }
     }

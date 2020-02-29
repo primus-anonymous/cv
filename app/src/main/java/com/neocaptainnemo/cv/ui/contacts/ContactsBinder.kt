@@ -18,7 +18,7 @@ class ContactsBinder : AdapterBinder<ContactSection>() {
 
 
     override fun bindItem(item: ContactSection, holder: DiffViewHolder) {
-        with(holder.itemView) {
+        with(holder.containerView) {
             contactTitle.setText(item.title)
             contactDescription.setText(item.subTitle)
             contactIcon.setImageResource(item.img)
@@ -39,7 +39,7 @@ class ContactsHeaderBinder : AdapterBinder<ContactsHeader>() {
     override fun bindItem(item: ContactsHeader, holder: DiffViewHolder) {
         val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
 
-        with(holder.itemView) {
+        with(holder.containerView) {
             Glide.with(profilePicture)
                     .load(item.image)
                     .apply(requestOption)

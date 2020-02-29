@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_section.view.*
 class CommonBinder : AdapterBinder<CommonSection>() {
 
     override fun bindItem(item: CommonSection, holder: DiffViewHolder) {
-        with(holder.itemView) {
+        with(holder.containerView) {
             commonTitle.text = item.title
             commonDescription.text = item.description.spanned
         }

@@ -2,16 +2,17 @@ package com.neocaptainnemo.cv.ui.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.ui.BaseFragment
 import com.neocaptainnemo.cv.ui.adapter.DiffAdapter
 import com.neocaptainnemo.cv.visibleIf
 import kotlinx.android.synthetic.main.fragment_common.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class CommonFragment : BaseFragment(R.layout.fragment_common) {
+class CommonFragment : Fragment(R.layout.fragment_common) {
 
     private val adapter: DiffAdapter = DiffAdapter(
             listOf(CommonBinder())
@@ -26,21 +27,17 @@ class CommonFragment : BaseFragment(R.layout.fragment_common) {
             layoutManager = LinearLayoutManager(context)
             adapter = this@CommonFragment.adapter
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
+        vModel.commons().observe(viewLifecycleOwner) {
+            adapter.swapData(it)
+        }
 
-        autoDispose {
-            vModel.progress.subscribe {
-                commonsProgress?.visibleIf { it }
-            }
-            vModel.empty.subscribe {
-                commonsEmpty?.visibleIf { it }
-            }
-            vModel.commons().subscribe {
-                adapter.swapData(it)
-            }
+        vModel.empty.observe(viewLifecycleOwner) {
+            commonsEmpty.visibleIf { it }
+        }
+
+        vModel.progress.observe(viewLifecycleOwner) {
+            commonsProgress.visibleIf { it }
         }
     }
 }

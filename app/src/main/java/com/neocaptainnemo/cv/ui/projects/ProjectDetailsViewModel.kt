@@ -2,17 +2,18 @@ package com.neocaptainnemo.cv.ui.projects
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Project
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 
 class ProjectDetailsViewModel(
         private val app: Application,
         private val project: Project
 ) : AndroidViewModel(app) {
 
-    private val projectSubj = BehaviorSubject.createDefault(project)
+    private val projectLiveData = MutableLiveData(project)
 
     val shareUrl: String
         get() =
@@ -41,11 +42,11 @@ class ProjectDetailsViewModel(
     val storeUrl: String?
         get() = project.storeUrl
 
-    val storeVisibility: Observable<Boolean> = projectSubj.map { it.storeUrl.isNullOrBlank().not() }
+    val storeVisibility: LiveData<Boolean> = projectLiveData.map { it.storeUrl.isNullOrBlank().not() }
 
-    val gitHubVisibility: Observable<Boolean> = projectSubj.map { it.gitHub.isNullOrBlank().not() }
+    val gitHubVisibility: LiveData<Boolean> = projectLiveData.map { it.gitHub.isNullOrBlank().not() }
 
-    val platformImage: Observable<Int> = projectSubj.map {
+    val platformImage: LiveData<Int> = projectLiveData.map {
         if (project.platform == Project.PLATFORM_ANDROID) {
             R.drawable.ic_android
         } else {
@@ -53,20 +54,20 @@ class ProjectDetailsViewModel(
         }
     }
 
-    val webPic: Observable<String> = projectSubj.map { it.webPic.orEmpty() }
+    val webPic: LiveData<String> = projectLiveData.map { it.webPic.orEmpty() }
 
-    val coverPic: Observable<String> = projectSubj.map { it.coverPic.orEmpty() }
+    val coverPic: LiveData<String> = projectLiveData.map { it.coverPic.orEmpty() }
 
-    val projectName: Observable<String> = projectSubj.map { it.name.orEmpty() }
+    val projectName: LiveData<String> = projectLiveData.map { it.name.orEmpty() }
 
-    val stack: Observable<String> = projectSubj.map { it.stack.orEmpty() }
+    val stack: LiveData<String> = projectLiveData.map { it.stack.orEmpty() }
 
-    val company: Observable<String> = projectSubj.map { it.vendor.orEmpty() }
+    val company: LiveData<String> = projectLiveData.map { it.vendor.orEmpty() }
 
-    val duties: Observable<String> = projectSubj.map { it.duties.orEmpty() }
+    val duties: LiveData<String> = projectLiveData.map { it.duties.orEmpty() }
 
-    val detailsDescription: Observable<String> = projectSubj.map { it.description.orEmpty() }
+    val detailsDescription: LiveData<String> = projectLiveData.map { it.description.orEmpty() }
 
-    val sourceCode: Observable<String> = projectSubj.map { it.gitHub.orEmpty() }
+    val sourceCode: LiveData<String> = projectLiveData.map { it.gitHub.orEmpty() }
 
 }

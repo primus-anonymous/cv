@@ -1,11 +1,15 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import com.neocaptainnemo.cv.RxTestRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.model.Filter
 import com.neocaptainnemo.cv.model.Project
 import com.neocaptainnemo.cv.services.IDataService
-import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Observable
+import com.neocaptainnemo.cv.ui.TestCoroutineRule
+import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -14,12 +18,15 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ProjectsViewModelTest {
 
-    @JvmField
-    @Rule
-    val rxRule = RxTestRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = TestCoroutineRule()
 
     @Mock
     lateinit var dataService: IDataService
@@ -34,108 +41,141 @@ class ProjectsViewModelTest {
     @Test
     fun `progress during successful fetch`() {
 
-        whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        viewModel.projects.test().assertNoErrors()
+        viewModel.progress.observeForever(progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.projects().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
     @Test
     fun `progress during failed fetch`() {
 
-        whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
+        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
 
-        val testable = viewModel.progress.test()
+        val progressObserver = mock<Observer<Boolean>>()
+        val order = inOrder(progressObserver, progressObserver, progressObserver)
 
-        viewModel.projects.test().assertNoErrors()
+        viewModel.progress.observeForever(progressObserver)
 
-        testable.assertValues(false, true, false)
+        viewModel.projects().observeForever { }
+
+        order.verify(progressObserver).onChanged(false)
+        order.verify(progressObserver).onChanged(true)
+        order.verify(progressObserver).onChanged(false)
     }
 
     @Test
     fun `empty state`() {
+        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
 
-        whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
+        val emptyObserver = mock<Observer<Boolean>>()
+        viewModel.empty.observeForever(emptyObserver)
 
-        val testable = viewModel.empty.test()
+        val order = inOrder(emptyObserver, emptyObserver)
 
-        viewModel.projects.test().assertNoErrors()
+        viewModel.projects().observeForever { }
 
-        testable.assertValues(false, true)
+        order.verify(emptyObserver).onChanged(false)
+        order.verify(emptyObserver).onChanged(true)
     }
 
     @Test
     fun `not empty state`() {
+        whenever(dataService.projects()).doAnswer { flowOf(listOf(Project(), Project())) }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(Project(), Project())) }
+        val emptyObserver = mock<Observer<Boolean>>()
+        viewModel.empty.observeForever(emptyObserver)
 
-        val testable = viewModel.empty.test()
+        viewModel.projects().observeForever { }
 
-        viewModel.projects.test().assertNoErrors()
-
-        testable.assertValues(false, false)
+        verify(emptyObserver, times(2)).onChanged(false)
     }
 
 
     @Test
     fun `filters set to all`() {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project1.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf(project1, project2, project3)) }
 
         viewModel.filter = Filter.ALL
 
-        viewModel.projects.test().assertValues(listOf(project1, project2, project3))
+        val projectsObserver = mock<Observer<List<Project>>>()
+        viewModel.projects().observeForever(projectsObserver)
+
+        verify(projectsObserver).onChanged(listOf(project1, project2, project3))
     }
+
 
     @Test
     fun `filters only android`() {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project2.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project3.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf(project1, project2, project3)) }
 
         viewModel.filter = Filter.ANDROID
 
-        viewModel.projects.test().assertValues(listOf(project1, project3))
+        val projectsObserver = mock<Observer<List<Project>>>()
+        viewModel.projects().observeForever(projectsObserver)
+
+        verify(projectsObserver).onChanged(listOf(project1, project3))
     }
 
     @Test
     fun `filters only iOS`() {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project2.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project3.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf(project1, project2, project3)) }
 
         viewModel.filter = Filter.IOS
 
-        viewModel.projects.test().assertValues(listOf(project2))
+        val projectsObserver = mock<Observer<List<Project>>>()
+        viewModel.projects().observeForever(projectsObserver)
+
+        verify(projectsObserver).onChanged(listOf(project2))
     }
+
 
     @Test
     fun `successful fetch`() {
@@ -143,19 +183,23 @@ class ProjectsViewModelTest {
         val project1 = Project()
         val project2 = Project()
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2)) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf(project1, project2)) }
 
-        viewModel.projects.test().assertValue(listOf(project1, project2))
+        val projectsObserver = mock<Observer<List<Project>>>()
+        viewModel.projects().observeForever(projectsObserver)
+
+        verify(projectsObserver).onChanged(listOf(project1, project2))
     }
 
 
     @Test
     fun `failed fetch`() {
 
-        whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
+        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
 
-        viewModel.projects.test().assertValue(listOf())
+        val projectsObserver = mock<Observer<List<Project>>>()
+        viewModel.projects().observeForever(projectsObserver)
 
+        verify(projectsObserver).onChanged(listOf())
     }
-
 }

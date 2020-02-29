@@ -1,6 +1,7 @@
 package com.neocaptainnemo.cv.ui.projects
 
 import android.view.View
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.model.Project
@@ -14,7 +15,7 @@ class ProjectsBinder : AdapterBinder<Project>() {
     var onProjectClicked: ((project: Project, transitionView: View, transitionView2: View) -> Unit)? = null
 
     override fun bindItem(item: Project, holder: DiffViewHolder) {
-        with(holder.itemView) {
+        with(holder.containerView) {
 
             setOnClickListener {
                 onProjectClicked?.invoke(item,
@@ -25,7 +26,7 @@ class ProjectsBinder : AdapterBinder<Project>() {
 
             val requestOption = RequestOptions().error(R.drawable.placeholder).placeholder(R.drawable.placeholder)
 
-            com.bumptech.glide.Glide.with(this)
+            Glide.with(this)
                     .applyDefaultRequestOptions(requestOption)
                     .load(item.webPic)
                     .into(image)

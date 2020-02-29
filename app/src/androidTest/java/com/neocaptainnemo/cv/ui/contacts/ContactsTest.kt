@@ -25,7 +25,7 @@ import com.neocaptainnemo.cv.model.Contacts
 import com.neocaptainnemo.cv.services.AnalyticsEvent
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
@@ -46,7 +46,7 @@ class ContactsTest {
 
     @Before
     fun setUp() {
-        whenever(app.mockDataService.contacts()).thenReturn(Observable.just(
+        whenever(app.mockDataService.contacts()).thenReturn(flowOf(
                 Contacts(
                         phone = "+7 907 76 54",
                         email = "email@email.com",
