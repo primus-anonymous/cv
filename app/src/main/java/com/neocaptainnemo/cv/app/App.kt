@@ -1,12 +1,13 @@
 package com.neocaptainnemo.cv.app
 
 import androidx.multidex.MultiDexApplication
-import com.neocaptainnemo.cv.model.Project
-import com.neocaptainnemo.cv.services.*
+import com.neocaptainnemo.cv.core.di.coreModule
 import com.neocaptainnemo.cv.ui.common.CommonViewModel
 import com.neocaptainnemo.cv.ui.contacts.ContactsViewModel
 import com.neocaptainnemo.cv.ui.projects.ProjectDetailsViewModel
 import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,19 +16,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-private val appModule = module {
-
-    single<IDataService> {
-        DataService(get())
-    }
-    single<ILocaleService> {
-        LocaleService(get())
-    }
-    single<IAnalyticsService> {
-        AnalyticsService(get())
-    }
-}
-
+@FlowPreview
+@ExperimentalCoroutinesApi
 val vmModule = module {
 
     viewModel {
@@ -42,17 +32,21 @@ val vmModule = module {
         ProjectsViewModel(get())
     }
 
-    viewModel { (project: Project) ->
-        ProjectDetailsViewModel(androidApplication(), project)
+    viewModel { (project: com.neocaptainnemo.cv.core.model.Project) ->
+        ProjectDetailsViewModel(androidApplication(),
+                                project)
     }
 
 }
 
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 open class App : MultiDexApplication() {
 
     open val modules: List<Module>
-        get() = listOf(appModule, vmModule)
+        get() = listOf(coreModule,
+                       vmModule)
 
 
     override fun onCreate() {

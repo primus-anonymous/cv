@@ -1,16 +1,19 @@
 package com.neocaptainnemo.cv.ui.contacts
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.model.Contacts
-import com.neocaptainnemo.cv.services.IDataService
+import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.model.Contacts
 import com.neocaptainnemo.cv.ui.TestCoroutineRule
-import com.neocaptainnemo.cv.ui.adapter.AdapterItem
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,18 +22,17 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ContactsViewModelTest {
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val coroutineRule = TestCoroutineRule()
 
     @Mock
-    lateinit var dataService: IDataService
+    lateinit var dataService: DataService
 
     lateinit var viewModel: ContactsViewModel
 
@@ -40,42 +42,64 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun `progress during successful fetch`() {
+    fun `progress during successful fetch`() = runBlockingTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(Contacts()) }
 
-        val progressObserver = mock<Observer<Boolean>>()
-        val order = inOrder(progressObserver, progressObserver, progressObserver)
+        val progressValues = mutableListOf<Boolean>()
 
-        viewModel.progress.observeForever(progressObserver)
+        val progressJob = launch {
+            viewModel.progress.collect {
+                progressValues.add(it)
+            }
+        }
 
-        viewModel.contacts().observeForever { }
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect { }
+        }
 
-        order.verify(progressObserver).onChanged(false)
-        order.verify(progressObserver).onChanged(true)
-        order.verify(progressObserver).onChanged(false)
+        assertThat(progressValues)
+                .isEqualTo(
+                     listOf(false,
+                            true,
+                            false))
+
+        progressJob.cancel()
+        contactsJob.cancel()
     }
 
     @Test
-    fun `progress during failed fetch`() {
+    fun `progress during failed fetch`() = runBlockingTest {
 
         whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
 
-        val progressObserver = mock<Observer<Boolean>>()
-        val order = inOrder(progressObserver, progressObserver, progressObserver)
+        val progressValues = mutableListOf<Boolean>()
 
-        viewModel.progress.observeForever(progressObserver)
+        val progressJob = launch {
+            viewModel.progress.collect {
+                progressValues.add(it)
+            }
+        }
 
-        viewModel.contacts().observeForever { }
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect { }
+        }
 
-        order.verify(progressObserver).onChanged(false)
-        order.verify(progressObserver).onChanged(true)
-        order.verify(progressObserver).onChanged(false)
+        assertThat(progressValues)
+                .isEqualTo(
+                     listOf(false,
+                            true,
+                            false))
+
+        progressJob.cancel()
+        contactsJob.cancel()
     }
 
 
     @Test
-    fun `successful fetch`() {
+    fun `successful fetch`() = runBlockingTest {
 
         val professionValue = "professsion"
 
@@ -100,23 +124,50 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
         val expected = listOf(
-                ContactsHeader(picValue, nameValue, professionValue),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.PHONE,
+                               R.string.action_phone,
+                               R.string.tap_to_call,
+                               R.drawable.ic_call_black_24px,
+                               phoneValue),
+                ContactSection(ContactType.EMAIL,
+                               R.string.action_email,
+                               R.string.tap_to_send_email,
+                               R.drawable.ic_email_black_24px,
+                               emailValue),
+                ContactSection(ContactType.GIT_HUB,
+                               R.string.action_github,
+                               R.string.tap_to_view_github,
+                               R.drawable.ic_link_black_24px,
+                               githubValue),
+                ContactSection(ContactType.CV,
+                               R.string.action_cv,
+                               R.string.tap_to_save_cv,
+                               R.drawable.ic_save_white_24px,
+                               cvUrlValue)
         )
 
-        verify(contactsObserver).onChanged(expected)
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(expected))
+
+        contactsJob.cancel()
     }
 
     @Test
-    fun `contacts list with no email`() {
+    fun `contacts list with no email`() = runBlockingTest {
 
         val professionValue = "professsion"
 
@@ -139,24 +190,46 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
         val expected = listOf(
-                ContactsHeader(picValue, nameValue, professionValue),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.PHONE,
+                               R.string.action_phone,
+                               R.string.tap_to_call,
+                               R.drawable.ic_call_black_24px,
+                               phoneValue),
+                ContactSection(ContactType.GIT_HUB,
+                               R.string.action_github,
+                               R.string.tap_to_view_github,
+                               R.drawable.ic_link_black_24px,
+                               githubValue),
+                ContactSection(ContactType.CV,
+                               R.string.action_cv,
+                               R.string.tap_to_save_cv,
+                               R.drawable.ic_save_white_24px,
+                               cvUrlValue)
         )
 
-        verify(contactsObserver).onChanged(expected)
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(expected))
 
+        contactsJob.cancel()
     }
 
 
     @Test
-    fun `contacts list with no phone`() {
+    fun `contacts list with no phone`() = runBlockingTest {
 
         val professionValue = "professsion"
 
@@ -179,23 +252,46 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
         val expected = listOf(
-                ContactsHeader(picValue, nameValue, professionValue),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.EMAIL,
+                               R.string.action_email,
+                               R.string.tap_to_send_email,
+                               R.drawable.ic_email_black_24px,
+                               emailValue),
+                ContactSection(ContactType.GIT_HUB,
+                               R.string.action_github,
+                               R.string.tap_to_view_github,
+                               R.drawable.ic_link_black_24px,
+                               githubValue),
+                ContactSection(ContactType.CV,
+                               R.string.action_cv,
+                               R.string.tap_to_save_cv,
+                               R.drawable.ic_save_white_24px,
+                               cvUrlValue)
         )
 
-        verify(contactsObserver).onChanged(expected)
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(expected))
+
+        contactsJob.cancel()
     }
 
 
     @Test
-    fun `contacts list with no cv`() {
+    fun `contacts list with no cv`() = runBlockingTest {
         val professionValue = "professsion"
 
         val nameValue = "name"
@@ -217,23 +313,46 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
         val expected = listOf(
-                ContactsHeader(picValue, nameValue, professionValue),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
-                ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, githubValue)
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.PHONE,
+                               R.string.action_phone,
+                               R.string.tap_to_call,
+                               R.drawable.ic_call_black_24px,
+                               phoneValue),
+                ContactSection(ContactType.EMAIL,
+                               R.string.action_email,
+                               R.string.tap_to_send_email,
+                               R.drawable.ic_email_black_24px,
+                               emailValue),
+                ContactSection(ContactType.GIT_HUB,
+                               R.string.action_github,
+                               R.string.tap_to_view_github,
+                               R.drawable.ic_link_black_24px,
+                               githubValue)
         )
 
-        verify(contactsObserver).onChanged(expected)
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(expected))
+
+        contactsJob.cancel()
 
     }
 
     @Test
-    fun `contacts list with no github`() {
+    fun `contacts list with no github`() = runBlockingTest {
         val professionValue = "professsion"
 
         val nameValue = "name"
@@ -255,30 +374,62 @@ class ContactsViewModelTest {
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
         val expected = listOf(
-                ContactsHeader(picValue, nameValue, professionValue),
-                ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, phoneValue),
-                ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, emailValue),
-                ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, cvUrlValue)
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.PHONE,
+                               R.string.action_phone,
+                               R.string.tap_to_call,
+                               R.drawable.ic_call_black_24px,
+                               phoneValue),
+                ContactSection(ContactType.EMAIL,
+                               R.string.action_email,
+                               R.string.tap_to_send_email,
+                               R.drawable.ic_email_black_24px,
+                               emailValue),
+                ContactSection(ContactType.CV,
+                               R.string.action_cv,
+                               R.string.tap_to_save_cv,
+                               R.drawable.ic_save_white_24px,
+                               cvUrlValue)
         )
 
-        verify(contactsObserver).onChanged(expected)
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(expected))
+
+        contactsJob.cancel()
 
     }
 
     @Test
-    fun `failed fetch`() {
+    fun `failed fetch`() = runBlockingTest {
 
         whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
 
-        val contactsObserver = mock<Observer<List<AdapterItem>>>()
+        val contactValues = mutableListOf<List<Any>>()
 
-        viewModel.contacts().observeForever(contactsObserver)
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
 
-        verify(contactsObserver).onChanged(listOf())
+        assertThat(contactValues)
+                .isEqualTo(
+                     listOf(listOf<Any>()))
+
+        contactsJob.cancel()
     }
 }

@@ -1,16 +1,16 @@
 package com.neocaptainnemo.cv.ui.projects
 
 import android.app.Application
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.model.Project
+import com.neocaptainnemo.cv.core.model.Project
 import com.neocaptainnemo.cv.ui.TestCoroutineRule
 import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ProjectDetailsTest {
@@ -26,9 +27,6 @@ class ProjectDetailsTest {
     lateinit var app: Application
 
     lateinit var viewModel: ProjectDetailsViewModel
-
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val coroutineRule = TestCoroutineRule()
@@ -50,9 +48,11 @@ class ProjectDetailsTest {
 
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
 
-        val project = Project(name = "Name", storeUrl = "www.some.com")
+        val project = Project(name = "Name",
+                              storeUrl = "www.some.com")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name www.some.com")
     }
@@ -63,9 +63,11 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
         whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
-        val project = Project(name = "Name", gitHub = "github.com")
+        val project = Project(name = "Name",
+                              gitHub = "github.com")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name Code github.com")
     }
@@ -76,197 +78,336 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
         whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
-        val project = Project(name = "Name", storeUrl = "www.some.com", gitHub = "github.com")
+        val project = Project(name = "Name",
+                              storeUrl = "www.some.com",
+                              gitHub = "github.com")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name www.some.com Code github.com")
     }
 
     @Test
-    fun `store should be visible`() {
+    fun `store should be visible`() = runBlockingTest {
 
         val project = Project(storeUrl = "www.some.com")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val visibilityMock = mock<Observer<Boolean>>()
-        viewModel.storeVisibility.observeForever(visibilityMock)
+        val storeVisibilityValues = mutableListOf<Boolean>()
 
-        verify(visibilityMock).onChanged(true)
+        val storeVisJob = launch {
+            viewModel.storeVisibility.collect {
+                storeVisibilityValues.add(it)
+            }
+        }
 
+        assertThat(storeVisibilityValues)
+                .isEqualTo(
+                        listOf(true))
+
+        storeVisJob.cancel()
     }
 
     @Test
-    fun `store should be not visible`() {
+    fun `store should be not visible`() = runBlockingTest {
 
         val project = Project(storeUrl = "")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val visibilityMock = mock<Observer<Boolean>>()
-        viewModel.storeVisibility.observeForever(visibilityMock)
+        val storeVisibilityValues = mutableListOf<Boolean>()
 
-        verify(visibilityMock).onChanged(false)
+        val storeVisJob = launch {
+            viewModel.storeVisibility.collect {
+                storeVisibilityValues.add(it)
+            }
+        }
+
+        assertThat(storeVisibilityValues)
+                .isEqualTo(
+                        listOf(false))
+
+        storeVisJob.cancel()
 
     }
 
     @Test
-    fun `github should be visible`() {
+    fun `github should be visible`() = runBlockingTest {
 
         val project = Project(gitHub = "www.some.com")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val visibilityMock = mock<Observer<Boolean>>()
-        viewModel.gitHubVisibility.observeForever(visibilityMock)
+        val githubVisibilityValues = mutableListOf<Boolean>()
 
-        verify(visibilityMock).onChanged(true)
+        val githubVisJob = launch {
+            viewModel.gitHubVisibility.collect {
+                githubVisibilityValues.add(it)
+            }
+        }
 
+        assertThat(githubVisibilityValues)
+                .isEqualTo(
+                        listOf(true))
+
+        githubVisJob.cancel()
     }
 
     @Test
-    fun `github should be not visible`() {
+    fun `github should be not visible`() = runBlockingTest {
 
         val project = Project(gitHub = "")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val visibilityMock = mock<Observer<Boolean>>()
-        viewModel.gitHubVisibility.observeForever(visibilityMock)
+        val githubVisibilityValues = mutableListOf<Boolean>()
 
-        verify(visibilityMock).onChanged(false)
+        val githubVisJob = launch {
+            viewModel.gitHubVisibility.collect {
+                githubVisibilityValues.add(it)
+            }
+        }
 
+        assertThat(githubVisibilityValues)
+                .isEqualTo(
+                        listOf(false))
+
+        githubVisJob.cancel()
     }
 
     @Test
-    fun `platform image for android`() {
+    fun `platform image for android`() = runBlockingTest {
 
         val project = Project(platform = Project.PLATFORM_ANDROID)
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val imageMock = mock<Observer<Int>>()
-        viewModel.platformImage.observeForever(imageMock)
+        val platformImageValues = mutableListOf<Int>()
 
-        verify(imageMock).onChanged(R.drawable.ic_android)
+        val platformImageJob = launch {
+            viewModel.platformImage.collect {
+                platformImageValues.add(it)
+            }
+        }
+
+        assertThat(platformImageValues)
+                .isEqualTo(
+                        listOf(R.drawable.ic_android))
+
+        platformImageJob.cancel()
     }
 
     @Test
-    fun `platform image for iOS`() {
+    fun `platform image for iOS`() = runBlockingTest {
 
         val project = Project(platform = Project.PLATFORM_IOS)
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val imageMock = mock<Observer<Int>>()
-        viewModel.platformImage.observeForever(imageMock)
+        val platformImageValues = mutableListOf<Int>()
 
-        verify(imageMock).onChanged(R.drawable.ic_apple)
+        val platformImageJob = launch {
+            viewModel.platformImage.collect {
+                platformImageValues.add(it)
+            }
+        }
+
+        assertThat(platformImageValues)
+                .isEqualTo(
+                        listOf(R.drawable.ic_apple))
+
+        platformImageJob.cancel()
     }
 
     @Test
-    fun `web pic`() {
+    fun `web pic`() = runBlockingTest {
 
         val project = Project(webPic = "picurl")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val picMock = mock<Observer<String>>()
-        viewModel.webPic.observeForever(picMock)
+        val webPicValues = mutableListOf<String>()
 
-        verify(picMock).onChanged("picurl")
+        val webPicJob = launch {
+            viewModel.webPic.collect {
+                webPicValues.add(it)
+            }
+        }
+
+        assertThat(webPicValues)
+                .isEqualTo(
+                        listOf("picurl"))
+
+        webPicJob.cancel()
     }
 
     @Test
-    fun `cover pic`() {
+    fun `cover pic`() = runBlockingTest {
 
         val project = Project(coverPic = "coverpic")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val picMock = mock<Observer<String>>()
-        viewModel.coverPic.observeForever(picMock)
+        val coverPicValues = mutableListOf<String>()
 
-        verify(picMock).onChanged("coverpic")
+        val coverPicJob = launch {
+            viewModel.coverPic.collect {
+                coverPicValues.add(it)
+            }
+        }
+
+        assertThat(coverPicValues)
+                .isEqualTo(
+                        listOf("coverpic"))
+
+        coverPicJob.cancel()
     }
 
     @Test
-    fun `project name`() {
+    fun `project name`() = runBlockingTest {
 
         val project = Project(name = "name")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val nameMock = mock<Observer<String>>()
-        viewModel.projectName.observeForever(nameMock)
+        val projectNameValues = mutableListOf<String>()
 
-        verify(nameMock).onChanged("name")
+        val projectNameJob = launch {
+            viewModel.projectName.collect {
+                projectNameValues.add(it)
+            }
+        }
+
+        assertThat(projectNameValues)
+                .isEqualTo(
+                        listOf("name"))
+
+        projectNameJob.cancel()
     }
 
     @Test
-    fun stack() {
+    fun stack() = runBlockingTest {
 
         val project = Project(stack = "stack")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val stackMock = mock<Observer<String>>()
-        viewModel.stack.observeForever(stackMock)
+        val stackValues = mutableListOf<String>()
 
-        verify(stackMock).onChanged("stack")
+        val stackJob = launch {
+            viewModel.stack.collect {
+                stackValues.add(it)
+            }
+        }
+
+        assertThat(stackValues)
+                .isEqualTo(
+                        listOf("stack"))
+
+        stackJob.cancel()
     }
 
     @Test
-    fun company() {
+    fun company() = runBlockingTest {
 
         val project = Project(vendor = "company")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val companyMock = mock<Observer<String>>()
-        viewModel.company.observeForever(companyMock)
+        val companyValues = mutableListOf<String>()
 
-        verify(companyMock).onChanged("company")
+        val companyJob = launch {
+            viewModel.company.collect {
+                companyValues.add(it)
+            }
+        }
+
+        assertThat(companyValues)
+                .isEqualTo(
+                        listOf("company"))
+
+        companyJob.cancel()
     }
 
     @Test
-    fun duties() {
+    fun duties() = runBlockingTest {
 
         val project = Project(duties = "duties")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val dutiesMock = mock<Observer<String>>()
-        viewModel.duties.observeForever(dutiesMock)
+        val dutiesValues = mutableListOf<String>()
 
-        verify(dutiesMock).onChanged("duties")
+        val dutiesJob = launch {
+            viewModel.duties.collect {
+                dutiesValues.add(it)
+            }
+        }
+
+        assertThat(dutiesValues)
+                .isEqualTo(
+                        listOf("duties"))
+
+        dutiesJob.cancel()
     }
 
     @Test
-    fun `details description`() {
+    fun `details description`() = runBlockingTest {
 
         val project = Project(description = "description")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val detailsMock = mock<Observer<String>>()
-        viewModel.detailsDescription.observeForever(detailsMock)
+        val detailsDescriptionValues = mutableListOf<String>()
 
-        verify(detailsMock).onChanged("description")
+        val detailsDescriptionJob = launch {
+            viewModel.detailsDescription.collect {
+                detailsDescriptionValues.add(it)
+            }
+        }
+
+        assertThat(detailsDescriptionValues).isEqualTo(
+                listOf("description"))
+
+        detailsDescriptionJob.cancel()
     }
 
     @Test
-    fun `source code`() {
+    fun `source code`() = runBlockingTest {
 
         val project = Project(gitHub = "githuburl")
 
-        viewModel = ProjectDetailsViewModel(app, project)
+        viewModel = ProjectDetailsViewModel(app,
+                                            project)
 
-        val sourceCodeMock = mock<Observer<String>>()
-        viewModel.sourceCode.observeForever(sourceCodeMock)
+        val sourceCodeValues = mutableListOf<String>()
 
-        verify(sourceCodeMock).onChanged("githuburl")
+        val sourceCodeJob = launch {
+            viewModel.sourceCode.collect {
+                sourceCodeValues.add(it)
+            }
+        }
+
+        assertThat(sourceCodeValues)
+                .isEqualTo(
+                        listOf("githuburl"))
+
+        sourceCodeJob.cancel()
     }
 }
 

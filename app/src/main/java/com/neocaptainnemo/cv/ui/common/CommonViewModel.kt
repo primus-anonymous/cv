@@ -1,36 +1,37 @@
 package com.neocaptainnemo.cv.ui.common
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import com.neocaptainnemo.cv.model.CommonSection
-import com.neocaptainnemo.cv.services.IDataService
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
+import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.model.CommonSection
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.*
 
-class CommonViewModel(private val dataService: IDataService) : ViewModel() {
+@FlowPreview
+@ExperimentalCoroutinesApi
+class CommonViewModel(private val dataService: DataService) : ViewModel() {
 
-    private val _empty = MutableLiveData<Boolean>(false)
+    private val _empty = ConflatedBroadcastChannel(false)
 
-    private val _progress = MutableLiveData<Boolean>(false)
+    private val _progress = ConflatedBroadcastChannel(false)
 
-    val empty: LiveData<Boolean> = _empty
+    private val _items = ConflatedBroadcastChannel(listOf<CommonSection>())
 
-    val progress: LiveData<Boolean> = _progress
+    val empty: Flow<Boolean> = _empty.asFlow()
 
-    fun commons(): LiveData<List<CommonSection>> = dataService.commons()
+    val progress: Flow<Boolean> = _progress.asFlow()
+
+    fun commons(): Flow<List<CommonSection>> = dataService.commons()
             .catch {
                 emit(listOf())
             }
             .onStart {
-                _progress.value = true
+                _progress.offer(true)
             }
             .onEach {
-                _progress.value = false
-                _empty.value = it.isEmpty()
+                _progress.offer(false)
+                _empty.offer(it.isEmpty())
             }
-            .asLiveData()
 
 }

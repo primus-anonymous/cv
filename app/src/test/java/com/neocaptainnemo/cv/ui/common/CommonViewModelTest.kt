@@ -1,14 +1,18 @@
 package com.neocaptainnemo.cv.ui.common
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.neocaptainnemo.cv.model.CommonSection
-import com.neocaptainnemo.cv.services.IDataService
+import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.model.CommonSection
 import com.neocaptainnemo.cv.ui.TestCoroutineRule
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,18 +21,16 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class CommonViewModelTest {
 
     @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
     val coroutineRule = TestCoroutineRule()
 
     @Mock
-    lateinit var dataService: IDataService
+    lateinit var dataService: DataService
 
     lateinit var viewModel: CommonViewModel
 
@@ -39,92 +41,148 @@ class CommonViewModelTest {
     }
 
     @Test
-    fun `progress during successful fetch`() {
+    fun `progress during successful fetch`() = runBlockingTest {
 
         whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
 
-        val progressObserver = mock<Observer<Boolean>>()
-        viewModel.progress.observeForever(progressObserver)
+        val progressValues = mutableListOf<Boolean>()
+        val progressJob = launch {
+            viewModel.progress
+                    .collect { progressValues.add(it) }
+        }
 
-        val order = inOrder(progressObserver, progressObserver, progressObserver)
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { }
+        }
 
-        viewModel.commons().observeForever { }
-
-        order.verify(progressObserver).onChanged(false)
-        order.verify(progressObserver).onChanged(true)
-        order.verify(progressObserver).onChanged(false)
+        assertThat(progressValues)
+                .isEqualTo(listOf(false,
+                                  true,
+                                  false))
+        progressJob.cancel()
+        commonValuesJob.cancel()
     }
 
-
     @Test
-    fun `progress during failed fetch`() {
+    fun `progress during failed fetch`() = runBlockingTest {
 
         whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
 
-        val progressObserver = mock<Observer<Boolean>>()
-        viewModel.progress.observeForever(progressObserver)
+        val progressValues = mutableListOf<Boolean>()
+        val progressJob = launch {
+            viewModel.progress
+                    .collect { progressValues.add(it) }
+        }
 
-        val order = inOrder(progressObserver, progressObserver, progressObserver)
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { }
+        }
 
-        viewModel.commons().observeForever { }
+        assertThat(progressValues)
+                .isEqualTo(listOf(false,
+                                  true,
+                                  false))
 
-        order.verify(progressObserver).onChanged(false)
-        order.verify(progressObserver).onChanged(true)
-        order.verify(progressObserver).onChanged(false)
+        progressJob.cancel()
+        commonValuesJob.cancel()
     }
 
     @Test
-    fun `empty state`() {
+    fun `empty state`() = runBlockingTest {
         whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
 
-        val emptyObserver = mock<Observer<Boolean>>()
-        viewModel.empty.observeForever(emptyObserver)
+        val emptyValues = mutableListOf<Boolean>()
+        val emptyJob = launch {
+            viewModel.empty
+                    .collect { emptyValues.add(it) }
+        }
 
-        val order = inOrder(emptyObserver, emptyObserver)
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { }
+        }
 
-        viewModel.commons().observeForever { }
+        assertThat(emptyValues)
+                .isEqualTo(listOf(false,
+                                  true))
 
-        order.verify(emptyObserver).onChanged(false)
-        order.verify(emptyObserver).onChanged(true)
+        emptyJob.cancel()
+        commonValuesJob.cancel()
     }
 
+
     @Test
-    fun `not empty state`() {
-        whenever(dataService.commons()).doAnswer { flowOf(listOf(CommonSection(), CommonSection())) }
+    fun `not empty state`() = runBlockingTest {
+        whenever(dataService.commons()).doAnswer {
+            flowOf(listOf(CommonSection(),
+                          CommonSection()))
+        }
 
-        val emptyObserver = mock<Observer<Boolean>>()
-        viewModel.empty.observeForever(emptyObserver)
+        val emptyValues = mutableListOf<Boolean>()
+        val emptyJob = launch {
+            viewModel.empty
+                    .collect { emptyValues.add(it) }
+        }
 
-        viewModel.commons().observeForever { }
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { }
+        }
 
-        verify(emptyObserver, times(2)).onChanged(false)
+        assertThat(emptyValues)
+                .isEqualTo(listOf(false,
+                                  false))
+
+        emptyJob.cancel()
+        commonValuesJob.cancel()
     }
 
+
     @Test
-    fun `successful fetch`() {
+    fun `successful fetch`() = runBlockingTest {
 
         val commonSection1 = CommonSection()
         val commonSection2 = CommonSection()
 
-        whenever(dataService.commons()).doAnswer { flowOf(listOf(commonSection1, commonSection2)) }
+        whenever(dataService.commons()).doAnswer {
+            flowOf(listOf(commonSection1,
+                          commonSection2))
+        }
 
-        val sectionsObserver = mock<Observer<List<CommonSection>>>()
+        val commonSectionValues = mutableListOf<List<CommonSection>>()
 
-        viewModel.commons().observeForever(sectionsObserver)
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { commonSectionValues.add(it) }
+        }
 
-        verify(sectionsObserver).onChanged(listOf(commonSection1, commonSection2))
+        assertThat(commonSectionValues)
+                .isEqualTo(
+                        listOf(listOf(commonSection1,
+                                      commonSection2)))
+
+        commonValuesJob.cancel()
     }
 
 
     @Test
-    fun `failed fetch`() {
+    fun `failed fetch`() = runBlockingTest {
 
         whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
 
-        val sectionsObserver = mock<Observer<List<CommonSection>>>()
+        val commonSectionValues = mutableListOf<List<CommonSection>>()
 
-        viewModel.commons().observeForever(sectionsObserver)
+        val commonValuesJob = launch {
+            viewModel.commons()
+                    .collect { commonSectionValues.add(it) }
+        }
 
-        verify(sectionsObserver).onChanged(listOf())
+        assertThat(commonSectionValues)
+                .isEqualTo(
+                        listOf(listOf<CommonSection>()))
+
+        commonValuesJob.cancel()
     }
 }

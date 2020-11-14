@@ -1,57 +1,77 @@
 package com.neocaptainnemo.cv.ui.contacts
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.services.IDataService
-import com.neocaptainnemo.cv.ui.adapter.AdapterItem
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
+import com.neocaptainnemo.cv.core.data.DataService
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.*
 
-class ContactsViewModel(private val dataService: IDataService) : ViewModel() {
+@ExperimentalCoroutinesApi
+@FlowPreview
+class ContactsViewModel(private val dataService: DataService) : ViewModel() {
 
-    private val _progress: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _progress = ConflatedBroadcastChannel(false)
 
-    val progress: LiveData<Boolean> = _progress
+    val progress: Flow<Boolean> = _progress.asFlow()
 
-    fun contacts(): LiveData<List<AdapterItem>> = dataService.contacts()
+    fun contacts(): Flow<List<Any>> = dataService
+            .contacts()
             .onStart {
-                _progress.value = true
+                _progress.offer(true)
 
-            }.onEach {
-                _progress.value = false
+            }
+            .onEach {
+                _progress.offer(false)
             }
             .map {
-                val header = ContactsHeader(image = it.userPic ?: "", name = it.name
-                        ?: "", profession = it.profession ?: "")
+                val header = ContactsHeader(image = it.userPic ?: "",
+                                            name = it.name
+                                                    ?: "",
+                                            profession = it.profession ?: "")
 
                 val sections = arrayListOf<ContactSection>()
 
                 it.phone?.let {
-                    sections.add(ContactSection(ContactType.PHONE, R.string.action_phone, R.string.tap_to_call, R.drawable.ic_call_black_24px, it))
+                    sections.add(ContactSection(ContactType.PHONE,
+                                                R.string.action_phone,
+                                                R.string.tap_to_call,
+                                                R.drawable.ic_call_black_24px,
+                                                it))
                 }
 
                 it.email?.let {
-                    sections.add(ContactSection(ContactType.EMAIL, R.string.action_email, R.string.tap_to_send_email, R.drawable.ic_email_black_24px, it))
+                    sections.add(ContactSection(ContactType.EMAIL,
+                                                R.string.action_email,
+                                                R.string.tap_to_send_email,
+                                                R.drawable.ic_email_black_24px,
+                                                it))
                 }
 
                 it.github?.let {
-                    sections.add(ContactSection(ContactType.GIT_HUB, R.string.action_github, R.string.tap_to_view_github, R.drawable.ic_link_black_24px, it))
+                    sections.add(ContactSection(ContactType.GIT_HUB,
+                                                R.string.action_github,
+                                                R.string.tap_to_view_github,
+                                                R.drawable.ic_link_black_24px,
+                                                it))
                 }
 
                 it.cvUrl?.let {
-                    sections.add(ContactSection(ContactType.CV, R.string.action_cv, R.string.tap_to_save_cv, R.drawable.ic_save_white_24px, it))
+                    sections.add(ContactSection(ContactType.CV,
+                                                R.string.action_cv,
+                                                R.string.tap_to_save_cv,
+                                                R.drawable.ic_save_white_24px,
+                                                it))
                 }
 
-                return@map mutableListOf<AdapterItem>(header).apply { addAll(sections) }.toList()
+                return@map mutableListOf<Any>(header)
+                        .apply { addAll(sections) }
+                        .toList()
 
             }
             .catch {
                 emit(listOf())
-                _progress.value = false
-            }.asLiveData()
+                _progress.offer(false)
+            }
 }
