@@ -30,7 +30,5 @@ dependencies {
 
     api("org.koin:koin-core:$koinVersion")
     api("org.koin:koin-androidx-viewmodel:$koinVersion")
-
 }
 
-apply(plugin = "com.google.gms.google-services")

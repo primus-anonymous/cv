@@ -22,14 +22,10 @@ import androidx.core.text.parseAsHtml
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.ui.compose.*
 import com.neocaptainnemo.cv.ui.projects.ProjectDetailsViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
 private val IMG_HEIGHT = 220.dp
 private val LOGO_WIDTH = 128.dp
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @Composable
 fun ProjectDetailsScreen(
         viewModel: ProjectDetailsViewModel,

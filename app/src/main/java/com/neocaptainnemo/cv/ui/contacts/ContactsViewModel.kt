@@ -3,32 +3,26 @@ package com.neocaptainnemo.cv.ui.contacts
 import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.data.DataService
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class ContactsViewModel(private val dataService: DataService) : ViewModel() {
 
-    private val _progress = ConflatedBroadcastChannel(false)
+    private val _progress = MutableStateFlow(false)
 
-    val progress: Flow<Boolean> = _progress.asFlow()
+    val progress: Flow<Boolean> = _progress
 
     fun contacts(): Flow<List<Any>> = dataService
             .contacts()
             .onStart {
-                _progress.offer(true)
+                _progress.value = true
 
             }
             .onEach {
-                _progress.offer(false)
+                _progress.value = false
             }
             .map {
                 val header = ContactsHeader(image = it.userPic ?: "",
-                                            name = it.name
-                                                    ?: "",
+                                            name = it.name ?: "",
                                             profession = it.profession ?: "")
 
                 val sections = arrayListOf<ContactSection>()
@@ -72,6 +66,6 @@ class ContactsViewModel(private val dataService: DataService) : ViewModel() {
             }
             .catch {
                 emit(listOf())
-                _progress.offer(false)
+                _progress.value = false
             }
 }

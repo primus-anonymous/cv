@@ -10,14 +10,10 @@ import com.neocaptainnemo.cv.core.analytics.AnalyticsEvent
 import com.neocaptainnemo.cv.core.analytics.AnalyticsService
 import com.neocaptainnemo.cv.core.model.Project
 import com.neocaptainnemo.cv.ui.projects.compose.ProjectDetailsScreen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class ProjectDetailsActivity : AppCompatActivity() {
 
     companion object {

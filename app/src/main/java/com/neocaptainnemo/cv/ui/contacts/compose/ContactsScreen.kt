@@ -16,13 +16,9 @@ import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.ui.compose.HALF_MARGIN
 import com.neocaptainnemo.cv.ui.contacts.ContactSection
 import com.neocaptainnemo.cv.ui.contacts.ContactsHeader
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @Composable
 fun ContactsScreen(
         contactsFlow: Flow<List<Any>>,

@@ -20,13 +20,9 @@ import com.neocaptainnemo.cv.ui.contacts.compose.ContactsScreen
 import com.neocaptainnemo.cv.ui.projects.ProjectDetailsActivity
 import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
 import com.neocaptainnemo.cv.ui.projects.compose.ProjectsScreen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val contactsVm: ContactsViewModel by viewModel()

@@ -97,7 +97,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:2.6.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 
-    val espresos = "3.2.0"
-
     androidTestImplementation("androidx.ui:ui-test:$composeVersion")
 }
+
+apply(plugin = "com.google.gms.google-services")

@@ -13,12 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.CommonSection
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @Composable
 fun CommonScreen(
         contactsFlow: Flow<List<CommonSection>>,

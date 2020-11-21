@@ -12,15 +12,11 @@ import com.neocaptainnemo.cv.ui.contacts.compose.CONTACTS_HEADER_SEMANTICS_NAME
 import com.neocaptainnemo.cv.ui.contacts.compose.CONTACTS_HEADER_SEMANTICS_PROF
 import com.neocaptainnemo.cv.ui.contacts.compose.CONTACTS_ITEM_SEMANTICS_ROW
 import com.neocaptainnemo.cv.ui.contacts.compose.ContactsScreen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class ContactsTest {
 
     @get:Rule

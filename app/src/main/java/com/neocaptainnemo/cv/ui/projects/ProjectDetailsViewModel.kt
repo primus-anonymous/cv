@@ -4,21 +4,16 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Project
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class ProjectDetailsViewModel(
         private val app: Application,
         private val project: Project,
 ) : AndroidViewModel(app) {
 
-    private val projectChannel = ConflatedBroadcastChannel(project)
+    private val projectFlow = MutableStateFlow(project)
 
     val shareUrl: String
         get() =
@@ -50,22 +45,19 @@ class ProjectDetailsViewModel(
     val storeUrl: String?
         get() = project.storeUrl
 
-    val storeVisibility: Flow<Boolean> = projectChannel
-            .asFlow()
+    val storeVisibility: Flow<Boolean> = projectFlow
             .map {
                 it.storeUrl.isNullOrBlank()
                         .not()
             }
 
-    val gitHubVisibility: Flow<Boolean> = projectChannel
-            .asFlow()
+    val gitHubVisibility: Flow<Boolean> = projectFlow
             .map {
                 it.gitHub.isNullOrBlank()
                         .not()
             }
 
-    val platformImage: Flow<Int> = projectChannel
-            .asFlow()
+    val platformImage: Flow<Int> = projectFlow
             .map {
                 if (project.platform == Project.PLATFORM_ANDROID) {
                     R.drawable.ic_android
@@ -74,36 +66,27 @@ class ProjectDetailsViewModel(
                 }
             }
 
-    val webPic: Flow<String> = projectChannel
-            .asFlow()
+    val webPic: Flow<String> = projectFlow
             .map { it.webPic.orEmpty() }
 
-    val coverPic: Flow<String> = projectChannel
-            .asFlow()
+    val coverPic: Flow<String> = projectFlow
             .map { it.coverPic.orEmpty() }
 
-    val projectName: Flow<String> = projectChannel
-            .asFlow()
+    val projectName: Flow<String> = projectFlow
             .map { it.name.orEmpty() }
 
-    val stack: Flow<String> = projectChannel
-            .asFlow()
+    val stack: Flow<String> = projectFlow
             .map { it.stack.orEmpty() }
 
-    val company: Flow<String> = projectChannel
-            .asFlow()
+    val company: Flow<String> = projectFlow
             .map { it.vendor.orEmpty() }
 
-    val duties: Flow<String> = projectChannel
-            .asFlow()
+    val duties: Flow<String> = projectFlow
             .map { it.duties.orEmpty() }
 
-    val detailsDescription: Flow<String> = projectChannel
-            .asFlow()
+    val detailsDescription: Flow<String> = projectFlow
             .map { it.description.orEmpty() }
 
-    val sourceCode: Flow<String> = projectChannel
-            .asFlow()
+    val sourceCode: Flow<String> = projectFlow
             .map { it.gitHub.orEmpty() }
-
 }

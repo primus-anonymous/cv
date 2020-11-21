@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Filter
 import com.neocaptainnemo.cv.core.model.Project
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 typealias ProjectItemClicked = ((project: Project) -> Unit)
@@ -31,8 +29,6 @@ typealias FilterItemClicked = ((filter: Filter) -> Unit)
 
 private const val COLUMNS = 2
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @Composable
 fun ProjectsScreen(
         projectsFlow: Flow<List<Project>>,

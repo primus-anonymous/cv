@@ -6,7 +6,6 @@ import com.neocaptainnemo.cv.ui.TestCoroutineRule
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -21,7 +20,6 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 
-@FlowPreview
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class CommonViewModelTest {
@@ -132,8 +130,7 @@ class CommonViewModelTest {
         }
 
         assertThat(emptyValues)
-                .isEqualTo(listOf(false,
-                                  false))
+                .isEqualTo(listOf(false))
 
         emptyJob.cancel()
         commonValuesJob.cancel()
