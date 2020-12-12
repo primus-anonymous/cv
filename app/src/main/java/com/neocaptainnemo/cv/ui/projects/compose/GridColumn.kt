@@ -9,11 +9,11 @@ import androidx.compose.ui.layout.Layout
 fun GridColumn(
         modifier: Modifier = Modifier,
         columns: Int,
-        children: @Composable() () -> Unit,
+        content: @Composable() () -> Unit,
 ) {
     Layout(
             modifier = modifier,
-            children = children
+            content = content,
     ) { measurables, constraints ->
         // measure and position children given constraints logic here
 

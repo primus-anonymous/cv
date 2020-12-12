@@ -9,10 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageAsset
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.WithConstraints
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
 import coil.request.LoadRequest
@@ -28,7 +28,7 @@ fun UrlImage(
 ) {
     WithConstraints {
 
-        val context: Context = ContextAmbient.current
+        val context: Context = AmbientContext.current
 
         val asset = remember { mutableStateOf<Bitmap?>(null) }
 
@@ -78,9 +78,9 @@ fun UrlImage(
         if (asset.value == null) {
             Box(modifier = modifier)
         } else {
-            Image(asset = asset.value!!.asImageAsset(),
-                  contentScale = ContentScale.Crop,
-                  modifier = modifier)
+            Image(bitmap = asset.value!!.asImageBitmap(),
+                  modifier = modifier,
+                  contentScale = ContentScale.Crop)
         }
     }
 }

@@ -66,7 +66,7 @@ fun ProjectItem(
                                   end = HALF_MARGIN)
             )
 
-            Image(asset = vectorResource(id = if (project.platform == Project.PLATFORM_ANDROID) {
+            Image(imageVector = vectorResource(id = if (project.platform == Project.PLATFORM_ANDROID) {
                 R.drawable.ic_android
             } else {
                 R.drawable.ic_apple

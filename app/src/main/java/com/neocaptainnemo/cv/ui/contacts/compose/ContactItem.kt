@@ -41,7 +41,8 @@ fun ContactItem(
             })
             .padding(horizontal = DEFAULT_MARGIN,
                      vertical = SMALL_MARGIN)) {
-        Image(asset = vectorResource(id = contact.img),
+
+        Image(imageVector = vectorResource(id = contact.img),
               colorFilter = ColorFilter(Color.Primary, BlendMode.SrcIn),
               modifier = Modifier.align(Alignment.CenterVertically))
         Column(modifier = Modifier.padding(start = DEFAULT_MARGIN)) {

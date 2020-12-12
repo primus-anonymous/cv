@@ -44,8 +44,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.0"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha07"
+        kotlinCompilerVersion = "1.4.20"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha08"
     }
 }
 
@@ -80,7 +80,8 @@ dependencies {
 
     implementation("io.coil-kt:coil:0.10.1")
 
-    val composeVersion = "1.0.0-alpha07"
+    val composeVersion = "1.0.0-alpha08"
+    val composeToolingVersion = "1.0.0-alpha07"
 
     implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
@@ -89,7 +90,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.animation:animation:$composeVersion")
-    implementation("androidx.ui:ui-tooling:$composeVersion")
+    implementation("androidx.ui:ui-tooling:$composeToolingVersion")
 
 
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")

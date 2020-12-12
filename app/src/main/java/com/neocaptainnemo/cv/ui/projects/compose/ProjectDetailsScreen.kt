@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.DefaultAlpha
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -113,7 +115,7 @@ fun ProjectDetailsScreen(
                         )
                     }
 
-                    Image(asset = vectorResource(id = R.drawable.ic_back),
+                    Image(imageVector = vectorResource(id = R.drawable.ic_back),
                           modifier = Modifier
                                   .constrainAs(back) {
                                       top.linkTo(parent.top)
@@ -126,7 +128,7 @@ fun ProjectDetailsScreen(
                                   .padding(DEFAULT_MARGIN)
                     )
 
-                    Image(asset = vectorResource(id = R.drawable.ic_baseline_share_24),
+                    Image(imageVector = vectorResource(id = R.drawable.ic_baseline_share_24),
                           modifier = Modifier
                                   .constrainAs(share) {
                                       top.linkTo(parent.top)
@@ -180,7 +182,7 @@ fun ProjectDetailsScreen(
                 FloatingActionButton(modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(DEFAULT_MARGIN),
-                                     icon = {
+                                     content = {
                                          Image(vectorResource(id = R.drawable.ic_shop_white_24px))
                                      },
                                      onClick = {

@@ -6,7 +6,7 @@ plugins {
 }
 
 
-val kotlinVersion = "1.4.10"
+val kotlinVersion = "1.4.20"
 
 android {
     compileSdkVersion(29)
