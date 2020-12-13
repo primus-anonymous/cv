@@ -1,7 +1,6 @@
 package com.neocaptainnemo.cv.ui.projects.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.FrameManager
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 

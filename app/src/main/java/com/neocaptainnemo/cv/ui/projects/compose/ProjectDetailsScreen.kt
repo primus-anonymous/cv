@@ -1,20 +1,15 @@
 package com.neocaptainnemo.cv.ui.projects.compose
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.DefaultAlpha
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -47,11 +42,13 @@ fun ProjectDetailsScreen(
     val sourceCode = viewModel.sourceCode.collectAsState(null)
     val storeVisibility = viewModel.storeVisibility.collectAsState(null)
 
+    val scrollState = rememberScrollState(0.0f)
+
     MaterialTheme(colors = CvColors) {
 
         Box {
 
-            ScrollableColumn {
+            ScrollableColumn(scrollState = scrollState) {
 
                 ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
@@ -180,6 +177,7 @@ fun ProjectDetailsScreen(
 
             if (storeVisibility.value == true) {
                 FloatingActionButton(modifier = Modifier
+                        .hideOnScroll(scrollState)
                         .align(Alignment.BottomEnd)
                         .padding(DEFAULT_MARGIN),
                                      content = {
@@ -188,9 +186,9 @@ fun ProjectDetailsScreen(
                                      onClick = {
                                          shopCLicked?.invoke(viewModel.storeUrl.orEmpty())
                                      })
+
             }
         }
     }
 }
-
 
