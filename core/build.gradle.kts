@@ -1,12 +1,12 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
     id("io.fabric")
+    id("kotlin-parcelize")
 }
 
 
-val kotlinVersion = "1.4.20"
+val kotlinVersion = "1.4.21"
 
 android {
     compileSdkVersion(29)
@@ -21,8 +21,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
 
-    implementation("com.google.firebase:firebase-database:19.5.0")
-    implementation("com.google.firebase:firebase-core:17.5.1")
+    implementation("com.google.firebase:firebase-database:19.6.0")
+    implementation("com.google.firebase:firebase-core:18.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
 

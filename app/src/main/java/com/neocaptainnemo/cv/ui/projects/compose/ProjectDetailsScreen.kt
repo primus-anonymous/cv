@@ -1,15 +1,17 @@
 package com.neocaptainnemo.cv.ui.projects.compose
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -19,9 +21,11 @@ import androidx.core.text.parseAsHtml
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.ui.compose.*
 import com.neocaptainnemo.cv.ui.projects.ProjectDetailsViewModel
+import kotlin.math.min
 
 private val IMG_HEIGHT = 220.dp
 private val LOGO_WIDTH = 128.dp
+private val APP_BAR_APPEAR_THRESH_HOLD = 64.dp
 
 @Composable
 fun ProjectDetailsScreen(
@@ -43,16 +47,16 @@ fun ProjectDetailsScreen(
     val storeVisibility = viewModel.storeVisibility.collectAsState(null)
 
     val scrollState = rememberScrollState(0.0f)
+    val scrollHolder = ScrollsHolder()
 
     MaterialTheme(colors = CvColors) {
 
-        Box {
-
+        Box(modifier = Modifier.fillMaxHeight()) {
             ScrollableColumn(scrollState = scrollState) {
 
                 ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-                    val (coverPic, projectPic, projTitle, vendor, back, share) = createRefs()
+                    val (coverPic, projectPic, projTitle, vendor) = createRefs()
 
                     Box(modifier = Modifier.constrainAs(coverPic) {
                         start.linkTo(parent.start)
@@ -111,32 +115,6 @@ fun ProjectDetailsScreen(
                                          .fillMaxSize()
                         )
                     }
-
-                    Image(imageVector = vectorResource(id = R.drawable.ic_back),
-                          modifier = Modifier
-                                  .constrainAs(back) {
-                                      top.linkTo(parent.top)
-                                      start.linkTo(parent.start)
-                                  }
-                                  .zIndex(1.0f)
-                                  .clickable(onClick = {
-                                      backClicked?.invoke()
-                                  })
-                                  .padding(DEFAULT_MARGIN)
-                    )
-
-                    Image(imageVector = vectorResource(id = R.drawable.ic_baseline_share_24),
-                          modifier = Modifier
-                                  .constrainAs(share) {
-                                      top.linkTo(parent.top)
-                                      end.linkTo(parent.end)
-                                  }
-                                  .zIndex(1.0f)
-                                  .clickable(onClick = {
-                                      shareClicked?.invoke()
-                                  })
-                                  .padding(16.dp)
-                    )
                 }
 
                 if (description.value.isNullOrBlank()
@@ -177,7 +155,7 @@ fun ProjectDetailsScreen(
 
             if (storeVisibility.value == true) {
                 FloatingActionButton(modifier = Modifier
-                        .hideOnScroll(scrollState)
+                        .translateOnScroll(scrollState, scrollHolder)
                         .align(Alignment.BottomEnd)
                         .padding(DEFAULT_MARGIN),
                                      content = {
@@ -188,6 +166,34 @@ fun ProjectDetailsScreen(
                                      })
 
             }
+
+
+            TopAppBar(
+                    title = {},
+                    backgroundColor = MaterialTheme.colors.primarySurface
+                            .copy(alpha = min(1.0f, scrollState.value /
+                                    with(AmbientDensity.current) {
+                                        APP_BAR_APPEAR_THRESH_HOLD.toPx()
+                                    }
+                            )),
+                    navigationIcon = {
+                        Image(vectorResource(id = R.drawable.ic_back),
+                              modifier = Modifier.padding(start = HALF_MARGIN)
+                                      .clickable(onClick = {
+                                          backClicked?.invoke()
+                                      }))
+
+                    },
+                    actions = {
+                        Image(vectorResource(id = R.drawable.ic_baseline_share_24),
+                              modifier = Modifier.padding(end = HALF_MARGIN)
+                                      .clickable(onClick = {
+                                          shareClicked?.invoke()
+                                      }))
+                    },
+                    elevation = 0.dp,
+                    modifier = Modifier.zIndex(1.0f)
+            )
         }
     }
 }

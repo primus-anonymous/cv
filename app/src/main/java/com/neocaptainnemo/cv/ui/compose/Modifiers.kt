@@ -8,8 +8,8 @@ import kotlin.math.min
 
 class ScrollsHolder(var previousScroll: Int = 0, var res: Int = 0)
 
-fun Modifier.hideOnScroll(
-        scrollState: ScrollState, holder: ScrollsHolder = ScrollsHolder(),
+fun Modifier.translateOnScroll(
+        scrollState: ScrollState, holder: ScrollsHolder,
 ) = Modifier.layout { measurable, constraints ->
 
     val placeable = measurable.measure(constraints)
@@ -26,3 +26,4 @@ fun Modifier.hideOnScroll(
         placeable.placeRelative(0, holder.res)
     }
 }
+

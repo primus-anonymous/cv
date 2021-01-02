@@ -2,10 +2,10 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-kapt")
-    kotlin("android.extensions")
+    id("kotlin-parcelize")
 }
 
-val kotlinVersion = "1.4.10"
+val kotlinVersion = "1.4.21"
 
 android {
     compileSdkVersion(30)
@@ -44,8 +44,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.20"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha08"
+        kotlinCompilerVersion = "1.4.21"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha09"
     }
 }
 
@@ -80,7 +80,7 @@ dependencies {
 
     implementation("io.coil-kt:coil:0.10.1")
 
-    val composeVersion = "1.0.0-alpha08"
+    val composeVersion = "1.0.0-alpha09"
     val composeToolingVersion = "1.0.0-alpha07"
 
     implementation("androidx.compose.runtime:runtime:$composeVersion")

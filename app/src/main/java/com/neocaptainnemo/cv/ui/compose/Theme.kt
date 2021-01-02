@@ -33,25 +33,19 @@ val CvColors = Colors(
 )
 
 val TextStyle.Companion.Primary16
-    get() = TextStyle(Color.DefaultText,
-                      16.sp)
+    get() = TextStyle(Color.DefaultText, 16.sp)
 
 val TextStyle.Companion.Primary20
-    get() = TextStyle(Color.DefaultText,
-                      20.sp)
+    get() = TextStyle(Color.DefaultText, 20.sp)
 
 val TextStyle.Companion.Secondary14
-    get() = TextStyle(Color.SecondaryText,
-                      14.sp)
+    get() = TextStyle(Color.SecondaryText, 14.sp)
 
 val TextStyle.Companion.White16
-    get() = TextStyle(Color.White,
-                      16.sp)
+    get() = TextStyle(Color.White, 16.sp)
 
 val TextStyle.Companion.White14
-    get() = TextStyle(Color.White,
-                      14.sp)
+    get() = TextStyle(Color.White, 14.sp)
 
 val TextStyle.Companion.Link14
-    get() = TextStyle(Color.Blue,
-                      14.sp)
+    get() = TextStyle(Color.Blue, 14.sp)
