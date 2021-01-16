@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.ui.compose.CvColors
+import com.neocaptainnemo.cv.ui.compose.cvColors
 
 enum class Tab(
         @StringRes val title: Int,
@@ -43,7 +43,7 @@ fun MainScreen(
         tabSelected: (tab: Tab) -> Unit,
 ) {
 
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
 
         Column {
 

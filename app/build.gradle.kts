@@ -45,7 +45,7 @@ android {
 
     composeOptions {
         kotlinCompilerVersion = "1.4.21"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha09"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha10"
     }
 }
 
@@ -80,7 +80,7 @@ dependencies {
 
     implementation("io.coil-kt:coil:0.10.1")
 
-    val composeVersion = "1.0.0-alpha09"
+    val composeVersion = "1.0.0-alpha10"
     val composeToolingVersion = "1.0.0-alpha07"
 
     implementation("androidx.compose.runtime:runtime:$composeVersion")

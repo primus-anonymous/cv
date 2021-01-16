@@ -13,7 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.ui.compose.HALF_MARGIN
+import com.neocaptainnemo.cv.ui.compose.halfMargin
 import com.neocaptainnemo.cv.ui.contacts.ContactSection
 import com.neocaptainnemo.cv.ui.contacts.ContactsHeader
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +42,7 @@ fun ContactsScreen(
                 contactsList.value.map { item ->
                     when (item) {
                         is ContactsHeader -> {
-                            Box(modifier = Modifier.padding(bottom = HALF_MARGIN)) {
+                            Box(modifier = Modifier.padding(bottom = halfMargin)) {
                                 ContactHeader(item)
                             }
                         }

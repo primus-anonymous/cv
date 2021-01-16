@@ -17,8 +17,8 @@ import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Project
 import com.neocaptainnemo.cv.ui.compose.*
 
-private val IMG_HEIGHT = 200.dp
-private val CARD_HEIGHT = 250.dp
+private val imageHeight = 200.dp
+private val cardHeight = 250.dp
 
 @Composable
 fun ProjectItem(
@@ -26,11 +26,11 @@ fun ProjectItem(
         itemClicked: ProjectItemClicked?,
 ) {
 
-    Surface(shape = RoundedCornerShape(DEFAULT_CORNER),
+    Surface(shape = RoundedCornerShape(defaultCorner),
             elevation = 4.dp,
-            modifier = Modifier.padding(SMALL_MARGIN)
+            modifier = Modifier.padding(smallMargin)
                     .fillMaxWidth()
-                    .height(CARD_HEIGHT)) {
+                    .height(cardHeight)) {
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()
                 .clickable(onClick = {
@@ -39,18 +39,17 @@ fun ProjectItem(
 
             val (image, name, platform) = createRefs()
 
-
             Box(modifier = Modifier.constrainAs(image) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 top.linkTo(parent.top)
-                height = Dimension.value(IMG_HEIGHT)
+                height = Dimension.value(imageHeight)
                 width = Dimension.fillToConstraints
             }) {
                 UrlImage(url = project.webPic.orEmpty(),
                          modifier = Modifier
                                  .fillMaxSize()
-                                 .padding(DEFAULT_MARGIN))
+                                 .padding(defaultMargin))
             }
 
             Text(text = project.name.orEmpty(),
@@ -61,9 +60,9 @@ fun ProjectItem(
                              end.linkTo(parent.end)
                              top.linkTo(image.bottom)
                          }
-                         .padding(bottom = HALF_MARGIN,
-                                  start = HALF_MARGIN,
-                                  end = HALF_MARGIN)
+                         .padding(bottom = halfMargin,
+                                  start = halfMargin,
+                                  end = halfMargin)
             )
 
             Image(imageVector = vectorResource(id = if (project.platform == Project.PLATFORM_ANDROID) {
@@ -77,7 +76,7 @@ fun ProjectItem(
                               top.linkTo(parent.top)
                               end.linkTo(parent.end)
                           }
-                          .padding(DEFAULT_MARGIN))
+                          .padding(defaultMargin))
         }
     }
 }
@@ -85,7 +84,7 @@ fun ProjectItem(
 @Preview(widthDp = 200)
 @Composable
 fun PreviewProjectItem() {
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
         ProjectItem(project = Project(
                 platform = "android",
                 webPic = "https://images.freeimages.com/images/large-previews/996/easter-1399885.jpg",

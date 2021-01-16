@@ -23,9 +23,9 @@ import com.neocaptainnemo.cv.ui.compose.*
 import com.neocaptainnemo.cv.ui.projects.ProjectDetailsViewModel
 import kotlin.math.min
 
-private val IMG_HEIGHT = 220.dp
-private val LOGO_WIDTH = 128.dp
-private val APP_BAR_APPEAR_THRESH_HOLD = 64.dp
+private val imageHeight = 220.dp
+private val logoWidth = 128.dp
+private val appbarAppearenceThreshHold = 64.dp
 
 @Composable
 fun ProjectDetailsScreen(
@@ -49,7 +49,7 @@ fun ProjectDetailsScreen(
     val scrollState = rememberScrollState(0.0f)
     val scrollHolder = ScrollsHolder()
 
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
 
         Box(modifier = Modifier.fillMaxHeight()) {
             ScrollableColumn(scrollState = scrollState) {
@@ -62,7 +62,7 @@ fun ProjectDetailsScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
-                        height = Dimension.value(IMG_HEIGHT)
+                        height = Dimension.value(imageHeight)
                         width = Dimension.fillToConstraints
                     }) {
                         UrlImage(url = coverImage.value.orEmpty(),
@@ -71,10 +71,10 @@ fun ProjectDetailsScreen(
                     }
 
                     Text(text = title.value,
-                         style = TextStyle.Primary20,
+                         style = TextStyle.primary20(),
                          textAlign = TextAlign.Justify,
                          modifier = Modifier
-                                 .padding(DEFAULT_MARGIN)
+                                 .padding(defaultMargin)
                                  .constrainAs(projTitle)
                                  {
                                      start.linkTo(parent.start)
@@ -86,11 +86,11 @@ fun ProjectDetailsScreen(
                     )
 
                     Text(text = company.value,
-                         style = TextStyle.Primary16,
+                         style = TextStyle.primary16(),
                          modifier = Modifier
-                                 .padding(end = DEFAULT_MARGIN,
-                                          top = SMALL_MARGIN,
-                                          bottom = HALF_MARGIN)
+                                 .padding(end = defaultMargin,
+                                          top = smallMargin,
+                                          bottom = halfMargin)
                                  .constrainAs(vendor)
                                  {
                                      end.linkTo(parent.end)
@@ -102,10 +102,10 @@ fun ProjectDetailsScreen(
                     Surface(shape = CircleShape,
                             elevation = 2.dp,
                             modifier = Modifier
-                                    .padding(end = DEFAULT_MARGIN)
+                                    .padding(end = defaultMargin)
                                     .zIndex(1.0f)
                                     .constrainAs(projectPic) {
-                                        width = Dimension.value(LOGO_WIDTH)
+                                        width = Dimension.value(logoWidth)
                                         end.linkTo(parent.end)
                                         centerAround(coverPic.bottom)
                                     }
@@ -142,22 +142,22 @@ fun ProjectDetailsScreen(
                     SectionTitle(stingRes = R.string.source_code)
                     Text(text = sourceCode.value.orEmpty(),
                          style = TextStyle.Link14,
-                         modifier = Modifier.padding(horizontal = DEFAULT_MARGIN,
-                                                     vertical = SMALL_MARGIN)
+                         modifier = Modifier.padding(horizontal = defaultMargin,
+                                                     vertical = smallMargin)
                                  .clickable(onClick = {
                                      sourceCodeCLicked?.invoke(viewModel.gitHubUrl.orEmpty())
                                  })
                     )
                 }
 
-                Column(Modifier.height(DEFAULT_MARGIN)) {}
+                Column(Modifier.height(defaultMargin)) {}
             }
 
             if (storeVisibility.value == true) {
                 FloatingActionButton(modifier = Modifier
                         .translateOnScroll(scrollState, scrollHolder)
                         .align(Alignment.BottomEnd)
-                        .padding(DEFAULT_MARGIN),
+                        .padding(defaultMargin),
                                      content = {
                                          Image(vectorResource(id = R.drawable.ic_shop_white_24px))
                                      },
@@ -173,12 +173,12 @@ fun ProjectDetailsScreen(
                     backgroundColor = MaterialTheme.colors.primarySurface
                             .copy(alpha = min(1.0f, scrollState.value /
                                     with(AmbientDensity.current) {
-                                        APP_BAR_APPEAR_THRESH_HOLD.toPx()
+                                        appbarAppearenceThreshHold.toPx()
                                     }
                             )),
                     navigationIcon = {
                         Image(vectorResource(id = R.drawable.ic_back),
-                              modifier = Modifier.padding(start = HALF_MARGIN)
+                              modifier = Modifier.padding(start = halfMargin)
                                       .clickable(onClick = {
                                           backClicked?.invoke()
                                       }))
@@ -186,7 +186,7 @@ fun ProjectDetailsScreen(
                     },
                     actions = {
                         Image(vectorResource(id = R.drawable.ic_baseline_share_24),
-                              modifier = Modifier.padding(end = HALF_MARGIN)
+                              modifier = Modifier.padding(end = halfMargin)
                                       .clickable(onClick = {
                                           shareClicked?.invoke()
                                       }))

@@ -20,18 +20,18 @@ fun CommonSectionItem(
         title: String,
         description: String,
 ) {
-    Surface(shape = RoundedCornerShape(DEFAULT_CORNER),
+    Surface(shape = RoundedCornerShape(defaultCorner),
             elevation = 4.dp,
-            modifier = Modifier.padding(SMALL_MARGIN)
+            modifier = Modifier.padding(smallMargin)
                     .fillMaxWidth()) {
-        Column(modifier = Modifier.padding(DEFAULT_MARGIN)) {
+        Column(modifier = Modifier.padding(defaultMargin)) {
             Text(text = title,
-                 style = TextStyle.Primary20)
+                 style = TextStyle.primary20())
             val htmlSpanned = description
                     .parseAsHtml()
             Text(text = htmlSpanned.toString(),
-                 style = TextStyle.Secondary14,
-                 modifier = Modifier.padding(top = HALF_MARGIN))
+                 style = TextStyle.secondary14(),
+                 modifier = Modifier.padding(top = halfMargin))
         }
     }
 }
@@ -39,7 +39,7 @@ fun CommonSectionItem(
 @Preview
 @Composable
 fun PreviewCommonSectionItem() {
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
         CommonSectionItem(
                 title = "This is quite title",
                 description = "Fardel may refer to: Shakespearian word meaning \"traveller's bundle\", as used in The Winter's Tale. Shakespearian word meaning \"burden\", as used in Hamlet's To be, or not to be speech. Scots word, also spelled \"Farl\", quadrant-shaped flatbread or cake."

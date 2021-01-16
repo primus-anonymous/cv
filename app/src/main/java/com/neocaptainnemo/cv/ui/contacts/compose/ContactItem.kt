@@ -39,19 +39,19 @@ fun ContactItem(
             .clickable(onClick = {
                 itemClicked?.invoke(contact)
             })
-            .padding(horizontal = DEFAULT_MARGIN,
-                     vertical = SMALL_MARGIN)) {
+            .padding(horizontal = defaultMargin,
+                     vertical = smallMargin)) {
 
         Image(imageVector = vectorResource(id = contact.img),
               colorFilter = ColorFilter(Color.Primary, BlendMode.SrcIn),
               modifier = Modifier.align(Alignment.CenterVertically))
-        Column(modifier = Modifier.padding(start = DEFAULT_MARGIN)) {
+        Column(modifier = Modifier.padding(start = defaultMargin)) {
 
             Text(text = stringResource(id = contact.title),
-                 style = TextStyle.Primary16
+                 style = TextStyle.primary16()
             )
             Text(text = stringResource(id = contact.subTitle),
-                 style = TextStyle.Secondary14)
+                 style = TextStyle.secondary14())
         }
     }
 }
@@ -59,7 +59,7 @@ fun ContactItem(
 @Preview(widthDp = 200)
 @Composable
 fun PreviewContactItem() {
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
         ContactItem(contact = ContactSection(
                 ContactType.CV,
                 R.string.title_cv,

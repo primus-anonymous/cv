@@ -21,13 +21,14 @@ import androidx.compose.ui.unit.dp
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Filter
 import com.neocaptainnemo.cv.core.model.Project
+import com.neocaptainnemo.cv.ui.compose.halfMargin
 import kotlinx.coroutines.flow.Flow
 
 typealias ProjectItemClicked = ((project: Project) -> Unit)
 
 typealias FilterItemClicked = ((filter: Filter) -> Unit)
 
-private const val COLUMNS = 2
+private const val columns = 2
 
 @Composable
 fun ProjectsScreen(
@@ -40,7 +41,7 @@ fun ProjectsScreen(
 
     val projectsList: List<List<Project>> = projectsFlow.collectAsState(initial = listOf())
             .value
-            .chunked(COLUMNS)
+            .chunked(columns)
 
     val progress = progressFlow.collectAsState(initial = false)
 
@@ -56,9 +57,10 @@ fun ProjectsScreen(
             Text(text = stringResource(id = R.string.projects))
         },
                   actions = {
-                      Box(modifier = Modifier.clickable(onClick = {
-                          menuOpenedState.value = menuOpenedState.value.not()
-                      })) {
+                      Box(modifier = Modifier.padding(end = halfMargin)
+                              .clickable(onClick = {
+                                  menuOpenedState.value = menuOpenedState.value.not()
+                              })) {
                           Image(vectorResource(id = R.drawable.ic_baseline_filter_list_24))
 
                           if (menuOpenedState.value) {
@@ -71,8 +73,7 @@ fun ProjectsScreen(
                                            }) {
                                   Surface(
                                           shape = RoundedCornerShape(4.dp),
-                                          elevation = 16.dp,
-                                          color = Color.White
+                                          elevation = 16.dp
                                   )
                                   {
                                       Column(modifier = Modifier.padding(10.dp)) {
@@ -97,7 +98,7 @@ fun ProjectsScreen(
 
         Box {
             LazyColumnFor(items = projectsList) {
-                GridColumn(columns = COLUMNS) {
+                GridColumn(columns = columns) {
                     it.map { proj ->
                         ProjectItem(project = proj,
                                     itemClicked = itemClicked)

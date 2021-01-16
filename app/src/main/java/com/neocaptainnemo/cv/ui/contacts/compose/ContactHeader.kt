@@ -14,31 +14,31 @@ import androidx.ui.tooling.preview.Preview
 import com.neocaptainnemo.cv.ui.compose.*
 import com.neocaptainnemo.cv.ui.contacts.ContactsHeader
 
-private val IMG_HEIGHT = 200.dp
+private val imageHeight = 200.dp
 
 const val CONTACTS_HEADER_SEMANTICS_NAME = "ContactHeader_SEMANTICS_NAME"
 const val CONTACTS_HEADER_SEMANTICS_PROF = "ContactHeader_SEMANTICS_PROF"
 
 @Composable
 fun ContactHeader(header: ContactsHeader) {
-    Box(modifier = Modifier.height(IMG_HEIGHT)) {
+    Box(modifier = Modifier.height(imageHeight)) {
 
         UrlImage(url = header.image,
                  modifier = Modifier.fillMaxHeight())
 
         Column(modifier = Modifier.align(Alignment.BottomStart)) {
             Text(text = header.name,
-                 modifier = Modifier.padding(DEFAULT_MARGIN, NO_MARGIN)
+                 modifier = Modifier.padding(defaultMargin, noMargin)
                          .semantics { testTag = CONTACTS_HEADER_SEMANTICS_NAME },
                  style = TextStyle.White16)
 
             Text(text = header.profession,
                  modifier =
                  Modifier
-                         .padding(DEFAULT_MARGIN,
-                                  SMALL_MARGIN,
-                                  DEFAULT_MARGIN,
-                                  DEFAULT_MARGIN)
+                         .padding(defaultMargin,
+                                  smallMargin,
+                                  defaultMargin,
+                                  defaultMargin)
                          .semantics { testTag = CONTACTS_HEADER_SEMANTICS_PROF },
                  style = TextStyle.White14)
         }
@@ -48,7 +48,7 @@ fun ContactHeader(header: ContactsHeader) {
 @Preview
 @Composable
 fun PreviewContactHeader() {
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
         ContactHeader(ContactsHeader(
                 image = "https://images.freeimages.com/images/large-previews/996/easter-1399885.jpg",
                 name = "Name",

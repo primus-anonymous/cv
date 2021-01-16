@@ -13,8 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.ui.tooling.preview.Preview
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Filter
-import com.neocaptainnemo.cv.ui.compose.CvColors
-import com.neocaptainnemo.cv.ui.compose.DEFAULT_MARGIN
+import com.neocaptainnemo.cv.ui.compose.cvColors
+
+import com.neocaptainnemo.cv.ui.compose.defaultMargin
 
 @Composable
 fun MenuItem(
@@ -27,7 +28,7 @@ fun MenuItem(
         Text(stringResource(id = title),
              textAlign = TextAlign.Justify,
              modifier = Modifier.weight(1.0f, true)
-                     .padding(end = DEFAULT_MARGIN))
+                     .padding(end = defaultMargin))
 
         RadioButton(modifier = Modifier,
                     selected = selected,
@@ -40,7 +41,7 @@ fun MenuItem(
 @Preview
 @Composable
 fun PreviewMenuItem() {
-    MaterialTheme(colors = CvColors) {
+    MaterialTheme(colors = cvColors()) {
         MenuItem(
                 R.string.action_all,
                 true,
