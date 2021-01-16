@@ -13,8 +13,8 @@ android {
         applicationId = "com.neocaptainnemo.cv"
         minSdkVersion(21)
         targetSdkVersion(30)
-        versionCode = 9
-        versionName = "1.8.0"
+        versionCode = 10
+        versionName = "1.9.0"
         multiDexEnabled = true
 
         testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
