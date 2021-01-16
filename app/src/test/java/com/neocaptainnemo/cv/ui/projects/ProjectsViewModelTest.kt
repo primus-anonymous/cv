@@ -1,11 +1,18 @@
 package com.neocaptainnemo.cv.ui.projects
 
-import com.neocaptainnemo.cv.RxTestRule
-import com.neocaptainnemo.cv.model.Filter
-import com.neocaptainnemo.cv.model.Project
-import com.neocaptainnemo.cv.services.IDataService
-import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Observable
+import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.model.Filter
+import com.neocaptainnemo.cv.core.model.Project
+import com.neocaptainnemo.cv.ui.TestCoroutineRule
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -14,15 +21,16 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ProjectsViewModelTest {
 
-    @JvmField
-    @Rule
-    val rxRule = RxTestRule()
+
+    @get:Rule
+    val coroutineRule = TestCoroutineRule()
 
     @Mock
-    lateinit var dataService: IDataService
+    lateinit var dataService: DataService
 
     lateinit var viewModel: ProjectsViewModel
 
@@ -32,130 +40,285 @@ class ProjectsViewModelTest {
     }
 
     @Test
-    fun `progress during successful fetch`() {
+    fun `progress during successful fetch`() = runBlockingTest {
 
-        whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
+        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
 
-        val testable = viewModel.progress.test()
+        val progressValues = mutableListOf<Boolean>()
 
-        viewModel.projects.test().assertNoErrors()
+        val progressJob = launch {
+            viewModel.progress.collect {
+                progressValues.add(it)
+            }
+        }
 
-        testable.assertValues(false, true, false)
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect { }
+        }
+
+        assertThat(progressValues)
+                .isEqualTo(
+                        listOf(false,
+                               true,
+                               false))
+
+        progressJob.cancel()
+        projectsJob.cancel()
     }
 
     @Test
-    fun `progress during failed fetch`() {
+    fun `progress during failed fetch`() = runBlockingTest {
 
-        whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
+        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
 
-        val testable = viewModel.progress.test()
+        val progressValues = mutableListOf<Boolean>()
 
-        viewModel.projects.test().assertNoErrors()
+        val progressJob = launch {
+            viewModel.progress.collect {
+                progressValues.add(it)
+            }
+        }
 
-        testable.assertValues(false, true, false)
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect { }
+        }
+
+        assertThat(progressValues)
+                .isEqualTo(
+                        listOf(false,
+                               true,
+                               false))
+
+        progressJob.cancel()
+        projectsJob.cancel()
     }
 
     @Test
-    fun `empty state`() {
+    fun `empty state`() = runBlockingTest {
+        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
 
-        whenever(dataService.projects()).then { Observable.just(listOf<Project>()) }
+        val emptyValues = mutableListOf<Boolean>()
 
-        val testable = viewModel.empty.test()
+        val emptyJob = launch {
+            viewModel.empty.collect {
+                emptyValues.add(it)
+            }
+        }
 
-        viewModel.projects.test().assertNoErrors()
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect { }
+        }
 
-        testable.assertValues(false, true)
+        assertThat(emptyValues)
+                .isEqualTo(
+                        listOf(false,
+                               true))
+
+        emptyJob.cancel()
+        projectsJob.cancel()
     }
 
     @Test
-    fun `not empty state`() {
+    fun `not empty state`() = runBlockingTest {
+        whenever(dataService.projects()).doAnswer {
+            flowOf(listOf(Project(),
+                          Project()))
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(Project(), Project())) }
+        val emptyValues = mutableListOf<Boolean>()
 
-        val testable = viewModel.empty.test()
+        val emptyJob = launch {
+            viewModel.empty.collect {
+                emptyValues.add(it)
+            }
+        }
 
-        viewModel.projects.test().assertNoErrors()
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect { }
+        }
 
-        testable.assertValues(false, false)
+        assertThat(emptyValues)
+                .isEqualTo(
+                        listOf(false))
+
+        emptyJob.cancel()
+        projectsJob.cancel()
     }
 
 
     @Test
-    fun `filters set to all`() {
+    fun `filters set to all`() = runBlockingTest {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project1.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer {
+            flowOf(listOf(project1,
+                          project2,
+                          project3))
+        }
 
         viewModel.filter = Filter.ALL
 
-        viewModel.projects.test().assertValues(listOf(project1, project2, project3))
+        val projectValues = mutableListOf<List<Project>>()
+
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect {
+                        projectValues.add(it)
+                    }
+        }
+
+        assertThat(projectValues)
+                .isEqualTo(
+                        listOf(listOf(project1,
+                                      project2,
+                                      project3)))
+
+        projectsJob.cancel()
     }
 
+
     @Test
-    fun `filters only android`() {
+    fun `filters only android`() = runBlockingTest {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project2.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project3.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer {
+            flowOf(listOf(project1,
+                          project2,
+                          project3))
+        }
 
         viewModel.filter = Filter.ANDROID
 
-        viewModel.projects.test().assertValues(listOf(project1, project3))
+        val projectValues = mutableListOf<List<Project>>()
+
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect {
+                        projectValues.add(it)
+                    }
+        }
+
+        assertThat(projectValues)
+                .isEqualTo(
+                        listOf(listOf(project1,
+                                      project3)))
+
+        projectsJob.cancel()
     }
 
     @Test
-    fun `filters only iOS`() {
+    fun `filters only iOS`() = runBlockingTest {
 
-        val project1 = Project()
-        project1.platform = Project.PLATFORM_ANDROID
+        val project1 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        val project2 = Project()
-        project2.platform = Project.PLATFORM_IOS
+        val project2 = Project().apply {
+            platform = Project.PLATFORM_IOS
+        }
 
-        val project3 = Project()
-        project3.platform = Project.PLATFORM_ANDROID
+        val project3 = Project().apply {
+            platform = Project.PLATFORM_ANDROID
+        }
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2, project3)) }
+        whenever(dataService.projects()).doAnswer {
+            flowOf(listOf(project1,
+                          project2,
+                          project3))
+        }
 
         viewModel.filter = Filter.IOS
 
-        viewModel.projects.test().assertValues(listOf(project2))
+        val projectValues = mutableListOf<List<Project>>()
+
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect {
+                        projectValues.add(it)
+                    }
+        }
+
+        assertThat(projectValues)
+                .isEqualTo(
+                        listOf(listOf(project2)))
+
+        projectsJob.cancel()
     }
 
+
     @Test
-    fun `successful fetch`() {
+    fun `successful fetch`() = runBlockingTest {
 
         val project1 = Project()
         val project2 = Project()
 
-        whenever(dataService.projects()).then { Observable.just(listOf(project1, project2)) }
+        whenever(dataService.projects()).doAnswer {
+            flowOf(listOf(project1,
+                          project2))
+        }
 
-        viewModel.projects.test().assertValue(listOf(project1, project2))
+        val projectValues = mutableListOf<List<Project>>()
+
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect {
+                        projectValues.add(it)
+                    }
+        }
+
+        assertThat(projectValues)
+                .isEqualTo(
+                        listOf(listOf(project1,
+                                      project2)))
+
+        projectsJob.cancel()
     }
 
 
     @Test
-    fun `failed fetch`() {
+    fun `failed fetch`() = runBlockingTest {
 
-        whenever(dataService.projects()).then { Observable.error<List<Project>>(RuntimeException()) }
+        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
 
-        viewModel.projects.test().assertValue(listOf())
+        val projectValues = mutableListOf<List<Project>>()
 
+        val projectsJob = launch {
+            viewModel.projects()
+                    .collect {
+                        projectValues.add(it)
+                    }
+        }
+
+        assertThat(projectValues)
+                .isEqualTo(
+                        listOf(listOf<Project>()))
+
+        projectsJob.cancel()
     }
-
 }
