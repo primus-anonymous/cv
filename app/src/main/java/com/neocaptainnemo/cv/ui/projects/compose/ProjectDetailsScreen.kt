@@ -169,7 +169,14 @@ fun ProjectDetailsScreen(
 
 
             TopAppBar(
-                    title = {},
+                    title = {
+                        if (scrollState.value > with(AmbientDensity.current) {
+                                    appbarAppearanceThreshHold.toPx()
+                                }
+                        ) {
+                            Text(text = title.value)
+                        }
+                    },
                     backgroundColor = MaterialTheme.colors.primarySurface
                             .copy(alpha = min(1.0f, scrollState.value /
                                     with(AmbientDensity.current) {
