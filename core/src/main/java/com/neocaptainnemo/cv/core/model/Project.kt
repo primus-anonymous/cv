@@ -1,10 +1,12 @@
 package com.neocaptainnemo.cv.core.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.google.firebase.database.PropertyName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Keep
 data class Project(
         @get: PropertyName("web_pic")
         @set: PropertyName("web_pic")
