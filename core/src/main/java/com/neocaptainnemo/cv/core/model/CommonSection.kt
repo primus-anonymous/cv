@@ -1,8 +1,10 @@
 package com.neocaptainnemo.cv.core.model
 
+import androidx.annotation.Keep
 import com.google.firebase.database.PropertyName
 
 
+@Keep
 data class CommonSection(
 
         @set: PropertyName("title_key")
