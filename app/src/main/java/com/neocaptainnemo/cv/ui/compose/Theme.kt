@@ -21,20 +21,20 @@ val Color.Companion.Primary
     get() = Color(0xFF607D8B)
 
 @Composable
-fun cvColors() : Colors = Colors(
+fun cvColors(isDark: Boolean = isSystemInDarkTheme()) : Colors = Colors(
         primary = Color.Primary,
         primaryVariant = Color(0xFF607D8B),
         secondary = Color(0xFF448AFF),
         secondaryVariant = Color(0xFF448AFF),
-        background = if (isSystemInDarkTheme()) Color.Black else Color.White,
-        surface = if (isSystemInDarkTheme()) Color(0xFF333333) else Color.White,
+        background = if (isDark) Color.Black else Color.White,
+        surface = if (isDark) Color(0xFF333333) else Color.White,
         error = Color.White,
         onPrimary = Color.White,
         onSecondary = Color(0xFF757575),
-        onBackground = if (isSystemInDarkTheme()) Color.White else Color.DefaultText,
-        onSurface = if (isSystemInDarkTheme()) Color.White else Color.DefaultText,
+        onBackground = if (isDark) Color.White else Color.DefaultText,
+        onSurface = if (isDark) Color.White else Color.DefaultText,
         onError = Color.White,
-        isLight = isSystemInDarkTheme().not()
+        isLight = isDark.not()
 )
 
 @Composable
