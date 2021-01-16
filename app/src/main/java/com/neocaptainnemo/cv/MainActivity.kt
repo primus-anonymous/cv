@@ -138,6 +138,15 @@ class MainActivity : AppCompatActivity() {
 
                 analyticsService.log(AnalyticsEvent.CV_CLICKED)
             }
+
+            ContactType.TELEGRAM -> {
+                Intent(Intent.ACTION_VIEW,
+                       Uri.parse("https://telegram.me/${contact.value}")).also {
+                    startActivity(it)
+                }
+
+                analyticsService.log(AnalyticsEvent.TELEGRAM_CLICKED)
+            }
         }
     }
 }

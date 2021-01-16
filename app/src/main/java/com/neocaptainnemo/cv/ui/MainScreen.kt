@@ -23,11 +23,11 @@ enum class Tab(
         @DrawableRes val icon: Int,
 ) {
     CONTACTS(R.string.title_contacts,
-             R.drawable.ic_call_black_24px),
+             R.drawable.ic_call),
     PROJECTS(R.string.project,
-             R.drawable.ic_shop_black_24px),
+             R.drawable.ic_store),
     COMMON(R.string.action_common,
-           R.drawable.ic_inbox_black_24px)
+           R.drawable.ic_common)
 }
 
 

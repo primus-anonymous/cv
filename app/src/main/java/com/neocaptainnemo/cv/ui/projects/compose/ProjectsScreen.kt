@@ -61,7 +61,7 @@ fun ProjectsScreen(
                               .clickable(onClick = {
                                   menuOpenedState.value = menuOpenedState.value.not()
                               })) {
-                          Image(vectorResource(id = R.drawable.ic_baseline_filter_list_24))
+                          Image(vectorResource(id = R.drawable.ic_filters))
 
                           if (menuOpenedState.value) {
                               DropdownMenu(onDismissRequest = {

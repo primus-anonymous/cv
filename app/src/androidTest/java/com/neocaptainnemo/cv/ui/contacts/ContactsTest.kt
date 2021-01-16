@@ -52,7 +52,7 @@ class ContactsTest {
                 listOf(
                         ContactSection(ContactType.PHONE, R.string.title_contacts,
                                        R.string.tap_to_call,
-                                       R.drawable.ic_call_black_24px,
+                                       R.drawable.ic_call,
                                        itemValue))
         )
         val progressFlow = flowOf(false)

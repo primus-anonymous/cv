@@ -20,6 +20,7 @@ enum class AnalyticsEvent(val eventValue: String) {
     EMAIL_CLICKED("emailClicked"),
     GIT_HUB_CLICKED("gitHubClicked"),
     CV_CLICKED("cvClicked"),
+    TELEGRAM_CLICKED("telegramClicked"),
     PROJECT_CODE_CLICKED("projectSourceCodeClicked"),
     PROJECT_STORE_CLICKED("projectSoreClicked"),
     PROJECT_SHARED_CLICKED("projectShareClicked")

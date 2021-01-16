@@ -31,7 +31,15 @@ class ContactsViewModel(private val dataService: DataService) : ViewModel() {
                     sections.add(ContactSection(ContactType.PHONE,
                                                 R.string.action_phone,
                                                 R.string.tap_to_call,
-                                                R.drawable.ic_call_black_24px,
+                                                R.drawable.ic_call,
+                                                it))
+                }
+
+                it.telegram?.let {
+                    sections.add(ContactSection(ContactType.TELEGRAM,
+                                                R.string.action_telegram,
+                                                R.string.tap_to_open_telegram,
+                                                R.drawable.ic_telegram,
                                                 it))
                 }
 
@@ -39,7 +47,7 @@ class ContactsViewModel(private val dataService: DataService) : ViewModel() {
                     sections.add(ContactSection(ContactType.EMAIL,
                                                 R.string.action_email,
                                                 R.string.tap_to_send_email,
-                                                R.drawable.ic_email_black_24px,
+                                                R.drawable.ic_email,
                                                 it))
                 }
 
@@ -47,7 +55,7 @@ class ContactsViewModel(private val dataService: DataService) : ViewModel() {
                     sections.add(ContactSection(ContactType.GIT_HUB,
                                                 R.string.action_github,
                                                 R.string.tap_to_view_github,
-                                                R.drawable.ic_link_black_24px,
+                                                R.drawable.ic_github,
                                                 it))
                 }
 
@@ -55,7 +63,7 @@ class ContactsViewModel(private val dataService: DataService) : ViewModel() {
                     sections.add(ContactSection(ContactType.CV,
                                                 R.string.action_cv,
                                                 R.string.tap_to_save_cv,
-                                                R.drawable.ic_save_white_24px,
+                                                R.drawable.ic_cv,
                                                 it))
                 }
 

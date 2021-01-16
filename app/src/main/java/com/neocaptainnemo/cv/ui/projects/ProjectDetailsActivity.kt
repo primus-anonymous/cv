@@ -69,6 +69,8 @@ class ProjectDetailsActivity : AppCompatActivity() {
                                          type = "text/plain"
                                      }
 
+                                     analyticsService.log(AnalyticsEvent.PROJECT_SHARED_CLICKED)
+
                                      Intent.createChooser(sendIntent,
                                                           null)
                                              .also {

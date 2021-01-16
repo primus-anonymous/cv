@@ -25,7 +25,7 @@ import kotlin.math.min
 
 private val imageHeight = 220.dp
 private val logoWidth = 128.dp
-private val appbarAppearenceThreshHold = 64.dp
+private val appbarAppearanceThreshHold = 64.dp
 
 @Composable
 fun ProjectDetailsScreen(
@@ -159,7 +159,7 @@ fun ProjectDetailsScreen(
                         .align(Alignment.BottomEnd)
                         .padding(defaultMargin),
                                      content = {
-                                         Image(vectorResource(id = R.drawable.ic_shop_white_24px))
+                                         Image(vectorResource(id = R.drawable.ic_store))
                                      },
                                      onClick = {
                                          shopCLicked?.invoke(viewModel.storeUrl.orEmpty())
@@ -173,7 +173,7 @@ fun ProjectDetailsScreen(
                     backgroundColor = MaterialTheme.colors.primarySurface
                             .copy(alpha = min(1.0f, scrollState.value /
                                     with(AmbientDensity.current) {
-                                        appbarAppearenceThreshHold.toPx()
+                                        appbarAppearanceThreshHold.toPx()
                                     }
                             )),
                     navigationIcon = {
@@ -185,7 +185,7 @@ fun ProjectDetailsScreen(
 
                     },
                     actions = {
-                        Image(vectorResource(id = R.drawable.ic_baseline_share_24),
+                        Image(vectorResource(id = R.drawable.ic_share),
                               modifier = Modifier.padding(end = halfMargin)
                                       .clickable(onClick = {
                                           shareClicked?.invoke()

@@ -33,4 +33,8 @@ data class Contacts(
         @get: PropertyName("cv_url_key")
         @set: PropertyName("cv_url_key")
         var cvUrl: String? = null,
+
+        @get: PropertyName("telegram")
+        @set: PropertyName("telegram")
+        var telegram: String? = null,
 )

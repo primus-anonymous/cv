@@ -109,6 +109,7 @@ class ContactsViewModelTest {
         val phoneValue = "89032345678"
         val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
         val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
 
         val response = Contacts().apply {
             profession = professionValue
@@ -118,6 +119,7 @@ class ContactsViewModelTest {
             phone = phoneValue
             cvUrl = cvUrlValue
             github = githubValue
+            telegram = telegramValue
         }
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
@@ -138,22 +140,27 @@ class ContactsViewModelTest {
                 ContactSection(ContactType.PHONE,
                                R.string.action_phone,
                                R.string.tap_to_call,
-                               R.drawable.ic_call_black_24px,
+                               R.drawable.ic_call,
                                phoneValue),
+                ContactSection(ContactType.TELEGRAM,
+                               R.string.action_telegram,
+                               R.string.tap_to_open_telegram,
+                               R.drawable.ic_telegram,
+                               telegramValue),
                 ContactSection(ContactType.EMAIL,
                                R.string.action_email,
                                R.string.tap_to_send_email,
-                               R.drawable.ic_email_black_24px,
+                               R.drawable.ic_email,
                                emailValue),
                 ContactSection(ContactType.GIT_HUB,
                                R.string.action_github,
                                R.string.tap_to_view_github,
-                               R.drawable.ic_link_black_24px,
+                               R.drawable.ic_github,
                                githubValue),
                 ContactSection(ContactType.CV,
                                R.string.action_cv,
                                R.string.tap_to_save_cv,
-                               R.drawable.ic_save_white_24px,
+                               R.drawable.ic_cv,
                                cvUrlValue)
         )
 
@@ -176,6 +183,7 @@ class ContactsViewModelTest {
         val phoneValue = "89032345678"
         val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
         val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
 
         val response = Contacts().apply {
             profession = professionValue
@@ -184,6 +192,7 @@ class ContactsViewModelTest {
             phone = phoneValue
             cvUrl = cvUrlValue
             github = githubValue
+            telegram = telegramValue
         }
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
@@ -204,17 +213,22 @@ class ContactsViewModelTest {
                 ContactSection(ContactType.PHONE,
                                R.string.action_phone,
                                R.string.tap_to_call,
-                               R.drawable.ic_call_black_24px,
+                               R.drawable.ic_call,
                                phoneValue),
+                ContactSection(ContactType.TELEGRAM,
+                               R.string.action_telegram,
+                               R.string.tap_to_open_telegram,
+                               R.drawable.ic_telegram,
+                               telegramValue),
                 ContactSection(ContactType.GIT_HUB,
                                R.string.action_github,
                                R.string.tap_to_view_github,
-                               R.drawable.ic_link_black_24px,
+                               R.drawable.ic_github,
                                githubValue),
                 ContactSection(ContactType.CV,
                                R.string.action_cv,
                                R.string.tap_to_save_cv,
-                               R.drawable.ic_save_white_24px,
+                               R.drawable.ic_cv,
                                cvUrlValue)
         )
 
@@ -238,6 +252,7 @@ class ContactsViewModelTest {
         val emailValue = "email@email.com"
         val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
         val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
 
         val response = Contacts().apply {
             profession = professionValue
@@ -246,6 +261,7 @@ class ContactsViewModelTest {
             email = emailValue
             cvUrl = cvUrlValue
             github = githubValue
+            telegram = telegramValue
         }
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
@@ -263,20 +279,25 @@ class ContactsViewModelTest {
                 ContactsHeader(picValue,
                                nameValue,
                                professionValue),
+                ContactSection(ContactType.TELEGRAM,
+                               R.string.action_telegram,
+                               R.string.tap_to_open_telegram,
+                               R.drawable.ic_telegram,
+                               telegramValue),
                 ContactSection(ContactType.EMAIL,
                                R.string.action_email,
                                R.string.tap_to_send_email,
-                               R.drawable.ic_email_black_24px,
+                               R.drawable.ic_email,
                                emailValue),
                 ContactSection(ContactType.GIT_HUB,
                                R.string.action_github,
                                R.string.tap_to_view_github,
-                               R.drawable.ic_link_black_24px,
+                               R.drawable.ic_github,
                                githubValue),
                 ContactSection(ContactType.CV,
                                R.string.action_cv,
                                R.string.tap_to_save_cv,
-                               R.drawable.ic_save_white_24px,
+                               R.drawable.ic_cv,
                                cvUrlValue)
         )
 
@@ -299,6 +320,7 @@ class ContactsViewModelTest {
         val emailValue = "email@email.com"
         val phoneValue = "89032345678"
         val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
 
         val response = Contacts().apply {
             profession = professionValue
@@ -307,6 +329,7 @@ class ContactsViewModelTest {
             email = emailValue
             phone = phoneValue
             github = githubValue
+            telegram = telegramValue
         }
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
@@ -327,17 +350,22 @@ class ContactsViewModelTest {
                 ContactSection(ContactType.PHONE,
                                R.string.action_phone,
                                R.string.tap_to_call,
-                               R.drawable.ic_call_black_24px,
+                               R.drawable.ic_call,
                                phoneValue),
+                ContactSection(ContactType.TELEGRAM,
+                               R.string.action_telegram,
+                               R.string.tap_to_open_telegram,
+                               R.drawable.ic_telegram,
+                               telegramValue),
                 ContactSection(ContactType.EMAIL,
                                R.string.action_email,
                                R.string.tap_to_send_email,
-                               R.drawable.ic_email_black_24px,
+                               R.drawable.ic_email,
                                emailValue),
                 ContactSection(ContactType.GIT_HUB,
                                R.string.action_github,
                                R.string.tap_to_view_github,
-                               R.drawable.ic_link_black_24px,
+                               R.drawable.ic_github,
                                githubValue)
         )
 
@@ -360,6 +388,7 @@ class ContactsViewModelTest {
         val emailValue = "email@email.com"
         val phoneValue = "89032345678"
         val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val telegramValue = "telegram"
 
         val response = Contacts().apply {
             profession = professionValue
@@ -368,6 +397,7 @@ class ContactsViewModelTest {
             email = emailValue
             phone = phoneValue
             cvUrl = cvUrlValue
+            telegram = telegramValue
         }
 
         whenever(dataService.contacts()).doAnswer { flowOf(response) }
@@ -388,17 +418,22 @@ class ContactsViewModelTest {
                 ContactSection(ContactType.PHONE,
                                R.string.action_phone,
                                R.string.tap_to_call,
-                               R.drawable.ic_call_black_24px,
+                               R.drawable.ic_call,
                                phoneValue),
+                ContactSection(ContactType.TELEGRAM,
+                               R.string.action_telegram,
+                               R.string.tap_to_open_telegram,
+                               R.drawable.ic_telegram,
+                               telegramValue),
                 ContactSection(ContactType.EMAIL,
                                R.string.action_email,
                                R.string.tap_to_send_email,
-                               R.drawable.ic_email_black_24px,
+                               R.drawable.ic_email,
                                emailValue),
                 ContactSection(ContactType.CV,
                                R.string.action_cv,
                                R.string.tap_to_save_cv,
-                               R.drawable.ic_save_white_24px,
+                               R.drawable.ic_cv,
                                cvUrlValue)
         )
 
@@ -408,6 +443,74 @@ class ContactsViewModelTest {
 
         contactsJob.cancel()
 
+    }
+
+    @Test
+    fun `contacts list with no telegram`() = runBlockingTest {
+
+        val professionValue = "professsion"
+
+        val nameValue = "name"
+
+        val picValue = "http://userpicimage"
+
+        val emailValue = "email@email.com"
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
+
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+            github = githubValue
+        }
+
+        whenever(dataService.contacts()).doAnswer { flowOf(response) }
+
+        val contactValues = mutableListOf<List<Any>>()
+
+        val contactsJob = launch {
+            viewModel.contacts()
+                    .collect {
+                        contactValues.add(it)
+                    }
+        }
+
+        val expected = listOf(
+                ContactsHeader(picValue,
+                               nameValue,
+                               professionValue),
+                ContactSection(ContactType.PHONE,
+                               R.string.action_phone,
+                               R.string.tap_to_call,
+                               R.drawable.ic_call,
+                               phoneValue),
+                ContactSection(ContactType.EMAIL,
+                               R.string.action_email,
+                               R.string.tap_to_send_email,
+                               R.drawable.ic_email,
+                               emailValue),
+                ContactSection(ContactType.GIT_HUB,
+                               R.string.action_github,
+                               R.string.tap_to_view_github,
+                               R.drawable.ic_github,
+                               githubValue),
+                ContactSection(ContactType.CV,
+                               R.string.action_cv,
+                               R.string.tap_to_save_cv,
+                               R.drawable.ic_cv,
+                               cvUrlValue)
+        )
+
+        assertThat(contactValues)
+                .isEqualTo(
+                        listOf(expected))
+
+        contactsJob.cancel()
     }
 
     @Test

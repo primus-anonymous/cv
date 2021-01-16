@@ -64,7 +64,7 @@ fun PreviewContactItem() {
                 ContactType.CV,
                 R.string.title_cv,
                 R.string.action_cv,
-                R.drawable.ic_contacts_black_24px,
+                R.drawable.ic_email,
                 "value"
         ),
                     itemClicked = null)
