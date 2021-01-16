@@ -98,7 +98,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:2.6.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 
-    androidTestImplementation("androidx.ui:ui-test:$composeVersion")
+    androidTestImplementation("androidx.ui:ui-test:$composeToolingVersion")
 }
 
 apply(plugin = "com.google.gms.google-services")

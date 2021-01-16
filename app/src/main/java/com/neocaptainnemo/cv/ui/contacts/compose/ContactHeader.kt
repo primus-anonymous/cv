@@ -24,7 +24,8 @@ fun ContactHeader(header: ContactsHeader) {
     Box(modifier = Modifier.height(imageHeight)) {
 
         UrlImage(url = header.image,
-                 modifier = Modifier.fillMaxHeight())
+                 modifier = Modifier.fillMaxHeight()
+                         .fillMaxWidth())
 
         Column(modifier = Modifier.align(Alignment.BottomStart)) {
             Text(text = header.name,

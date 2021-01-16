@@ -3,7 +3,7 @@ package com.neocaptainnemo.cv.ui.common.compose
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -31,10 +31,12 @@ fun CommonScreen(
         })
 
         Box {
-            LazyColumnFor(items = contactsList.value) {
-                CommonSectionItem(
-                        title = it.title.orEmpty(),
-                        description = it.description.orEmpty())
+            LazyColumn {
+                items(items = contactsList.value, itemContent = {
+                    CommonSectionItem(
+                            title = it.title.orEmpty(),
+                            description = it.description.orEmpty())
+                })
             }
 
             if (progress.value) {

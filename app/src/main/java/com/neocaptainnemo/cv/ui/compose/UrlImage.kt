@@ -55,15 +55,13 @@ fun UrlImage(
                     .error(R.drawable.placeholder)
                     .target(
                             onStart = { placeholder ->
-                                asset.value = placeholder?.toBitmap(width,
-                                                                    height)
+                                asset.value = placeholder?.toBitmap(width, height)
                             },
                             onSuccess = { drawable ->
                                 asset.value = drawable.toBitmap()
                             },
                             onError = { error ->
-                                asset.value = error?.toBitmap(width,
-                                                              height)
+                                asset.value = error?.toBitmap(width, height)
                             }
                     )
                     .build()

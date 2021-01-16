@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -97,13 +96,15 @@ fun ProjectsScreen(
                   })
 
         Box {
-            LazyColumnFor(items = projectsList) {
-                GridColumn(columns = columns) {
-                    it.map { proj ->
-                        ProjectItem(project = proj,
-                                    itemClicked = itemClicked)
+            LazyColumn {
+                items(items = projectsList, itemContent = {
+                    GridColumn(columns = columns) {
+                        it.map { proj ->
+                            ProjectItem(project = proj,
+                                        itemClicked = itemClicked)
+                        }
                     }
-                }
+                })
             }
 
             if (progress.value) {
