@@ -4,5 +4,6 @@ enum class ContactType {
     EMAIL,
     PHONE,
     GIT_HUB,
-    CV
+    CV,
+    TELEGRAM
 }
