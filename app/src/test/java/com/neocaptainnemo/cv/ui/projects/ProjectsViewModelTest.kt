@@ -20,11 +20,9 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ProjectsViewModelTest {
-
 
     @get:Rule
     val coroutineRule = TestCoroutineRule()
@@ -54,14 +52,17 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(
-                        listOf(false,
-                               true,
-                               false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
 
         progressJob.cancel()
         projectsJob.cancel()
@@ -82,14 +83,17 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(
-                        listOf(false,
-                               true,
-                               false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
 
         progressJob.cancel()
         projectsJob.cancel()
@@ -109,13 +113,16 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(emptyValues)
-                .isEqualTo(
-                        listOf(false,
-                               true))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true
+                )
+            )
 
         emptyJob.cancel()
         projectsJob.cancel()
@@ -124,8 +131,12 @@ class ProjectsViewModelTest {
     @Test
     fun `not empty state`() = runBlockingTest {
         whenever(dataService.projects()).doAnswer {
-            flowOf(listOf(Project(),
-                          Project()))
+            flowOf(
+                listOf(
+                    Project(),
+                    Project()
+                )
+            )
         }
 
         val emptyValues = mutableListOf<Boolean>()
@@ -138,17 +149,17 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(emptyValues)
-                .isEqualTo(
-                        listOf(false))
+            .isEqualTo(
+                listOf(false)
+            )
 
         emptyJob.cancel()
         projectsJob.cancel()
     }
-
 
     @Test
     fun `filters set to all`() = runBlockingTest {
@@ -166,9 +177,13 @@ class ProjectsViewModelTest {
         }
 
         whenever(dataService.projects()).doAnswer {
-            flowOf(listOf(project1,
-                          project2,
-                          project3))
+            flowOf(
+                listOf(
+                    project1,
+                    project2,
+                    project3
+                )
+            )
         }
 
         viewModel.filter = Filter.ALL
@@ -177,20 +192,24 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect {
-                        projectValues.add(it)
-                    }
+                .collect {
+                    projectValues.add(it)
+                }
         }
 
         assertThat(projectValues)
-                .isEqualTo(
-                        listOf(listOf(project1,
-                                      project2,
-                                      project3)))
+            .isEqualTo(
+                listOf(
+                    listOf(
+                        project1,
+                        project2,
+                        project3
+                    )
+                )
+            )
 
         projectsJob.cancel()
     }
-
 
     @Test
     fun `filters only android`() = runBlockingTest {
@@ -208,9 +227,13 @@ class ProjectsViewModelTest {
         }
 
         whenever(dataService.projects()).doAnswer {
-            flowOf(listOf(project1,
-                          project2,
-                          project3))
+            flowOf(
+                listOf(
+                    project1,
+                    project2,
+                    project3
+                )
+            )
         }
 
         viewModel.filter = Filter.ANDROID
@@ -219,15 +242,20 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect {
-                        projectValues.add(it)
-                    }
+                .collect {
+                    projectValues.add(it)
+                }
         }
 
         assertThat(projectValues)
-                .isEqualTo(
-                        listOf(listOf(project1,
-                                      project3)))
+            .isEqualTo(
+                listOf(
+                    listOf(
+                        project1,
+                        project3
+                    )
+                )
+            )
 
         projectsJob.cancel()
     }
@@ -248,9 +276,13 @@ class ProjectsViewModelTest {
         }
 
         whenever(dataService.projects()).doAnswer {
-            flowOf(listOf(project1,
-                          project2,
-                          project3))
+            flowOf(
+                listOf(
+                    project1,
+                    project2,
+                    project3
+                )
+            )
         }
 
         viewModel.filter = Filter.IOS
@@ -259,18 +291,18 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect {
-                        projectValues.add(it)
-                    }
+                .collect {
+                    projectValues.add(it)
+                }
         }
 
         assertThat(projectValues)
-                .isEqualTo(
-                        listOf(listOf(project2)))
+            .isEqualTo(
+                listOf(listOf(project2))
+            )
 
         projectsJob.cancel()
     }
-
 
     @Test
     fun `successful fetch`() = runBlockingTest {
@@ -279,27 +311,35 @@ class ProjectsViewModelTest {
         val project2 = Project()
 
         whenever(dataService.projects()).doAnswer {
-            flowOf(listOf(project1,
-                          project2))
+            flowOf(
+                listOf(
+                    project1,
+                    project2
+                )
+            )
         }
 
         val projectValues = mutableListOf<List<Project>>()
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect {
-                        projectValues.add(it)
-                    }
+                .collect {
+                    projectValues.add(it)
+                }
         }
 
         assertThat(projectValues)
-                .isEqualTo(
-                        listOf(listOf(project1,
-                                      project2)))
+            .isEqualTo(
+                listOf(
+                    listOf(
+                        project1,
+                        project2
+                    )
+                )
+            )
 
         projectsJob.cancel()
     }
-
 
     @Test
     fun `failed fetch`() = runBlockingTest {
@@ -310,14 +350,15 @@ class ProjectsViewModelTest {
 
         val projectsJob = launch {
             viewModel.projects()
-                    .collect {
-                        projectValues.add(it)
-                    }
+                .collect {
+                    projectValues.add(it)
+                }
         }
 
         assertThat(projectValues)
-                .isEqualTo(
-                        listOf(listOf<Project>()))
+            .isEqualTo(
+                listOf(listOf<Project>())
+            )
 
         projectsJob.cancel()
     }

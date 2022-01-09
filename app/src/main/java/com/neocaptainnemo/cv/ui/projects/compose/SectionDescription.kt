@@ -8,16 +8,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.text.toSpanned
-import androidx.ui.tooling.preview.Preview
-import com.neocaptainnemo.cv.ui.compose.*
+import com.neocaptainnemo.cv.ui.compose.cvColors
+import com.neocaptainnemo.cv.ui.compose.defaultMargin
+import com.neocaptainnemo.cv.ui.compose.secondary14
+import com.neocaptainnemo.cv.ui.compose.smallMargin
 
 @Composable
 fun SectionDescription(string: Spanned) {
-    Text(text = AnnotatedString(string.toString()),
-         style = TextStyle.secondary14(),
-         modifier = Modifier.padding(horizontal = defaultMargin,
-                                     vertical = smallMargin)
+    Text(
+        text = AnnotatedString(string.toString()),
+        style = TextStyle.secondary14(),
+        modifier = Modifier.padding(
+            horizontal = defaultMargin,
+            vertical = smallMargin
+        )
     )
 }
 

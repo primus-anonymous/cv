@@ -2,9 +2,11 @@ package com.neocaptainnemo.cv.core.locale
 
 import android.content.Context
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
+import javax.inject.Inject
 
-internal class LocaleServiceImpl(private val context: Context) : LocaleService {
+internal class LocaleServiceImpl @Inject constructor(@ApplicationContext private val context: Context) : LocaleService {
 
     override val locale: String
         get() {

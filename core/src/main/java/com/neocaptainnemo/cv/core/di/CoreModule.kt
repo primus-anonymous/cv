@@ -6,19 +6,32 @@ import com.neocaptainnemo.cv.core.data.DataService
 import com.neocaptainnemo.cv.core.data.DataServiceImpl
 import com.neocaptainnemo.cv.core.locale.LocaleService
 import com.neocaptainnemo.cv.core.locale.LocaleServiceImpl
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@ExperimentalCoroutinesApi
-val coreModule = module {
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class CoreModule {
 
-    single<DataService> {
-        DataServiceImpl(get())
-    }
-    single<LocaleService> {
-        LocaleServiceImpl(get())
-    }
-    single<AnalyticsService> {
-        AnalyticsServiceImpl(get())
-    }
+    @Binds
+    @Singleton
+    internal abstract fun bindAnalyticsService(
+        analyticsServiceImpl: AnalyticsServiceImpl
+    ): AnalyticsService
+
+    @Binds
+    @Singleton
+    internal abstract fun bindDataService(
+        dataServiceImpl: DataServiceImpl
+    ): DataService
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLocaleService(
+        localeServiceImpl: LocaleServiceImpl
+    ): LocaleService
+
 }

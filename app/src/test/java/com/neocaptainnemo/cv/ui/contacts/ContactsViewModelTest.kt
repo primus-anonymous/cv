@@ -20,11 +20,9 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class ContactsViewModelTest {
-
 
     @get:Rule
     val coroutineRule = TestCoroutineRule()
@@ -54,14 +52,17 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(
-                     listOf(false,
-                            true,
-                            false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
 
         progressJob.cancel()
         contactsJob.cancel()
@@ -82,19 +83,21 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(
-                     listOf(false,
-                            true,
-                            false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
 
         progressJob.cancel()
         contactsJob.cancel()
     }
-
 
     @Test
     fun `successful fetch`() = runBlockingTest {
@@ -128,45 +131,58 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
     }
@@ -201,44 +217,54 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
     }
-
 
     @Test
     fun `contacts list with no phone`() = runBlockingTest {
@@ -270,44 +296,54 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
     }
-
 
     @Test
     fun `contacts list with no cv`() = runBlockingTest {
@@ -338,43 +374,53 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
-
     }
 
     @Test
@@ -406,43 +452,53 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
-
     }
 
     @Test
@@ -475,40 +531,51 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
         assertThat(contactValues)
-                .isEqualTo(
-                        listOf(expected))
+            .isEqualTo(
+                listOf(expected)
+            )
 
         contactsJob.cancel()
     }
@@ -522,14 +589,15 @@ class ContactsViewModelTest {
 
         val contactsJob = launch {
             viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                .collect {
+                    contactValues.add(it)
+                }
         }
 
         assertThat(contactValues)
-                .isEqualTo(
-                     listOf(listOf<Any>()))
+            .isEqualTo(
+                listOf(listOf<Any>())
+            )
 
         contactsJob.cancel()
     }

@@ -46,11 +46,15 @@ class ProjectDetailsTest {
 
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
 
-        val project = Project(name = "Name",
-                              storeUrl = "www.some.com")
+        val project = Project(
+            name = "Name",
+            storeUrl = "www.some.com"
+        )
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name www.some.com")
     }
@@ -61,11 +65,15 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
         whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
-        val project = Project(name = "Name",
-                              gitHub = "github.com")
+        val project = Project(
+            name = "Name",
+            gitHub = "github.com"
+        )
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name Code github.com")
     }
@@ -76,12 +84,16 @@ class ProjectDetailsTest {
         whenever(app.getString(R.string.project)).doAnswer { "Project" }
         whenever(app.getString(R.string.code)).doAnswer { "Code" }
 
-        val project = Project(name = "Name",
-                              storeUrl = "www.some.com",
-                              gitHub = "github.com")
+        val project = Project(
+            name = "Name",
+            storeUrl = "www.some.com",
+            gitHub = "github.com"
+        )
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         assertThat(viewModel.shareUrl).isEqualTo("Project Name www.some.com Code github.com")
     }
@@ -91,8 +103,10 @@ class ProjectDetailsTest {
 
         val project = Project(storeUrl = "www.some.com")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val storeVisibilityValues = mutableListOf<Boolean>()
 
@@ -103,8 +117,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(storeVisibilityValues)
-                .isEqualTo(
-                        listOf(true))
+            .isEqualTo(
+                listOf(true)
+            )
 
         storeVisJob.cancel()
     }
@@ -114,8 +129,10 @@ class ProjectDetailsTest {
 
         val project = Project(storeUrl = "")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val storeVisibilityValues = mutableListOf<Boolean>()
 
@@ -126,11 +143,11 @@ class ProjectDetailsTest {
         }
 
         assertThat(storeVisibilityValues)
-                .isEqualTo(
-                        listOf(false))
+            .isEqualTo(
+                listOf(false)
+            )
 
         storeVisJob.cancel()
-
     }
 
     @Test
@@ -138,8 +155,10 @@ class ProjectDetailsTest {
 
         val project = Project(gitHub = "www.some.com")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val githubVisibilityValues = mutableListOf<Boolean>()
 
@@ -150,8 +169,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(githubVisibilityValues)
-                .isEqualTo(
-                        listOf(true))
+            .isEqualTo(
+                listOf(true)
+            )
 
         githubVisJob.cancel()
     }
@@ -161,8 +181,10 @@ class ProjectDetailsTest {
 
         val project = Project(gitHub = "")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val githubVisibilityValues = mutableListOf<Boolean>()
 
@@ -173,8 +195,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(githubVisibilityValues)
-                .isEqualTo(
-                        listOf(false))
+            .isEqualTo(
+                listOf(false)
+            )
 
         githubVisJob.cancel()
     }
@@ -184,8 +207,10 @@ class ProjectDetailsTest {
 
         val project = Project(platform = Project.PLATFORM_ANDROID)
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val platformImageValues = mutableListOf<Int>()
 
@@ -196,8 +221,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(platformImageValues)
-                .isEqualTo(
-                        listOf(R.drawable.ic_android))
+            .isEqualTo(
+                listOf(R.drawable.ic_android)
+            )
 
         platformImageJob.cancel()
     }
@@ -207,8 +233,10 @@ class ProjectDetailsTest {
 
         val project = Project(platform = Project.PLATFORM_IOS)
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val platformImageValues = mutableListOf<Int>()
 
@@ -219,8 +247,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(platformImageValues)
-                .isEqualTo(
-                        listOf(R.drawable.ic_apple))
+            .isEqualTo(
+                listOf(R.drawable.ic_apple)
+            )
 
         platformImageJob.cancel()
     }
@@ -230,8 +259,10 @@ class ProjectDetailsTest {
 
         val project = Project(webPic = "picurl")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val webPicValues = mutableListOf<String>()
 
@@ -242,8 +273,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(webPicValues)
-                .isEqualTo(
-                        listOf("picurl"))
+            .isEqualTo(
+                listOf("picurl")
+            )
 
         webPicJob.cancel()
     }
@@ -253,8 +285,10 @@ class ProjectDetailsTest {
 
         val project = Project(coverPic = "coverpic")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val coverPicValues = mutableListOf<String>()
 
@@ -265,8 +299,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(coverPicValues)
-                .isEqualTo(
-                        listOf("coverpic"))
+            .isEqualTo(
+                listOf("coverpic")
+            )
 
         coverPicJob.cancel()
     }
@@ -276,8 +311,10 @@ class ProjectDetailsTest {
 
         val project = Project(name = "name")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val projectNameValues = mutableListOf<String>()
 
@@ -288,8 +325,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(projectNameValues)
-                .isEqualTo(
-                        listOf("name"))
+            .isEqualTo(
+                listOf("name")
+            )
 
         projectNameJob.cancel()
     }
@@ -299,8 +337,10 @@ class ProjectDetailsTest {
 
         val project = Project(stack = "stack")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val stackValues = mutableListOf<String>()
 
@@ -311,8 +351,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(stackValues)
-                .isEqualTo(
-                        listOf("stack"))
+            .isEqualTo(
+                listOf("stack")
+            )
 
         stackJob.cancel()
     }
@@ -322,8 +363,10 @@ class ProjectDetailsTest {
 
         val project = Project(vendor = "company")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val companyValues = mutableListOf<String>()
 
@@ -334,8 +377,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(companyValues)
-                .isEqualTo(
-                        listOf("company"))
+            .isEqualTo(
+                listOf("company")
+            )
 
         companyJob.cancel()
     }
@@ -345,8 +389,10 @@ class ProjectDetailsTest {
 
         val project = Project(duties = "duties")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val dutiesValues = mutableListOf<String>()
 
@@ -357,8 +403,9 @@ class ProjectDetailsTest {
         }
 
         assertThat(dutiesValues)
-                .isEqualTo(
-                        listOf("duties"))
+            .isEqualTo(
+                listOf("duties")
+            )
 
         dutiesJob.cancel()
     }
@@ -368,8 +415,10 @@ class ProjectDetailsTest {
 
         val project = Project(description = "description")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val detailsDescriptionValues = mutableListOf<String>()
 
@@ -380,7 +429,8 @@ class ProjectDetailsTest {
         }
 
         assertThat(detailsDescriptionValues).isEqualTo(
-                listOf("description"))
+            listOf("description")
+        )
 
         detailsDescriptionJob.cancel()
     }
@@ -390,8 +440,10 @@ class ProjectDetailsTest {
 
         val project = Project(gitHub = "githuburl")
 
-        viewModel = ProjectDetailsViewModel(app,
-                                            project)
+        viewModel = ProjectDetailsViewModel(
+            app,
+            project
+        )
 
         val sourceCodeValues = mutableListOf<String>()
 
@@ -402,10 +454,10 @@ class ProjectDetailsTest {
         }
 
         assertThat(sourceCodeValues)
-                .isEqualTo(
-                        listOf("githuburl"))
+            .isEqualTo(
+                listOf("githuburl")
+            )
 
         sourceCodeJob.cancel()
     }
 }
-

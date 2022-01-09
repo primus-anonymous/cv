@@ -2,7 +2,7 @@ language: android
 
 jdk:
   # Jdk version used by your project
-  - oraclejdk8
+  - oraclejdk11
 
 android:
   components:
@@ -15,18 +15,15 @@ android:
     - platform-tools
     - tools
 
-    # The BuildTools version used by your project
-    - build-tools-30.0.5
-
     # The SDK version used to compile your project
-    - android-30
+    - android-31
 
     # Additional components
     - extra-google-google_play_services
     - extra-android-support
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-30
+    - addon-google_apis-google-31
 
 before_install:
   - yes | sdkmanager "platforms;android-28"

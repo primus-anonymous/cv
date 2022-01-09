@@ -19,7 +19,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class CommonViewModelTest {
@@ -46,18 +45,22 @@ class CommonViewModelTest {
         val progressValues = mutableListOf<Boolean>()
         val progressJob = launch {
             viewModel.progress
-                    .collect { progressValues.add(it) }
+                .collect { progressValues.add(it) }
         }
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(listOf(false,
-                                  true,
-                                  false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
         progressJob.cancel()
         commonValuesJob.cancel()
     }
@@ -70,18 +73,22 @@ class CommonViewModelTest {
         val progressValues = mutableListOf<Boolean>()
         val progressJob = launch {
             viewModel.progress
-                    .collect { progressValues.add(it) }
+                .collect { progressValues.add(it) }
         }
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(progressValues)
-                .isEqualTo(listOf(false,
-                                  true,
-                                  false))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true,
+                    false
+                )
+            )
 
         progressJob.cancel()
         commonValuesJob.cancel()
@@ -94,48 +101,54 @@ class CommonViewModelTest {
         val emptyValues = mutableListOf<Boolean>()
         val emptyJob = launch {
             viewModel.empty
-                    .collect { emptyValues.add(it) }
+                .collect { emptyValues.add(it) }
         }
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(emptyValues)
-                .isEqualTo(listOf(false,
-                                  true))
+            .isEqualTo(
+                listOf(
+                    false,
+                    true
+                )
+            )
 
         emptyJob.cancel()
         commonValuesJob.cancel()
     }
 
-
     @Test
     fun `not empty state`() = runBlockingTest {
         whenever(dataService.commons()).doAnswer {
-            flowOf(listOf(CommonSection(),
-                          CommonSection()))
+            flowOf(
+                listOf(
+                    CommonSection(),
+                    CommonSection()
+                )
+            )
         }
 
         val emptyValues = mutableListOf<Boolean>()
         val emptyJob = launch {
             viewModel.empty
-                    .collect { emptyValues.add(it) }
+                .collect { emptyValues.add(it) }
         }
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { }
+                .collect { }
         }
 
         assertThat(emptyValues)
-                .isEqualTo(listOf(false))
+            .isEqualTo(listOf(false))
 
         emptyJob.cancel()
         commonValuesJob.cancel()
     }
-
 
     @Test
     fun `successful fetch`() = runBlockingTest {
@@ -144,25 +157,33 @@ class CommonViewModelTest {
         val commonSection2 = CommonSection()
 
         whenever(dataService.commons()).doAnswer {
-            flowOf(listOf(commonSection1,
-                          commonSection2))
+            flowOf(
+                listOf(
+                    commonSection1,
+                    commonSection2
+                )
+            )
         }
 
         val commonSectionValues = mutableListOf<List<CommonSection>>()
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { commonSectionValues.add(it) }
+                .collect { commonSectionValues.add(it) }
         }
 
         assertThat(commonSectionValues)
-                .isEqualTo(
-                        listOf(listOf(commonSection1,
-                                      commonSection2)))
+            .isEqualTo(
+                listOf(
+                    listOf(
+                        commonSection1,
+                        commonSection2
+                    )
+                )
+            )
 
         commonValuesJob.cancel()
     }
-
 
     @Test
     fun `failed fetch`() = runBlockingTest {
@@ -173,12 +194,13 @@ class CommonViewModelTest {
 
         val commonValuesJob = launch {
             viewModel.commons()
-                    .collect { commonSectionValues.add(it) }
+                .collect { commonSectionValues.add(it) }
         }
 
         assertThat(commonSectionValues)
-                .isEqualTo(
-                        listOf(listOf<CommonSection>()))
+            .isEqualTo(
+                listOf(listOf<CommonSection>())
+            )
 
         commonValuesJob.cancel()
     }

@@ -14,6 +14,12 @@ interface DataService {
     fun projects(): Flow<List<Project>>
 
     /**
+     * Provides the list of projects.
+     */
+
+    fun project(id: String): Flow<Project>
+
+    /**
      * Provides the list of contacts.
      */
     fun contacts(): Flow<Contacts>
