@@ -13,6 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.parseAsHtml
+import com.neocaptainnemo.cv.toAnnotatedString
 import com.neocaptainnemo.cv.ui.compose.cvColors
 import com.neocaptainnemo.cv.ui.compose.defaultCorner
 import com.neocaptainnemo.cv.ui.compose.defaultMargin
@@ -40,7 +41,7 @@ fun CommonSectionItem(
             val htmlSpanned = description
                 .parseAsHtml()
             Text(
-                text = htmlSpanned.toString(),
+                text = htmlSpanned.toAnnotatedString(),
                 style = TextStyle.secondary14(),
                 modifier = Modifier.padding(top = halfMargin)
             )
