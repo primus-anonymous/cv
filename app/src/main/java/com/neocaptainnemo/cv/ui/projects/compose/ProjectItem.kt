@@ -28,8 +28,8 @@ import com.neocaptainnemo.cv.ui.compose.defaultMargin
 import com.neocaptainnemo.cv.ui.compose.halfMargin
 import com.neocaptainnemo.cv.ui.compose.smallMargin
 
-private val imageHeight = 200.dp
-private val cardHeight = 250.dp
+private val projectCardImageHeight = 200.dp
+private val projectCardHeight = 250.dp
 
 @Composable
 fun ProjectItem(
@@ -43,7 +43,7 @@ fun ProjectItem(
         modifier = Modifier
             .padding(smallMargin)
             .fillMaxWidth()
-            .height(cardHeight)
+            .height(projectCardHeight)
     ) {
 
         ConstraintLayout(
@@ -61,7 +61,7 @@ fun ProjectItem(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
-                    height = Dimension.value(imageHeight)
+                    height = Dimension.value(projectCardImageHeight)
                     width = Dimension.fillToConstraints
                 }
             ) {

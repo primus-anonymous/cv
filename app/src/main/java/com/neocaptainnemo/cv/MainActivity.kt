@@ -3,6 +3,7 @@ package com.neocaptainnemo.cv
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -33,6 +34,7 @@ import com.neocaptainnemo.cv.ui.projects.compose.ProjectsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
