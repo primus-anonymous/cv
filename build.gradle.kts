@@ -2,6 +2,7 @@
 
 buildscript {
     val kotlinVersion by extra("1.6.10")
+    val hiltAndroid by extra("2.38.1")
 
     repositories {
         google()

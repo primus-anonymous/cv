@@ -7,9 +7,8 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("com.google.gms.google-services")
 }
-
-val kotlinVersion = "1.6.10"
 
 android {
     compileSdk = 31
@@ -63,7 +62,11 @@ android {
         }
     }
 }
+
 dependencies {
+
+    val kotlinVersion: String by rootProject.extra
+    val hiltAndroid: String by rootProject.extra
 
     implementation(project(":core"))
 
@@ -80,12 +83,12 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
 
-    testImplementation("junit:junit:4.13.2")
-
     implementation("io.coil-kt:coil:1.1.1")
 
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+    implementation("com.google.dagger:hilt-android:$hiltAndroid")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltAndroid")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
 
     api("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
@@ -113,8 +116,6 @@ dependencies {
 
 //    androidTestImplementation("androidx.ui:ui-test:$composeToolingVersion")
 }
-
-apply(plugin = "com.google.gms.google-services")
 
 kapt {
     correctErrorTypes = true

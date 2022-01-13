@@ -6,11 +6,8 @@ plugins {
     id("io.fabric")
     id("kotlin-parcelize")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
 }
 
-
-val kotlinVersion = "1.6.10"
 
 android {
     compileSdk = 31
@@ -27,6 +24,9 @@ android {
 
 dependencies {
 
+    val kotlinVersion: String by rootProject.extra
+    val hiltAndroid: String by rootProject.extra
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
 
     implementation("com.google.firebase:firebase-database:20.0.3")
@@ -34,14 +34,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
-
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-
-    api("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
-
+    implementation("com.google.dagger:hilt-android:$hiltAndroid")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltAndroid")
 }
 
 kapt {
