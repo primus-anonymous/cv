@@ -34,8 +34,6 @@ import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
 
 typealias ProjectItemClicked = ((project: Project) -> Unit)
 
-private const val columns = 2
-
 @ExperimentalFoundationApi
 @Composable
 fun ProjectsScreen(

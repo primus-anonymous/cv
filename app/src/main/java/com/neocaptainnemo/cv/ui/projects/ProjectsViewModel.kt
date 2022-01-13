@@ -3,8 +3,14 @@ package com.neocaptainnemo.cv.ui.projects
 import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.core.data.DataService
 import com.neocaptainnemo.cv.core.model.Filter
+import com.neocaptainnemo.cv.core.model.Project
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +42,7 @@ class ProjectsViewModel @Inject constructor(private val dataService: DataService
                 it.platform == com.neocaptainnemo.cv.core.model.Project.PLATFORM_IOS && filter == Filter.IOS
         }
 
-    fun projects(): Flow<List<com.neocaptainnemo.cv.core.model.Project>> = dataService.projects()
+    fun projects(): Flow<List<Project>> = dataService.projects()
         .catch {
             emit(listOf())
         }

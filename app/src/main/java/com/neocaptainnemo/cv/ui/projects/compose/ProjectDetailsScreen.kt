@@ -24,6 +24,7 @@ import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,16 +67,17 @@ fun ProjectDetailsScreen(
     backClicked: (() -> Unit)?,
 ) {
 
-    val title = remember(vm) { vm.projectName }.collectAsState("")
-    val company = remember(vm) { vm.company }.collectAsState("")
-    val coverImage = remember(vm) { vm.coverPic }.collectAsState(null)
-    val projectImage = remember(vm) { vm.webPic }.collectAsState(null)
-    val description = remember(vm) { vm.detailsDescription }.collectAsState(null)
-    val duties = remember(vm) { vm.duties }.collectAsState(null)
-    val stack = remember(vm) { vm.stack }.collectAsState(null)
-    val sourceCode = remember(vm) { vm.sourceCode }.collectAsState(null)
-    val storeVisibility = remember(vm) { vm.storeVisibility }.collectAsState(null)
-    val progress = remember(vm) { vm.progress }.collectAsState(false)
+    val title by remember(vm) { vm.projectName }.collectAsState("")
+    val company by remember(vm) { vm.company }.collectAsState("")
+    val coverImage by remember(vm) { vm.coverPic }.collectAsState(null)
+    val projectImage by remember(vm) { vm.webPic }.collectAsState(null)
+    val description by remember(vm) { vm.detailsDescription }.collectAsState(null)
+    val duties by remember(vm) { vm.duties }.collectAsState(null)
+    val stack by remember(vm) { vm.stack }.collectAsState(null)
+    val sourceCode by remember(vm) { vm.sourceCode }.collectAsState(null)
+    val storeVisibility by remember(vm) { vm.storeVisibility }.collectAsState(null)
+    val progress by remember(vm) { vm.progress }.collectAsState(false)
+    val shareUrl by remember(vm) { vm.shareUrl }.collectAsState("")
 
     val scrollState = rememberScrollState()
     val scrollHolder = ScrollsHolder()
@@ -105,13 +107,13 @@ fun ProjectDetailsScreen(
                         }
                     ) {
                         UrlImage(
-                            url = coverImage.value.orEmpty(),
+                            url = coverImage.orEmpty(),
                             modifier = Modifier.fillMaxSize()
                         )
                     }
 
                     Text(
-                        text = title.value,
+                        text = title,
                         style = TextStyle.primary20(),
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
@@ -126,7 +128,7 @@ fun ProjectDetailsScreen(
                     )
 
                     Text(
-                        text = company.value,
+                        text = company,
                         style = TextStyle.primary16(),
                         modifier = Modifier
                             .padding(
@@ -154,48 +156,43 @@ fun ProjectDetailsScreen(
                             }
                     ) {
                         UrlImage(
-                            url = projectImage.value.orEmpty(),
+                            url = projectImage.orEmpty(),
                             modifier = Modifier
                                 .fillMaxWidth()
                         )
                     }
                 }
 
-                if (description.value.isNullOrBlank()
-                    .not()
+                if (description.isNullOrBlank().not()
                 ) {
                     SectionDescription(
-                        string = description.value.orEmpty()
+                        string = description.orEmpty()
                             .parseAsHtml()
                     )
                 }
 
-                if (duties.value.isNullOrBlank()
-                    .not()
+                if (duties.isNullOrBlank().not()
                 ) {
                     SectionTitle(stingRes = R.string.duties)
                     SectionDescription(
-                        string = duties.value.orEmpty()
+                        string = duties.orEmpty()
                             .parseAsHtml()
                     )
                 }
 
-                if (stack.value.isNullOrBlank()
-                    .not()
+                if (stack.isNullOrBlank().not()
                 ) {
                     SectionTitle(stingRes = R.string.stack)
                     SectionDescription(
-                        string = stack.value.orEmpty()
-                            .parseAsHtml()
+                        string = stack.orEmpty().parseAsHtml()
                     )
                 }
 
-                if (sourceCode.value.isNullOrBlank()
-                    .not()
+                if (sourceCode.isNullOrBlank().not()
                 ) {
                     SectionTitle(stingRes = R.string.source_code)
                     Text(
-                        text = sourceCode.value.orEmpty(),
+                        text = sourceCode.orEmpty(),
                         style = TextStyle.Link14,
                         modifier = Modifier
                             .padding(
@@ -218,7 +215,7 @@ fun ProjectDetailsScreen(
                 Column(Modifier.height(defaultMargin)) {}
             }
 
-            if (storeVisibility.value == true) {
+            if (storeVisibility == true) {
                 FloatingActionButton(
                     modifier = Modifier
                         .translateOnScroll(scrollState, scrollHolder)
@@ -245,7 +242,7 @@ fun ProjectDetailsScreen(
                         appbarAppearanceThreshHold.toPx()
                     }
                     ) {
-                        Text(text = title.value)
+                        Text(text = title)
                     }
                 },
                 backgroundColor = MaterialTheme.colors.primarySurface
@@ -278,7 +275,7 @@ fun ProjectDetailsScreen(
                                     action = Intent.ACTION_SEND
                                     putExtra(
                                         Intent.EXTRA_TEXT,
-                                        vm.shareUrl
+                                        shareUrl
                                     )
                                     type = "text/plain"
                                 }
@@ -301,7 +298,7 @@ fun ProjectDetailsScreen(
             )
         }
 
-        if (progress.value) {
+        if (progress) {
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth()
             )

@@ -56,8 +56,13 @@ android {
     buildFeatures {
         compose = true
     }
-}
 
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+}
 dependencies {
 
     implementation(project(":core"))
@@ -98,10 +103,13 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
 
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation("org.hamcrest:hamcrest-all:1.3")
-    testImplementation("org.assertj:assertj-core:3.19.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
+    val kotest = "5.0.3"
+
+    testImplementation("io.kotest:kotest-assertions-core:$kotest")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotest")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+    testImplementation("app.cash.turbine:turbine:0.7.0")
+    testImplementation("io.mockk:mockk:1.12.2")
 
 //    androidTestImplementation("androidx.ui:ui-test:$composeToolingVersion")
 }

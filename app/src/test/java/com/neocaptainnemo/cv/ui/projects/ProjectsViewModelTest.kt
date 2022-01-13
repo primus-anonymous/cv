@@ -1,168 +1,111 @@
 package com.neocaptainnemo.cv.ui.projects
 
+import app.cash.turbine.test
 import com.neocaptainnemo.cv.core.data.DataService
 import com.neocaptainnemo.cv.core.model.Filter
 import com.neocaptainnemo.cv.core.model.Project
-import com.neocaptainnemo.cv.ui.TestCoroutineRule
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.whenever
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
-class ProjectsViewModelTest {
+class ProjectsViewModelTest : ShouldSpec({
 
-    @get:Rule
-    val coroutineRule = TestCoroutineRule()
-
-    @Mock
-    lateinit var dataService: DataService
+    val dataService: DataService = mockk()
 
     lateinit var viewModel: ProjectsViewModel
 
-    @Before
-    fun setUp() {
+    beforeTest {
+        Dispatchers.setMain(StandardTestDispatcher())
+
         viewModel = ProjectsViewModel(dataService)
     }
 
-    @Test
-    fun `progress during successful fetch`() = runBlockingTest {
-
-        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
-
-        val progressValues = mutableListOf<Boolean>()
-
-        val progressJob = launch {
-            viewModel.progress.collect {
-                progressValues.add(it)
-            }
-        }
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect { }
-        }
-
-        assertThat(progressValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true,
-                    false
-                )
-            )
-
-        progressJob.cancel()
-        projectsJob.cancel()
+    afterTest {
+        clearAllMocks(true)
     }
 
-    @Test
-    fun `progress during failed fetch`() = runBlockingTest {
+    should("progress during successful fetch") {
 
-        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
+        every {
+            dataService.projects()
+        } returns flowOf(listOf())
 
-        val progressValues = mutableListOf<Boolean>()
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
 
-        val progressJob = launch {
-            viewModel.progress.collect {
-                progressValues.add(it)
+                cancelAndIgnoreRemainingEvents()
             }
+
+            viewModel.projects().collect()
         }
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect { }
-        }
-
-        assertThat(progressValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true,
-                    false
-                )
-            )
-
-        progressJob.cancel()
-        projectsJob.cancel()
     }
 
-    @Test
-    fun `empty state`() = runBlockingTest {
-        whenever(dataService.projects()).doAnswer { flowOf(listOf()) }
+    should("progress during failed fetch") {
 
-        val emptyValues = mutableListOf<Boolean>()
+        every {
+            dataService.projects()
+        } throws RuntimeException()
 
-        val emptyJob = launch {
-            viewModel.empty.collect {
-                emptyValues.add(it)
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
             }
+
+            viewModel.projects().collect()
         }
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect { }
-        }
-
-        assertThat(emptyValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true
-                )
-            )
-
-        emptyJob.cancel()
-        projectsJob.cancel()
     }
 
-    @Test
-    fun `not empty state`() = runBlockingTest {
-        whenever(dataService.projects()).doAnswer {
-            flowOf(
-                listOf(
-                    Project(),
-                    Project()
-                )
-            )
-        }
+    should("empty state") {
+        every {
+            dataService.projects()
+        } returns flowOf(listOf())
 
-        val emptyValues = mutableListOf<Boolean>()
-
-        val emptyJob = launch {
-            viewModel.empty.collect {
-                emptyValues.add(it)
+        launch {
+            viewModel.empty.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                cancelAndIgnoreRemainingEvents()
             }
         }
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect { }
-        }
-
-        assertThat(emptyValues)
-            .isEqualTo(
-                listOf(false)
-            )
-
-        emptyJob.cancel()
-        projectsJob.cancel()
     }
 
-    @Test
-    fun `filters set to all`() = runBlockingTest {
+    should("not empty state") {
+        every {
+            dataService.projects()
+        } returns flowOf(
+            listOf(
+                Project(),
+                Project()
+            )
+        )
+
+        launch {
+            viewModel.empty.test {
+                awaitItem() shouldBe false
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+    }
+
+    should("filters set to all") {
 
         val project1 = Project().apply {
             platform = Project.PLATFORM_ANDROID
@@ -176,43 +119,31 @@ class ProjectsViewModelTest {
             platform = Project.PLATFORM_ANDROID
         }
 
-        whenever(dataService.projects()).doAnswer {
-            flowOf(
-                listOf(
-                    project1,
-                    project2,
-                    project3
-                )
+        every {
+            dataService.projects()
+        } returns flowOf(
+            listOf(
+                project1,
+                project2,
+                project3
             )
-        }
+        )
 
         viewModel.filter = Filter.ALL
 
-        val projectValues = mutableListOf<List<Project>>()
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect {
-                    projectValues.add(it)
-                }
-        }
-
-        assertThat(projectValues)
-            .isEqualTo(
-                listOf(
-                    listOf(
-                        project1,
-                        project2,
-                        project3
-                    )
+        launch {
+            viewModel.projects().test {
+                awaitItem() shouldBe listOf(
+                    project1,
+                    project2,
+                    project3
                 )
-            )
-
-        projectsJob.cancel()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 
-    @Test
-    fun `filters only android`() = runBlockingTest {
+    should("filters only android") {
 
         val project1 = Project().apply {
             platform = Project.PLATFORM_ANDROID
@@ -226,42 +157,30 @@ class ProjectsViewModelTest {
             platform = Project.PLATFORM_ANDROID
         }
 
-        whenever(dataService.projects()).doAnswer {
-            flowOf(
-                listOf(
-                    project1,
-                    project2,
-                    project3
-                )
+        every {
+            dataService.projects()
+        } returns flowOf(
+            listOf(
+                project1,
+                project2,
+                project3
             )
-        }
+        )
 
         viewModel.filter = Filter.ANDROID
 
-        val projectValues = mutableListOf<List<Project>>()
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect {
-                    projectValues.add(it)
-                }
-        }
-
-        assertThat(projectValues)
-            .isEqualTo(
-                listOf(
-                    listOf(
-                        project1,
-                        project3
-                    )
+        launch {
+            viewModel.projects().test {
+                awaitItem() shouldBe listOf(
+                    project1,
+                    project3
                 )
-            )
-
-        projectsJob.cancel()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 
-    @Test
-    fun `filters only iOS`() = runBlockingTest {
+    should("filters only iOS") {
 
         val project1 = Project().apply {
             platform = Project.PLATFORM_ANDROID
@@ -275,91 +194,65 @@ class ProjectsViewModelTest {
             platform = Project.PLATFORM_ANDROID
         }
 
-        whenever(dataService.projects()).doAnswer {
-            flowOf(
-                listOf(
-                    project1,
-                    project2,
-                    project3
-                )
+        every {
+            dataService.projects()
+        } returns flowOf(
+            listOf(
+                project1,
+                project2,
+                project3
             )
-        }
+        )
 
         viewModel.filter = Filter.IOS
 
-        val projectValues = mutableListOf<List<Project>>()
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect {
-                    projectValues.add(it)
-                }
+        launch {
+            viewModel.projects().test {
+                awaitItem() shouldBe listOf(
+                    project2,
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        assertThat(projectValues)
-            .isEqualTo(
-                listOf(listOf(project2))
-            )
-
-        projectsJob.cancel()
     }
 
-    @Test
-    fun `successful fetch`() = runBlockingTest {
+    should("successful fetch") {
 
         val project1 = Project()
         val project2 = Project()
 
-        whenever(dataService.projects()).doAnswer {
-            flowOf(
-                listOf(
+        every {
+            dataService.projects()
+        } returns flowOf(
+            listOf(
+                project1,
+                project2,
+            )
+        )
+
+        launch {
+            viewModel.projects().test {
+                awaitItem() shouldBe listOf(
                     project1,
-                    project2
+                    project2,
                 )
-            )
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        val projectValues = mutableListOf<List<Project>>()
-
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect {
-                    projectValues.add(it)
-                }
-        }
-
-        assertThat(projectValues)
-            .isEqualTo(
-                listOf(
-                    listOf(
-                        project1,
-                        project2
-                    )
-                )
-            )
-
-        projectsJob.cancel()
     }
 
-    @Test
-    fun `failed fetch`() = runBlockingTest {
+    should("failed fetch") {
 
-        whenever(dataService.projects()).doAnswer { flow { throw RuntimeException() } }
+        every {
+            dataService.projects()
+        } returns flow { throw RuntimeException() }
 
-        val projectValues = mutableListOf<List<Project>>()
+        launch {
+            viewModel.projects().test {
+                awaitItem() shouldBe listOf()
 
-        val projectsJob = launch {
-            viewModel.projects()
-                .collect {
-                    projectValues.add(it)
-                }
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        assertThat(projectValues)
-            .isEqualTo(
-                listOf(listOf<Project>())
-            )
-
-        projectsJob.cancel()
     }
-}
+})

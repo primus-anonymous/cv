@@ -1,207 +1,150 @@
 package com.neocaptainnemo.cv.ui.common
 
+import app.cash.turbine.test
 import com.neocaptainnemo.cv.core.data.DataService
 import com.neocaptainnemo.cv.core.model.CommonSection
-import com.neocaptainnemo.cv.ui.TestCoroutineRule
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.whenever
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
-class CommonViewModelTest {
+class CommonViewModelTest : ShouldSpec({
 
-    @get:Rule
-    val coroutineRule = TestCoroutineRule()
-
-    @Mock
-    lateinit var dataService: DataService
+    val dataService: DataService = mockk()
 
     lateinit var viewModel: CommonViewModel
 
-    @Before
-    fun setUp() {
+    beforeTest {
+        Dispatchers.setMain(StandardTestDispatcher())
 
         viewModel = CommonViewModel(dataService)
     }
 
-    @Test
-    fun `progress during successful fetch`() = runBlockingTest {
-
-        whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
-
-        val progressValues = mutableListOf<Boolean>()
-        val progressJob = launch {
-            viewModel.progress
-                .collect { progressValues.add(it) }
-        }
-
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { }
-        }
-
-        assertThat(progressValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true,
-                    false
-                )
-            )
-        progressJob.cancel()
-        commonValuesJob.cancel()
+    afterTest {
+        clearAllMocks(true)
     }
 
-    @Test
-    fun `progress during failed fetch`() = runBlockingTest {
+    should("progress during successful fetch") {
 
-        whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
+        every {
+            dataService.commons()
+        } returns flowOf(listOf())
 
-        val progressValues = mutableListOf<Boolean>()
-        val progressJob = launch {
-            viewModel.progress
-                .collect { progressValues.add(it) }
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.commons().collect()
         }
-
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { }
-        }
-
-        assertThat(progressValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true,
-                    false
-                )
-            )
-
-        progressJob.cancel()
-        commonValuesJob.cancel()
     }
 
-    @Test
-    fun `empty state`() = runBlockingTest {
-        whenever(dataService.commons()).doAnswer { flowOf(listOf()) }
+    should("progress during failed fetch") {
 
-        val emptyValues = mutableListOf<Boolean>()
-        val emptyJob = launch {
-            viewModel.empty
-                .collect { emptyValues.add(it) }
+        every {
+            dataService.commons()
+        } throws RuntimeException()
+
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.commons().collect()
         }
-
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { }
-        }
-
-        assertThat(emptyValues)
-            .isEqualTo(
-                listOf(
-                    false,
-                    true
-                )
-            )
-
-        emptyJob.cancel()
-        commonValuesJob.cancel()
     }
 
-    @Test
-    fun `not empty state`() = runBlockingTest {
-        whenever(dataService.commons()).doAnswer {
-            flowOf(
-                listOf(
-                    CommonSection(),
-                    CommonSection()
-                )
-            )
+    should("empty state") {
+        every {
+            dataService.commons()
+        } returns flowOf(listOf())
+
+        launch {
+            viewModel.empty.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.commons().collect()
         }
-
-        val emptyValues = mutableListOf<Boolean>()
-        val emptyJob = launch {
-            viewModel.empty
-                .collect { emptyValues.add(it) }
-        }
-
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { }
-        }
-
-        assertThat(emptyValues)
-            .isEqualTo(listOf(false))
-
-        emptyJob.cancel()
-        commonValuesJob.cancel()
     }
 
-    @Test
-    fun `successful fetch`() = runBlockingTest {
+    should("not empty state") {
+        every {
+            dataService.commons()
+        } returns flowOf(
+            listOf(
+                CommonSection(),
+                CommonSection()
+            )
+        )
+
+        launch {
+            viewModel.empty.test {
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.commons().collect()
+        }
+    }
+
+    should("successful fetch") {
 
         val commonSection1 = CommonSection()
         val commonSection2 = CommonSection()
 
-        whenever(dataService.commons()).doAnswer {
-            flowOf(
-                listOf(
-                    commonSection1,
-                    commonSection2
-                )
+        every {
+            dataService.commons()
+        } returns flowOf(
+            listOf(
+                commonSection1,
+                commonSection2
             )
+        )
+
+        launch {
+
+            viewModel.commons().test {
+                awaitItem() shouldBe listOf(commonSection1, commonSection2)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        val commonSectionValues = mutableListOf<List<CommonSection>>()
-
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { commonSectionValues.add(it) }
-        }
-
-        assertThat(commonSectionValues)
-            .isEqualTo(
-                listOf(
-                    listOf(
-                        commonSection1,
-                        commonSection2
-                    )
-                )
-            )
-
-        commonValuesJob.cancel()
     }
 
-    @Test
-    fun `failed fetch`() = runBlockingTest {
+    should("failed fetch") {
 
-        whenever(dataService.commons()).doAnswer { flow { throw RuntimeException() } }
+        every {
+            dataService.commons()
+        } returns flow { throw RuntimeException() }
 
-        val commonSectionValues = mutableListOf<List<CommonSection>>()
+        launch {
 
-        val commonValuesJob = launch {
-            viewModel.commons()
-                .collect { commonSectionValues.add(it) }
+            viewModel.commons().test {
+                awaitItem() shouldBe listOf()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        assertThat(commonSectionValues)
-            .isEqualTo(
-                listOf(listOf<CommonSection>())
-            )
-
-        commonValuesJob.cancel()
     }
-}
+})

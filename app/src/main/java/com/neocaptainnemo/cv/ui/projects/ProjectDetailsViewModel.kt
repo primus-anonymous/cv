@@ -44,33 +44,31 @@ class ProjectDetailsViewModel @Inject constructor(
         }
     }
 
-    val shareUrl: String
-        get() {
-            val project = _project.value ?: return ""
+    val shareUrl: Flow<String> = _project.filterNotNull().map { project ->
 
-            return StringBuilder().apply {
-                append(app.getString(R.string.project))
+        StringBuilder().apply {
+            append(app.getString(R.string.project))
+            append(' ')
+            append(project.name)
+
+            if (project.storeUrl.isNullOrEmpty()
+                .not()
+            ) {
                 append(' ')
-                append(project.name)
-
-                if (project.storeUrl.isNullOrEmpty()
-                    .not()
-                ) {
-                    append(' ')
-                    append(project.storeUrl)
-                }
-
-                if (project.gitHub.isNullOrEmpty()
-                    .not()
-                ) {
-                    append(' ')
-                    append(app.getString(R.string.code))
-                    append(' ')
-                    append(project.gitHub)
-                }
+                append(project.storeUrl)
             }
-                .toString()
+
+            if (project.gitHub.isNullOrEmpty()
+                .not()
+            ) {
+                append(' ')
+                append(app.getString(R.string.code))
+                append(' ')
+                append(project.gitHub)
+            }
         }
+            .toString()
+    }
 
     val gitHubUrl: String?
         get() = _project.value?.gitHub
