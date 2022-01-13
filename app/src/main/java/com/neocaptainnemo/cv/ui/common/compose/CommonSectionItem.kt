@@ -10,28 +10,41 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.parseAsHtml
-import androidx.ui.tooling.preview.Preview
-import com.neocaptainnemo.cv.ui.compose.*
+import com.neocaptainnemo.cv.toAnnotatedString
+import com.neocaptainnemo.cv.ui.compose.cvColors
+import com.neocaptainnemo.cv.ui.compose.defaultCorner
+import com.neocaptainnemo.cv.ui.compose.defaultMargin
+import com.neocaptainnemo.cv.ui.compose.halfMargin
+import com.neocaptainnemo.cv.ui.compose.primary20
+import com.neocaptainnemo.cv.ui.compose.secondary14
+import com.neocaptainnemo.cv.ui.compose.smallMargin
 
 @Composable
 fun CommonSectionItem(
-        title: String,
-        description: String,
+    title: String,
+    description: String,
 ) {
-    Surface(shape = RoundedCornerShape(defaultCorner),
-            elevation = 4.dp,
-            modifier = Modifier.padding(smallMargin)
-                    .fillMaxWidth()) {
+    Surface(
+        shape = RoundedCornerShape(defaultCorner),
+        elevation = 4.dp,
+        modifier = Modifier.padding(smallMargin)
+            .fillMaxWidth()
+    ) {
         Column(modifier = Modifier.padding(defaultMargin)) {
-            Text(text = title,
-                 style = TextStyle.primary20())
+            Text(
+                text = title,
+                style = TextStyle.primary20()
+            )
             val htmlSpanned = description
-                    .parseAsHtml()
-            Text(text = htmlSpanned.toString(),
-                 style = TextStyle.secondary14(),
-                 modifier = Modifier.padding(top = halfMargin))
+                .parseAsHtml()
+            Text(
+                text = htmlSpanned.toAnnotatedString(),
+                style = TextStyle.secondary14(),
+                modifier = Modifier.padding(top = halfMargin)
+            )
         }
     }
 }
@@ -41,8 +54,8 @@ fun CommonSectionItem(
 fun PreviewCommonSectionItem() {
     MaterialTheme(colors = cvColors()) {
         CommonSectionItem(
-                title = "This is quite title",
-                description = "Fardel may refer to: Shakespearian word meaning \"traveller's bundle\", as used in The Winter's Tale. Shakespearian word meaning \"burden\", as used in Hamlet's To be, or not to be speech. Scots word, also spelled \"Farl\", quadrant-shaped flatbread or cake."
+            title = "This is quite title",
+            description = "Fardel may refer to: Shakespearian word meaning \"traveller's bundle\", as used in The Winter's Tale. Shakespearian word meaning \"burden\", as used in Hamlet's To be, or not to be speech. Scots word, also spelled \"Farl\", quadrant-shaped flatbread or cake."
         )
     }
 }

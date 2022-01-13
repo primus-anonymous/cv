@@ -9,7 +9,8 @@ import kotlin.math.min
 class ScrollsHolder(var previousScroll: Int = 0, var res: Int = 0)
 
 fun Modifier.translateOnScroll(
-        scrollState: ScrollState, holder: ScrollsHolder,
+    scrollState: ScrollState,
+    holder: ScrollsHolder,
 ) = Modifier.layout { measurable, constraints ->
 
     val placeable = measurable.measure(constraints)
@@ -26,4 +27,3 @@ fun Modifier.translateOnScroll(
         placeable.placeRelative(0, holder.res)
     }
 }
-

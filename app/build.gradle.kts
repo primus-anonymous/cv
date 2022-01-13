@@ -1,31 +1,36 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("com.google.gms.google-services")
 }
 
-val kotlinVersion = "1.4.21"
-
 android {
-    compileSdkVersion(30)
+    compileSdk = 31
     defaultConfig {
         applicationId = "com.neocaptainnemo.cv"
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = 21
+        targetSdk = 31
         versionCode = 11
         versionName = "1.9.1"
         multiDexEnabled = true
 
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+        // testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"),
-                          "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -39,66 +44,79 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.0-rc02"
+    }
+
     buildFeatures {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerVersion = "1.4.21"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha10"
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
-        .configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs = freeCompilerArgs.toMutableList()
-                        .apply {
-                            add("-Xallow-jvm-ir-dependencies")
-                            add("-Xskip-prerelease-check")
-                        }
-            }
-        }
-
 dependencies {
+
+    val kotlinVersion: String by rootProject.extra
+    val hiltAndroid: String by rootProject.extra
 
     implementation(project(":core"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
-    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.core:core-ktx:1.7.0")
 
-    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.appcompat:appcompat:1.4.0")
     implementation("androidx.multidex:multidex:2.0.1")
 
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
 
-    testImplementation("junit:junit:4.13.1")
+    implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
 
-    implementation("io.coil-kt:coil:0.10.1")
+    implementation("io.coil-kt:coil:1.1.1")
 
-    val composeVersion = "1.0.0-alpha10"
-    val composeToolingVersion = "1.0.0-alpha07"
+    implementation("com.google.dagger:hilt-android:$hiltAndroid")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltAndroid")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
+
+    api("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    val composeVersion = "1.0.5"
 
     implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation-layout:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
-    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.animation:animation:$composeVersion")
-    implementation("androidx.ui:ui-tooling:$composeToolingVersion")
+    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
 
+    val kotest = "5.0.3"
 
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation("org.hamcrest:hamcrest-all:1.3")
-    testImplementation("org.assertj:assertj-core:2.6.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
+    testImplementation("io.kotest:kotest-assertions-core:$kotest")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotest")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+    testImplementation("app.cash.turbine:turbine:0.7.0")
+    testImplementation("io.mockk:mockk:1.12.2")
 
-    androidTestImplementation("androidx.ui:ui-test:$composeToolingVersion")
+//    androidTestImplementation("androidx.ui:ui-test:$composeToolingVersion")
 }
 
-apply(plugin = "com.google.gms.google-services")
+kapt {
+    correctErrorTypes = true
+}

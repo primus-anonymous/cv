@@ -1,11 +1,20 @@
 package com.neocaptainnemo.cv.ui.projects
 
 import androidx.lifecycle.ViewModel
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Filter
-import kotlinx.coroutines.flow.*
+import com.neocaptainnemo.cv.core.model.Project
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import javax.inject.Inject
 
-class ProjectsViewModel(private val dataService: DataService) : ViewModel() {
+@HiltViewModel
+class ProjectsViewModel @Inject constructor(private val cvRepository: CvRepository) : ViewModel() {
 
     private val _empty = MutableStateFlow(false)
 
@@ -24,28 +33,28 @@ class ProjectsViewModel(private val dataService: DataService) : ViewModel() {
         }
 
     private suspend fun transform(
-            projects: List<com.neocaptainnemo.cv.core.model.Project>,
-            filter: Filter,
+        projects: List<com.neocaptainnemo.cv.core.model.Project>,
+        filter: Filter,
     ): List<com.neocaptainnemo.cv.core.model.Project> =
-            projects.filter {
-                filter == Filter.ALL ||
-                        it.platform == com.neocaptainnemo.cv.core.model.Project.PLATFORM_ANDROID && filter == Filter.ANDROID ||
-                        it.platform == com.neocaptainnemo.cv.core.model.Project.PLATFORM_IOS && filter == Filter.IOS
-            }
+        projects.filter {
+            filter == Filter.ALL ||
+                it.platform == com.neocaptainnemo.cv.core.model.Project.PLATFORM_ANDROID && filter == Filter.ANDROID ||
+                it.platform == com.neocaptainnemo.cv.core.model.Project.PLATFORM_IOS && filter == Filter.IOS
+        }
 
-
-    fun projects(): Flow<List<com.neocaptainnemo.cv.core.model.Project>> = dataService.projects()
-            .catch {
-                emit(listOf())
-            }
-            .combine(_filter,
-                     this::transform)
-            .onStart {
-                _progress.value = true
-            }
-            .onEach {
-                _progress.value = false
-                _empty.value = it.isEmpty()
-            }
-
+    fun projects(): Flow<List<Project>> = cvRepository.projects()
+        .catch {
+            emit(listOf())
+        }
+        .combine(
+            _filter,
+            this::transform
+        )
+        .onStart {
+            _progress.value = true
+        }
+        .onEach {
+            _progress.value = false
+            _empty.value = it.isEmpty()
+        }
 }

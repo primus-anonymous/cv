@@ -9,21 +9,22 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.model.CommonSection
-import kotlinx.coroutines.flow.Flow
+import com.neocaptainnemo.cv.ui.common.CommonViewModel
 
 @Composable
 fun CommonScreen(
-        contactsFlow: Flow<List<CommonSection>>,
-        progressFlow: Flow<Boolean>,
+    vm: CommonViewModel = hiltViewModel()
 ) {
 
-    val contactsList = contactsFlow.collectAsState(initial = listOf())
+    val contactsList by remember(vm) { vm.commons() }.collectAsState(initial = listOf())
 
-    val progress = progressFlow.collectAsState(initial = false)
+    val progress by remember(vm) { vm.progress }.collectAsState(initial = false)
 
     Column {
         TopAppBar(title = {
@@ -32,20 +33,20 @@ fun CommonScreen(
 
         Box {
             LazyColumn {
-                items(items = contactsList.value, itemContent = {
+                items(contactsList.size) { index ->
+                    val item = contactsList[index]
                     CommonSectionItem(
-                            title = it.title.orEmpty(),
-                            description = it.description.orEmpty())
-                })
+                        title = item.title.orEmpty(),
+                        description = item.description.orEmpty()
+                    )
+                }
             }
 
-            if (progress.value) {
+            if (progress) {
                 LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
     }
 }
-
-

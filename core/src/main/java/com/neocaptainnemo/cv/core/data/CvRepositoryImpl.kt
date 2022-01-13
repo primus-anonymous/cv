@@ -6,14 +6,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.neocaptainnemo.cv.core.locale.LocaleService
 import com.neocaptainnemo.cv.core.model.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-internal class DataServiceImpl(private val localeService: LocaleService) : DataService {
+internal class CvRepositoryImpl @Inject constructor(private val localeService: LocaleService) : CvRepository {
 
     init {
         FirebaseDatabase.getInstance()
@@ -31,6 +28,9 @@ internal class DataServiceImpl(private val localeService: LocaleService) : DataS
             }
         }
     }
+
+    override fun project(id: String): Flow<Project> = projects()
+        .map { it.first { it.id == id } }
 
     override fun contacts(): Flow<Contacts> = coroutineRequest<ContactsResponse>().map {
         val strings = it.resources[localeService.locale]
@@ -67,7 +67,7 @@ internal class DataServiceImpl(private val localeService: LocaleService) : DataS
                 val value = snapshot.getValue(T::class.java)
 
                 value?.run {
-                    offer(this)
+                    trySend(this)
                 } ?: close(NullPointerException())
             }
         }
