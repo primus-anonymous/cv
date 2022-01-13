@@ -1,247 +1,232 @@
 package com.neocaptainnemo.cv.ui.contacts
 
+import app.cash.turbine.test
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Contacts
-import com.neocaptainnemo.cv.ui.TestCoroutineRule
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.whenever
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
-class ContactsViewModelTest {
+class ContactsViewModelTest : ShouldSpec({
 
-
-    @get:Rule
-    val coroutineRule = TestCoroutineRule()
-
-    @Mock
-    lateinit var dataService: DataService
+    val cvRepository: CvRepository = mockk()
 
     lateinit var viewModel: ContactsViewModel
 
-    @Before
-    fun setUp() {
-        viewModel = ContactsViewModel(dataService)
+    beforeTest {
+        Dispatchers.setMain(StandardTestDispatcher())
+
+        viewModel = ContactsViewModel(cvRepository)
     }
 
-    @Test
-    fun `progress during successful fetch`() = runBlockingTest {
+    afterTest {
+        clearAllMocks(true)
+    }
 
-        whenever(dataService.contacts()).doAnswer { flowOf(Contacts()) }
+    should("progress during successful fetch") {
 
-        val progressValues = mutableListOf<Boolean>()
+        every {
+            cvRepository.contacts()
+        } returns flowOf(Contacts())
 
-        val progressJob = launch {
-            viewModel.progress.collect {
-                progressValues.add(it)
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.contacts().collect()
+        }
+    }
+
+    should("progress during failed fetch") {
+
+        every {
+            cvRepository.contacts()
+        } throws RuntimeException()
+
+        launch {
+            viewModel.progress.test {
+                awaitItem() shouldBe false
+                awaitItem() shouldBe true
+                awaitItem() shouldBe false
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            viewModel.contacts().collect()
+        }
+    }
+
+    should("successful fetch") {
+
+        val professionValue = "professsion"
+
+        val nameValue = "name"
+
+        val picValue = "http://userpicimage"
+
+        val emailValue = "email@email.com"
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
+
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            email = emailValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+            github = githubValue
+            telegram = telegramValue
+        }
+
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
+
+        val expected = listOf(
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
+        )
+
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect { }
-        }
-
-        assertThat(progressValues)
-                .isEqualTo(
-                     listOf(false,
-                            true,
-                            false))
-
-        progressJob.cancel()
-        contactsJob.cancel()
     }
 
-    @Test
-    fun `progress during failed fetch`() = runBlockingTest {
+    should("contacts list with no email") {
 
-        whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
+        val professionValue = "professsion"
 
-        val progressValues = mutableListOf<Boolean>()
+        val nameValue = "name"
 
-        val progressJob = launch {
-            viewModel.progress.collect {
-                progressValues.add(it)
+        val picValue = "http://userpicimage"
+
+        val phoneValue = "89032345678"
+        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
+        val githubValue = "http://github/fdfsd"
+        val telegramValue = "telegram"
+
+        val response = Contacts().apply {
+            profession = professionValue
+            name = nameValue
+            userPic = picValue
+            phone = phoneValue
+            cvUrl = cvUrlValue
+            github = githubValue
+            telegram = telegramValue
+        }
+
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
+
+        val expected = listOf(
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
+        )
+
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect { }
-        }
-
-        assertThat(progressValues)
-                .isEqualTo(
-                     listOf(false,
-                            true,
-                            false))
-
-        progressJob.cancel()
-        contactsJob.cancel()
     }
 
-
-    @Test
-    fun `successful fetch`() = runBlockingTest {
-
-        val professionValue = "professsion"
-
-        val nameValue = "name"
-
-        val picValue = "http://userpicimage"
-
-        val emailValue = "email@email.com"
-        val phoneValue = "89032345678"
-        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
-        val githubValue = "http://github/fdfsd"
-        val telegramValue = "telegram"
-
-        val response = Contacts().apply {
-            profession = professionValue
-            name = nameValue
-            userPic = picValue
-            email = emailValue
-            phone = phoneValue
-            cvUrl = cvUrlValue
-            github = githubValue
-            telegram = telegramValue
-        }
-
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
-
-        val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
-        )
-
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
-
-        contactsJob.cancel()
-    }
-
-    @Test
-    fun `contacts list with no email`() = runBlockingTest {
-
-        val professionValue = "professsion"
-
-        val nameValue = "name"
-
-        val picValue = "http://userpicimage"
-
-        val phoneValue = "89032345678"
-        val cvUrlValue = "http://www.fdfs.fsdfsd/pdf"
-        val githubValue = "http://github/fdfsd"
-        val telegramValue = "telegram"
-
-        val response = Contacts().apply {
-            profession = professionValue
-            name = nameValue
-            userPic = picValue
-            phone = phoneValue
-            cvUrl = cvUrlValue
-            github = githubValue
-            telegram = telegramValue
-        }
-
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
-
-        val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
-        )
-
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
-
-        contactsJob.cancel()
-    }
-
-
-    @Test
-    fun `contacts list with no phone`() = runBlockingTest {
+    should("contacts list with no phone") {
 
         val professionValue = "professsion"
 
@@ -264,53 +249,56 @@ class ContactsViewModelTest {
             telegram = telegramValue
         }
 
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
 
-        contactsJob.cancel()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 
-
-    @Test
-    fun `contacts list with no cv`() = runBlockingTest {
+    should("contacts list with no cv") {
         val professionValue = "professsion"
 
         val nameValue = "name"
@@ -332,53 +320,56 @@ class ContactsViewModelTest {
             telegram = telegramValue
         }
 
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            )
         )
 
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
 
-        contactsJob.cancel()
-
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 
-    @Test
-    fun `contacts list with no github`() = runBlockingTest {
+    should("contacts list with no github") {
         val professionValue = "professsion"
 
         val nameValue = "name"
@@ -400,53 +391,56 @@ class ContactsViewModelTest {
             telegram = telegramValue
         }
 
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.TELEGRAM,
-                               R.string.action_telegram,
-                               R.string.tap_to_open_telegram,
-                               R.drawable.ic_telegram,
-                               telegramValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.TELEGRAM,
+                R.string.action_telegram,
+                R.string.tap_to_open_telegram,
+                R.drawable.ic_telegram,
+                telegramValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(expected))
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
 
-        contactsJob.cancel()
-
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 
-    @Test
-    fun `contacts list with no telegram`() = runBlockingTest {
+    should("contacts list with no telegram") {
 
         val professionValue = "professsion"
 
@@ -469,68 +463,67 @@ class ContactsViewModelTest {
             github = githubValue
         }
 
-        whenever(dataService.contacts()).doAnswer { flowOf(response) }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
-        }
+        every {
+            cvRepository.contacts()
+        } returns flowOf(response)
 
         val expected = listOf(
-                ContactsHeader(picValue,
-                               nameValue,
-                               professionValue),
-                ContactSection(ContactType.PHONE,
-                               R.string.action_phone,
-                               R.string.tap_to_call,
-                               R.drawable.ic_call,
-                               phoneValue),
-                ContactSection(ContactType.EMAIL,
-                               R.string.action_email,
-                               R.string.tap_to_send_email,
-                               R.drawable.ic_email,
-                               emailValue),
-                ContactSection(ContactType.GIT_HUB,
-                               R.string.action_github,
-                               R.string.tap_to_view_github,
-                               R.drawable.ic_github,
-                               githubValue),
-                ContactSection(ContactType.CV,
-                               R.string.action_cv,
-                               R.string.tap_to_save_cv,
-                               R.drawable.ic_cv,
-                               cvUrlValue)
+            ContactsHeader(
+                picValue,
+                nameValue,
+                professionValue
+            ),
+            ContactSection(
+                ContactType.PHONE,
+                R.string.action_phone,
+                R.string.tap_to_call,
+                R.drawable.ic_call,
+                phoneValue
+            ),
+            ContactSection(
+                ContactType.EMAIL,
+                R.string.action_email,
+                R.string.tap_to_send_email,
+                R.drawable.ic_email,
+                emailValue
+            ),
+            ContactSection(
+                ContactType.GIT_HUB,
+                R.string.action_github,
+                R.string.tap_to_view_github,
+                R.drawable.ic_github,
+                githubValue
+            ),
+            ContactSection(
+                ContactType.CV,
+                R.string.action_cv,
+                R.string.tap_to_save_cv,
+                R.drawable.ic_cv,
+                cvUrlValue
+            )
         )
 
-        assertThat(contactValues)
-                .isEqualTo(
-                        listOf(expected))
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe expected
 
-        contactsJob.cancel()
-    }
-
-    @Test
-    fun `failed fetch`() = runBlockingTest {
-
-        whenever(dataService.contacts()).doAnswer { flow { throw RuntimeException() } }
-
-        val contactValues = mutableListOf<List<Any>>()
-
-        val contactsJob = launch {
-            viewModel.contacts()
-                    .collect {
-                        contactValues.add(it)
-                    }
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-
-        assertThat(contactValues)
-                .isEqualTo(
-                     listOf(listOf<Any>()))
-
-        contactsJob.cancel()
     }
-}
+
+    should("failed fetch") {
+
+        every {
+            cvRepository.contacts()
+        } returns flow { throw RuntimeException() }
+
+        launch {
+            viewModel.contacts().test {
+                awaitItem() shouldBe listOf()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+    }
+})

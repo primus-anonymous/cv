@@ -25,23 +25,24 @@ class ContactsTest {
     @Test
     fun nameAndProfessionVisible() {
         val contactsFlow: Flow<List<Any>> = flowOf(
-                listOf(ContactsHeader("http://image.jpg", "Name", "Profession"))
+            listOf(ContactsHeader("http://image.jpg", "Name", "Profession"))
         )
         val progressFlow = flowOf(false)
 
         composeTestRule.setContent {
             MaterialTheme(colors = CvColors) {
-                ContactsScreen(contactsFlow = contactsFlow, progressFlow = progressFlow,
-                               itemClicked = {
-
-                               })
+                ContactsScreen(
+                    contactsFlow = contactsFlow, progressFlow = progressFlow,
+                    itemClicked = {
+                    }
+                )
             }
         }
 
         composeTestRule.onNodeWithTag(CONTACTS_HEADER_SEMANTICS_NAME)
-                .assertTextEquals("Name")
+            .assertTextEquals("Name")
         composeTestRule.onNodeWithTag(CONTACTS_HEADER_SEMANTICS_PROF)
-                .assertTextEquals("Profession")
+            .assertTextEquals("Profession")
     }
 
     @Test
@@ -49,24 +50,28 @@ class ContactsTest {
         val itemValue = "value"
 
         val contactsFlow: Flow<List<Any>> = flowOf(
-                listOf(
-                        ContactSection(ContactType.PHONE, R.string.title_contacts,
-                                       R.string.tap_to_call,
-                                       R.drawable.ic_call,
-                                       itemValue))
+            listOf(
+                ContactSection(
+                    ContactType.PHONE, R.string.title_contacts,
+                    R.string.tap_to_call,
+                    R.drawable.ic_call,
+                    itemValue
+                )
+            )
         )
         val progressFlow = flowOf(false)
 
         composeTestRule.setContent {
             MaterialTheme(colors = CvColors) {
-                ContactsScreen(contactsFlow = contactsFlow, progressFlow = progressFlow,
-                               itemClicked = {
-
-                               })
+                ContactsScreen(
+                    contactsFlow = contactsFlow, progressFlow = progressFlow,
+                    itemClicked = {
+                    }
+                )
             }
         }
 
         composeTestRule.onNodeWithTag("$CONTACTS_ITEM_SEMANTICS_ROW$itemValue")
-                .performClick()
+            .performClick()
     }
 }

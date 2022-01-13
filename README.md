@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/primus-anonymous/cv.svg?branch=master)](https://travis-ci.org/primus-anonymous/cv)
-
 # Резюме
 
 Интерактивное резюме мобильного разработчика программного обеспечения, построенного на Firebase. Образец базы данных для конфигурации тут https://github.com/primus-anonymous/cv/blob/master/data.json. Возможна горячая замена данных в консоли Firebase.
