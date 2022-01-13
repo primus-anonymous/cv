@@ -2,7 +2,7 @@ package com.neocaptainnemo.cv.ui.contacts
 
 import app.cash.turbine.test
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Contacts
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
@@ -21,14 +21,14 @@ import kotlinx.coroutines.test.setMain
 @ExperimentalCoroutinesApi
 class ContactsViewModelTest : ShouldSpec({
 
-    val dataService: DataService = mockk()
+    val cvRepository: CvRepository = mockk()
 
     lateinit var viewModel: ContactsViewModel
 
     beforeTest {
         Dispatchers.setMain(StandardTestDispatcher())
 
-        viewModel = ContactsViewModel(dataService)
+        viewModel = ContactsViewModel(cvRepository)
     }
 
     afterTest {
@@ -38,7 +38,7 @@ class ContactsViewModelTest : ShouldSpec({
     should("progress during successful fetch") {
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(Contacts())
 
         launch {
@@ -57,7 +57,7 @@ class ContactsViewModelTest : ShouldSpec({
     should("progress during failed fetch") {
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } throws RuntimeException()
 
         launch {
@@ -99,7 +99,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -178,7 +178,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -250,7 +250,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -321,7 +321,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -392,7 +392,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -464,7 +464,7 @@ class ContactsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flowOf(response)
 
         val expected = listOf(
@@ -515,7 +515,7 @@ class ContactsViewModelTest : ShouldSpec({
     should("failed fetch") {
 
         every {
-            dataService.contacts()
+            cvRepository.contacts()
         } returns flow { throw RuntimeException() }
 
         launch {

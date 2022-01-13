@@ -1,7 +1,7 @@
 package com.neocaptainnemo.cv.ui.common
 
 import app.cash.turbine.test
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.CommonSection
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
@@ -20,14 +20,14 @@ import kotlinx.coroutines.test.setMain
 @ExperimentalCoroutinesApi
 class CommonViewModelTest : ShouldSpec({
 
-    val dataService: DataService = mockk()
+    val cvRepository: CvRepository = mockk()
 
     lateinit var viewModel: CommonViewModel
 
     beforeTest {
         Dispatchers.setMain(StandardTestDispatcher())
 
-        viewModel = CommonViewModel(dataService)
+        viewModel = CommonViewModel(cvRepository)
     }
 
     afterTest {
@@ -37,7 +37,7 @@ class CommonViewModelTest : ShouldSpec({
     should("progress during successful fetch") {
 
         every {
-            dataService.commons()
+            cvRepository.commons()
         } returns flowOf(listOf())
 
         launch {
@@ -56,7 +56,7 @@ class CommonViewModelTest : ShouldSpec({
     should("progress during failed fetch") {
 
         every {
-            dataService.commons()
+            cvRepository.commons()
         } throws RuntimeException()
 
         launch {
@@ -74,7 +74,7 @@ class CommonViewModelTest : ShouldSpec({
 
     should("empty state") {
         every {
-            dataService.commons()
+            cvRepository.commons()
         } returns flowOf(listOf())
 
         launch {
@@ -91,7 +91,7 @@ class CommonViewModelTest : ShouldSpec({
 
     should("not empty state") {
         every {
-            dataService.commons()
+            cvRepository.commons()
         } returns flowOf(
             listOf(
                 CommonSection(),
@@ -116,7 +116,7 @@ class CommonViewModelTest : ShouldSpec({
         val commonSection2 = CommonSection()
 
         every {
-            dataService.commons()
+            cvRepository.commons()
         } returns flowOf(
             listOf(
                 commonSection1,
@@ -136,7 +136,7 @@ class CommonViewModelTest : ShouldSpec({
     should("failed fetch") {
 
         every {
-            dataService.commons()
+            cvRepository.commons()
         } returns flow { throw RuntimeException() }
 
         launch {

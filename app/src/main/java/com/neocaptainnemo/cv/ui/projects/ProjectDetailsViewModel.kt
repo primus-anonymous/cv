@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Project
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProjectDetailsViewModel @Inject constructor(
-    private val dataService: DataService,
+    private val cvRepository: CvRepository,
     private val app: Application,
 ) : AndroidViewModel(app) {
 
@@ -28,9 +28,9 @@ class ProjectDetailsViewModel @Inject constructor(
 
     private val _project: MutableStateFlow<Project?> = MutableStateFlow(null)
 
-    fun projectDetails(projectId: String) {
+    fun fetchProject(projectId: String) {
         viewModelScope.launch {
-            dataService
+            cvRepository
                 .project(projectId)
                 .onStart {
                     _progress.value = true

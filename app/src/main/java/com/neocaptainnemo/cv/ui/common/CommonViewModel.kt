@@ -1,7 +1,7 @@
 package com.neocaptainnemo.cv.ui.common
 
 import androidx.lifecycle.ViewModel
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.CommonSection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class CommonViewModel @Inject constructor(private val dataService: DataService) : ViewModel() {
+class CommonViewModel @Inject constructor(private val cvRepository: CvRepository) : ViewModel() {
 
     private val _empty = MutableStateFlow(false)
 
@@ -22,7 +22,7 @@ class CommonViewModel @Inject constructor(private val dataService: DataService) 
 
     val progress: Flow<Boolean> = _progress
 
-    fun commons(): Flow<List<CommonSection>> = dataService.commons()
+    fun commons(): Flow<List<CommonSection>> = cvRepository.commons()
         .catch {
             emit(listOf())
         }

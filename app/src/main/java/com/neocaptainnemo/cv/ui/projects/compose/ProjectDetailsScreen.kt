@@ -85,7 +85,7 @@ fun ProjectDetailsScreen(
     val context = LocalContext.current
 
     LaunchedEffect(vm) {
-        vm.projectDetails(projectId)
+        vm.fetchProject(projectId)
     }
 
     MaterialTheme(colors = cvColors()) {

@@ -6,12 +6,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.neocaptainnemo.cv.core.locale.LocaleService
 import com.neocaptainnemo.cv.core.model.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-internal class DataServiceImpl @Inject constructor(private val localeService: LocaleService) : DataService {
+internal class CvRepositoryImpl @Inject constructor(private val localeService: LocaleService) : CvRepository {
 
     init {
         FirebaseDatabase.getInstance()

@@ -2,7 +2,7 @@ package com.neocaptainnemo.cv.ui.contacts
 
 import androidx.lifecycle.ViewModel
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class ContactsViewModel @Inject constructor(private val dataService: DataService) : ViewModel() {
+class ContactsViewModel @Inject constructor(private val cvRepository: CvRepository) : ViewModel() {
 
     private val _progress = MutableStateFlow(false)
 
     val progress: Flow<Boolean> = _progress
 
-    fun contacts(): Flow<List<Any>> = dataService
+    fun contacts(): Flow<List<Any>> = cvRepository
         .contacts()
         .onStart {
             _progress.value = true

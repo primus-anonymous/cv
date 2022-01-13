@@ -1,7 +1,7 @@
 package com.neocaptainnemo.cv.ui.projects
 
 import app.cash.turbine.test
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Filter
 import com.neocaptainnemo.cv.core.model.Project
 import io.kotest.core.spec.style.ShouldSpec
@@ -21,14 +21,14 @@ import kotlinx.coroutines.test.setMain
 @ExperimentalCoroutinesApi
 class ProjectsViewModelTest : ShouldSpec({
 
-    val dataService: DataService = mockk()
+    val cvRepository: CvRepository = mockk()
 
     lateinit var viewModel: ProjectsViewModel
 
     beforeTest {
         Dispatchers.setMain(StandardTestDispatcher())
 
-        viewModel = ProjectsViewModel(dataService)
+        viewModel = ProjectsViewModel(cvRepository)
     }
 
     afterTest {
@@ -38,7 +38,7 @@ class ProjectsViewModelTest : ShouldSpec({
     should("progress during successful fetch") {
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(listOf())
 
         launch {
@@ -57,7 +57,7 @@ class ProjectsViewModelTest : ShouldSpec({
     should("progress during failed fetch") {
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } throws RuntimeException()
 
         launch {
@@ -75,7 +75,7 @@ class ProjectsViewModelTest : ShouldSpec({
 
     should("empty state") {
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(listOf())
 
         launch {
@@ -89,7 +89,7 @@ class ProjectsViewModelTest : ShouldSpec({
 
     should("not empty state") {
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(
             listOf(
                 Project(),
@@ -120,7 +120,7 @@ class ProjectsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(
             listOf(
                 project1,
@@ -158,7 +158,7 @@ class ProjectsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(
             listOf(
                 project1,
@@ -195,7 +195,7 @@ class ProjectsViewModelTest : ShouldSpec({
         }
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(
             listOf(
                 project1,
@@ -222,7 +222,7 @@ class ProjectsViewModelTest : ShouldSpec({
         val project2 = Project()
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flowOf(
             listOf(
                 project1,
@@ -244,7 +244,7 @@ class ProjectsViewModelTest : ShouldSpec({
     should("failed fetch") {
 
         every {
-            dataService.projects()
+            cvRepository.projects()
         } returns flow { throw RuntimeException() }
 
         launch {

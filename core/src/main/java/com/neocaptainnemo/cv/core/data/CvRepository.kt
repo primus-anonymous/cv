@@ -5,7 +5,7 @@ import com.neocaptainnemo.cv.core.model.Contacts
 import com.neocaptainnemo.cv.core.model.Project
 import kotlinx.coroutines.flow.Flow
 
-interface DataService {
+interface CvRepository {
 
     /**
      * Provides the list of projects.

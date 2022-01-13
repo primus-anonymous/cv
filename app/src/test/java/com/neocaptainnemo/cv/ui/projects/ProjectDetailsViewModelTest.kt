@@ -3,7 +3,7 @@ package com.neocaptainnemo.cv.ui.projects
 import android.app.Application
 import app.cash.turbine.test
 import com.neocaptainnemo.cv.R
-import com.neocaptainnemo.cv.core.data.DataService
+import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.Project
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
@@ -22,14 +22,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
 
     val app: Application = mockk()
 
-    val dataService: DataService = mockk()
+    val cvRepository: CvRepository = mockk()
 
     lateinit var viewModel: ProjectDetailsViewModel
 
     beforeTest {
         Dispatchers.setMain(StandardTestDispatcher())
 
-        viewModel = ProjectDetailsViewModel(dataService, app)
+        viewModel = ProjectDetailsViewModel(cvRepository, app)
     }
 
     afterTest {
@@ -39,7 +39,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
     should("progress during successful fetch") {
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(Project())
 
         launch {
@@ -51,14 +51,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
     should("progress during failed fetch") {
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } throws RuntimeException()
 
         launch {
@@ -70,7 +70,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -83,7 +83,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(name = "Name")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -93,7 +93,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -109,7 +109,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         )
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -119,7 +119,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -139,7 +139,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         )
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -149,7 +149,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -170,7 +170,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         )
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -180,7 +180,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -189,7 +189,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(storeUrl = "www.some.com")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -199,7 +199,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -208,7 +208,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(storeUrl = "")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -218,7 +218,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -227,7 +227,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(gitHub = "www.some.com")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -237,7 +237,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -246,7 +246,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(gitHub = "")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -256,7 +256,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -265,7 +265,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(platform = Project.PLATFORM_ANDROID)
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -275,7 +275,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -284,7 +284,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(platform = Project.PLATFORM_IOS)
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -294,7 +294,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -303,7 +303,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(webPic = "picurl")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -313,7 +313,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -322,7 +322,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(coverPic = "coverpic")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -332,7 +332,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -341,7 +341,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(name = "name")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -351,7 +351,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -360,7 +360,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(stack = "stack")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -370,7 +370,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -379,7 +379,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(vendor = "company")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -389,7 +389,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -398,7 +398,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(duties = "duties")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -408,7 +408,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -417,7 +417,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(description = "description")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -427,7 +427,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 
@@ -436,7 +436,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
         val project = Project(gitHub = "githuburl")
 
         every {
-            dataService.project("id")
+            cvRepository.project("id")
         } returns flowOf(project)
 
         launch {
@@ -446,7 +446,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
                 cancelAndIgnoreRemainingEvents()
             }
 
-            viewModel.projectDetails("id")
+            viewModel.fetchProject("id")
         }
     }
 })
