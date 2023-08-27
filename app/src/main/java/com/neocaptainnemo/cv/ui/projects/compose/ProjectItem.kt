@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,12 +22,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Project
+import com.neocaptainnemo.cv.ui.compose.LightColors
 import com.neocaptainnemo.cv.ui.compose.UrlImage
-import com.neocaptainnemo.cv.ui.compose.cvColors
-import com.neocaptainnemo.cv.ui.compose.defaultCorner
-import com.neocaptainnemo.cv.ui.compose.defaultMargin
-import com.neocaptainnemo.cv.ui.compose.halfMargin
-import com.neocaptainnemo.cv.ui.compose.smallMargin
 
 private val projectCardImageHeight = 200.dp
 private val projectCardHeight = 250.dp
@@ -38,10 +35,10 @@ fun ProjectItem(
 ) {
 
     Surface(
-        shape = RoundedCornerShape(defaultCorner),
-        elevation = 4.dp,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.app_default_corner)),
+        shadowElevation = 4.dp,
         modifier = Modifier
-            .padding(smallMargin)
+            .padding(dimensionResource(id = R.dimen.app_small_margin))
             .fillMaxWidth()
             .height(projectCardHeight)
     ) {
@@ -69,9 +66,11 @@ fun ProjectItem(
                     url = project.webPic.orEmpty(),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(defaultMargin)
+                        .padding(dimensionResource(id = R.dimen.app_default_margin))
                 )
             }
+
+            val halfMargin = dimensionResource(id = R.dimen.app_half_margin)
 
             Text(
                 text = project.name.orEmpty(),
@@ -104,7 +103,7 @@ fun ProjectItem(
                         top.linkTo(parent.top)
                         end.linkTo(parent.end)
                     }
-                    .padding(defaultMargin)
+                    .padding(dimensionResource(id = R.dimen.app_default_margin))
             )
         }
     }
@@ -113,7 +112,7 @@ fun ProjectItem(
 @Preview(widthDp = 200)
 @Composable
 fun PreviewProjectItem() {
-    MaterialTheme(colors = cvColors()) {
+    MaterialTheme(LightColors) {
         ProjectItem(
             project = Project(
                 platform = "android",

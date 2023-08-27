@@ -12,9 +12,11 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
@@ -27,7 +29,7 @@ class ProjectDetailsViewModelTest : ShouldSpec({
     lateinit var viewModel: ProjectDetailsViewModel
 
     beforeTest {
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         viewModel = ProjectDetailsViewModel(cvRepository, app)
     }
@@ -38,40 +40,46 @@ class ProjectDetailsViewModelTest : ShouldSpec({
 
     should("progress during successful fetch") {
 
+        Dispatchers.setMain(Dispatchers.Default)
+
         every {
             cvRepository.project("id")
         } returns flowOf(Project())
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("progress during failed fetch") {
 
+        Dispatchers.setMain(Dispatchers.Default)
+
         every {
             cvRepository.project("id")
-        } throws RuntimeException()
+        } returns flow {
+            throw RuntimeException()
+        }
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("testing share url with only name") {
@@ -86,15 +94,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
-            viewModel.shareUrl.test {
-                awaitItem() shouldBe "Project Name"
-
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.shareUrl.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "Project Name"
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("testing share url with store url") {
@@ -112,15 +119,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
-            viewModel.shareUrl.test {
-                awaitItem() shouldBe "Project Name www.some.com"
-
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.shareUrl.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "Project Name www.some.com"
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("testing share url with github url") {
@@ -142,15 +148,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
-            viewModel.shareUrl.test {
-                awaitItem() shouldBe "Project Name Code github.com"
-
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.shareUrl.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "Project Name Code github.com"
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("testing share url with store and github url") {
@@ -173,18 +178,19 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
-            viewModel.shareUrl.test {
-                awaitItem() shouldBe "Project Name www.some.com Code github.com"
-
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.shareUrl.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "Project Name www.some.com Code github.com"
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("store should be visible") {
+
+        Dispatchers.setMain(Dispatchers.Default)
 
         val project = Project(storeUrl = "www.some.com")
 
@@ -192,15 +198,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.gitHubVisibility.test {
-                awaitItem() shouldBe true
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.storeVisibility.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe true
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("store should be not visible") {
@@ -211,15 +216,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.storeVisibility.test {
-                awaitItem() shouldBe false
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.storeVisibility.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe false
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("github should be visible") {
@@ -230,15 +234,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.gitHubVisibility.test {
-                awaitItem() shouldBe true
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.gitHubVisibility.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe true
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("github should be not visible") {
@@ -249,15 +252,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.gitHubVisibility.test {
-                awaitItem() shouldBe false
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.gitHubVisibility.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe false
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("platform image for android") {
@@ -268,15 +270,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.platformImage.test {
-                awaitItem() shouldBe R.drawable.ic_android
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.platformImage.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe R.drawable.ic_android
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("platform image for iOS") {
@@ -287,15 +288,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.platformImage.test {
-                awaitItem() shouldBe R.drawable.ic_apple
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.platformImage.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe R.drawable.ic_apple
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("web pic") {
@@ -306,15 +306,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.webPic.test {
-                awaitItem() shouldBe "picurl"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.webPic.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "picurl"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("cover pic") {
@@ -325,15 +324,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.coverPic.test {
-                awaitItem() shouldBe "coverpic"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.coverPic.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "coverpic"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("project name") {
@@ -344,15 +342,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.projectName.test {
-                awaitItem() shouldBe "name"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.projectName.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "name"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("stack") {
@@ -363,15 +360,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.stack.test {
-                awaitItem() shouldBe "stack"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.stack.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "stack"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("company") {
@@ -382,15 +378,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.company.test {
-                awaitItem() shouldBe "company"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.company.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "company"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("duties") {
@@ -401,15 +396,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.duties.test {
-                awaitItem() shouldBe "duties"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.duties.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "duties"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("details description") {
@@ -420,15 +414,14 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.detailsDescription.test {
-                awaitItem() shouldBe "description"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.detailsDescription.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "description"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("source code") {
@@ -439,14 +432,13 @@ class ProjectDetailsViewModelTest : ShouldSpec({
             cvRepository.project("id")
         } returns flowOf(project)
 
-        launch {
 
-            viewModel.sourceCode.test {
-                awaitItem() shouldBe "githuburl"
-                cancelAndIgnoreRemainingEvents()
-            }
-
+        viewModel.sourceCode.test {
             viewModel.fetchProject("id")
+
+            awaitItem() shouldBe "githuburl"
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 })

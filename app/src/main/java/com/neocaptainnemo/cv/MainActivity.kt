@@ -4,13 +4,15 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,13 +29,15 @@ import com.neocaptainnemo.cv.core.analytics.AnalyticsEvent
 import com.neocaptainnemo.cv.core.analytics.AnalyticsService
 import com.neocaptainnemo.cv.ui.Tab
 import com.neocaptainnemo.cv.ui.common.compose.CommonScreen
-import com.neocaptainnemo.cv.ui.compose.cvColors
+import com.neocaptainnemo.cv.ui.compose.DarkColors
+import com.neocaptainnemo.cv.ui.compose.LightColors
 import com.neocaptainnemo.cv.ui.contacts.compose.ContactsScreen
 import com.neocaptainnemo.cv.ui.projects.compose.ProjectDetailsScreen
 import com.neocaptainnemo.cv.ui.projects.compose.ProjectsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@ExperimentalMaterial3Api
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -47,14 +51,14 @@ class MainActivity : AppCompatActivity() {
         setContent {
 
             val navController = rememberNavController()
-            MaterialTheme(colors = cvColors()) {
+            MaterialTheme(if (isSystemInDarkTheme()) DarkColors else LightColors) {
                 Scaffold(
                     bottomBar = {
-                        BottomNavigation {
+                        NavigationBar {
                             val navBackStackEntry by navController.currentBackStackEntryAsState()
                             val currentDestination = navBackStackEntry?.destination
                             Tab.values().forEach { screen ->
-                                BottomNavigationItem(
+                                NavigationBarItem(
                                     icon = {
                                         Icon(
                                             painter = painterResource(id = screen.icon),

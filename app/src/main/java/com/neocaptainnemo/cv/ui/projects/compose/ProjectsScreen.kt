@@ -1,27 +1,28 @@
 package com.neocaptainnemo.cv.ui.projects.compose
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,12 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Filter
 import com.neocaptainnemo.cv.core.model.Project
-import com.neocaptainnemo.cv.ui.compose.halfMargin
 import com.neocaptainnemo.cv.ui.projects.ProjectsViewModel
 
 typealias ProjectItemClicked = ((project: Project) -> Unit)
 
-@ExperimentalFoundationApi
+@ExperimentalMaterial3Api
 @Composable
 fun ProjectsScreen(
     vm: ProjectsViewModel = hiltViewModel(),
@@ -60,7 +60,7 @@ fun ProjectsScreen(
             actions = {
                 Box(
                     modifier = Modifier
-                        .padding(end = halfMargin)
+                        .padding(end = dimensionResource(id = R.dimen.app_half_margin))
                         .clickable(onClick = {
                             menuOpenedState.value = menuOpenedState.value.not()
                         })
@@ -79,7 +79,7 @@ fun ProjectsScreen(
                         ) {
                             Surface(
                                 shape = RoundedCornerShape(4.dp),
-                                elevation = 16.dp
+                                shadowElevation = 16.dp
                             ) {
                                 Column(modifier = Modifier.padding(10.dp)) {
                                     MenuItem(
@@ -110,7 +110,7 @@ fun ProjectsScreen(
 
         Box {
             LazyVerticalGrid(
-                cells = GridCells.Adaptive(minSize = 160.dp)
+                columns = GridCells.Adaptive(minSize = 160.dp)
             ) {
                 items(projectsList) { proj ->
                     ProjectItem(

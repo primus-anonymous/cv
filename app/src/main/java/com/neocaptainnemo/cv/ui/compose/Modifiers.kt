@@ -15,9 +15,9 @@ fun Modifier.translateOnScroll(
 
     val placeable = measurable.measure(constraints)
 
-    val dy = scrollState.value.toInt() - holder.previousScroll
+    val dy = scrollState.value - holder.previousScroll
 
-    holder.previousScroll = scrollState.value.toInt()
+    holder.previousScroll = scrollState.value
 
     holder.res = max(min(holder.res + dy, placeable.height), 0)
 

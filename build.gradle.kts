@@ -1,22 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    val kotlinVersion by extra("1.6.10")
-    val hiltAndroid by extra("2.38.1")
+    val kotlinVersion by extra("1.8.22")
+    val hiltAndroid by extra("2.47")
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
-            url = java.net.URI("https://maven.fabric.io/public")
+            url = uri("https://maven.fabric.io/public")
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.4")
-        classpath("com.google.gms:google-services:4.3.10")
+        classpath("com.android.tools.build:gradle:8.1.1")
+        classpath("com.google.gms:google-services:4.3.15")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("io.fabric.tools:gradle:1.31.0")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltAndroid")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -26,9 +26,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         repositories {
-            maven { url = java.net.URI("https://jitpack.io") }
+            maven { url = uri("https://jitpack.io") }
         }
     }
 }

@@ -3,18 +3,18 @@ package com.neocaptainnemo.cv.ui.projects.compose
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.neocaptainnemo.cv.R
 import com.neocaptainnemo.cv.core.model.Filter
-import com.neocaptainnemo.cv.ui.compose.cvColors
-import com.neocaptainnemo.cv.ui.compose.defaultMargin
+import com.neocaptainnemo.cv.ui.compose.LightColors
 
 @Composable
 fun MenuItem(
@@ -27,8 +27,9 @@ fun MenuItem(
         Text(
             stringResource(id = title),
             textAlign = TextAlign.Justify,
-            modifier = Modifier.weight(1.0f, true)
-                .padding(end = defaultMargin)
+            modifier = Modifier
+                .weight(1.0f, true)
+                .padding(end = dimensionResource(id = R.dimen.app_default_margin))
         )
 
         RadioButton(
@@ -44,7 +45,7 @@ fun MenuItem(
 @Preview
 @Composable
 fun PreviewMenuItem() {
-    MaterialTheme(colors = cvColors()) {
+    MaterialTheme(LightColors) {
         MenuItem(
             R.string.action_all,
             true,
