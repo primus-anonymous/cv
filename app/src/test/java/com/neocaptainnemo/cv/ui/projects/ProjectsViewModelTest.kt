@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
 
-@ExperimentalCoroutinesApi
 class ProjectsViewModelTest : ShouldSpec({
 
     val cvRepository: CvRepository = mockk()
@@ -26,8 +26,6 @@ class ProjectsViewModelTest : ShouldSpec({
     lateinit var viewModel: ProjectsViewModel
 
     beforeTest {
-        Dispatchers.setMain(StandardTestDispatcher())
-
         viewModel = ProjectsViewModel(cvRepository)
     }
 
@@ -41,35 +39,41 @@ class ProjectsViewModelTest : ShouldSpec({
             cvRepository.projects()
         } returns flowOf(listOf())
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            val job = launch { viewModel.projects().collect() }
 
-            viewModel.projects().collect()
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
+
+            job.cancel()
         }
+
     }
 
     should("progress during failed fetch") {
 
         every {
             cvRepository.projects()
-        } throws RuntimeException()
+        } returns flow {
+            throw RuntimeException()
+        }
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            val job = launch { viewModel.projects().collect() }
 
-            viewModel.projects().collect()
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
+
+            job.cancel()
+
         }
     }
 
@@ -78,12 +82,15 @@ class ProjectsViewModelTest : ShouldSpec({
             cvRepository.projects()
         } returns flowOf(listOf())
 
-        launch {
-            viewModel.empty.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.empty.test {
+            awaitItem() shouldBe false
+
+            val job = launch { viewModel.projects().collect() }
+
+            awaitItem() shouldBe true
+            cancelAndIgnoreRemainingEvents()
+
+            job.cancel()
         }
     }
 
@@ -97,11 +104,16 @@ class ProjectsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.empty.test {
-                awaitItem() shouldBe false
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.empty.test {
+            awaitItem() shouldBe false
+
+            val job = launch { viewModel.projects().collect() }
+
+            expectNoEvents()
+
+            cancelAndIgnoreRemainingEvents()
+
+            job.cancel()
         }
     }
 
@@ -131,15 +143,13 @@ class ProjectsViewModelTest : ShouldSpec({
 
         viewModel.filter = Filter.ALL
 
-        launch {
-            viewModel.projects().test {
-                awaitItem() shouldBe listOf(
-                    project1,
-                    project2,
-                    project3
-                )
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.projects().test {
+            awaitItem() shouldBe listOf(
+                project1,
+                project2,
+                project3
+            )
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -169,14 +179,12 @@ class ProjectsViewModelTest : ShouldSpec({
 
         viewModel.filter = Filter.ANDROID
 
-        launch {
-            viewModel.projects().test {
-                awaitItem() shouldBe listOf(
-                    project1,
-                    project3
-                )
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.projects().test {
+            awaitItem() shouldBe listOf(
+                project1,
+                project3
+            )
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -206,13 +214,11 @@ class ProjectsViewModelTest : ShouldSpec({
 
         viewModel.filter = Filter.IOS
 
-        launch {
-            viewModel.projects().test {
-                awaitItem() shouldBe listOf(
-                    project2,
-                )
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.projects().test {
+            awaitItem() shouldBe listOf(
+                project2,
+            )
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -230,14 +236,12 @@ class ProjectsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.projects().test {
-                awaitItem() shouldBe listOf(
-                    project1,
-                    project2,
-                )
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.projects().test {
+            awaitItem() shouldBe listOf(
+                project1,
+                project2,
+            )
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -247,12 +251,10 @@ class ProjectsViewModelTest : ShouldSpec({
             cvRepository.projects()
         } returns flow { throw RuntimeException() }
 
-        launch {
-            viewModel.projects().test {
-                awaitItem() shouldBe listOf()
+        viewModel.projects().test {
+            awaitItem() shouldBe listOf()
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 })

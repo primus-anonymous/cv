@@ -1,23 +1,30 @@
 package com.neocaptainnemo.cv.ui.common
 
 import app.cash.turbine.test
+import app.cash.turbine.testIn
+import app.cash.turbine.turbineScope
 import com.neocaptainnemo.cv.core.data.CvRepository
 import com.neocaptainnemo.cv.core.model.CommonSection
+import io.kotest.core.coroutines.backgroundScope
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
 
-@ExperimentalCoroutinesApi
 class CommonViewModelTest : ShouldSpec({
 
     val cvRepository: CvRepository = mockk()
@@ -25,8 +32,6 @@ class CommonViewModelTest : ShouldSpec({
     lateinit var viewModel: CommonViewModel
 
     beforeTest {
-        Dispatchers.setMain(StandardTestDispatcher())
-
         viewModel = CommonViewModel(cvRepository)
     }
 
@@ -40,36 +45,40 @@ class CommonViewModelTest : ShouldSpec({
             cvRepository.commons()
         } returns flowOf(listOf())
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
 
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+
+            awaitItem() shouldBe false
 
             viewModel.commons().collect()
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("progress during failed fetch") {
 
         every {
             cvRepository.commons()
-        } throws RuntimeException()
+        } returns flow {
+            throw RuntimeException()
+        }
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
             viewModel.commons().collect()
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("empty state") {
@@ -77,16 +86,16 @@ class CommonViewModelTest : ShouldSpec({
             cvRepository.commons()
         } returns flowOf(listOf())
 
-        launch {
-            viewModel.empty.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.empty.test {
+            awaitItem() shouldBe false
 
             viewModel.commons().collect()
+
+            awaitItem() shouldBe true
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("not empty state") {
@@ -99,16 +108,17 @@ class CommonViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.empty.test {
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.empty.test {
+            awaitItem() shouldBe false
 
             viewModel.commons().collect()
+
+            expectNoEvents()
+
+            cancelAndIgnoreRemainingEvents()
         }
     }
+
 
     should("successful fetch") {
 
@@ -124,12 +134,10 @@ class CommonViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
 
-            viewModel.commons().test {
-                awaitItem() shouldBe listOf(commonSection1, commonSection2)
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.commons().test {
+            awaitItem() shouldBe listOf(commonSection1, commonSection2)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -139,12 +147,11 @@ class CommonViewModelTest : ShouldSpec({
             cvRepository.commons()
         } returns flow { throw RuntimeException() }
 
-        launch {
 
-            viewModel.commons().test {
-                awaitItem() shouldBe listOf()
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.commons().test {
+            awaitItem() shouldBe listOf()
+            cancelAndIgnoreRemainingEvents()
         }
     }
+
 })

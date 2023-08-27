@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.setMain
 
-@ExperimentalCoroutinesApi
 class ContactsViewModelTest : ShouldSpec({
 
     val cvRepository: CvRepository = mockk()
@@ -26,8 +25,6 @@ class ContactsViewModelTest : ShouldSpec({
     lateinit var viewModel: ContactsViewModel
 
     beforeTest {
-        Dispatchers.setMain(StandardTestDispatcher())
-
         viewModel = ContactsViewModel(cvRepository)
     }
 
@@ -41,36 +38,38 @@ class ContactsViewModelTest : ShouldSpec({
             cvRepository.contacts()
         } returns flowOf(Contacts())
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
             viewModel.contacts().collect()
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("progress during failed fetch") {
 
         every {
             cvRepository.contacts()
-        } throws RuntimeException()
+        } returns flow {
+            throw RuntimeException()
+        }
 
-        launch {
-            viewModel.progress.test {
-                awaitItem() shouldBe false
-                awaitItem() shouldBe true
-                awaitItem() shouldBe false
-
-                cancelAndIgnoreRemainingEvents()
-            }
+        viewModel.progress.test {
+            awaitItem() shouldBe false
 
             viewModel.contacts().collect()
+
+            awaitItem() shouldBe true
+            awaitItem() shouldBe false
+
+            cancelAndIgnoreRemainingEvents()
         }
+
     }
 
     should("successful fetch") {
@@ -145,12 +144,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -217,12 +214,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -289,12 +284,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -360,12 +353,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -431,12 +422,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -503,12 +492,10 @@ class ContactsViewModelTest : ShouldSpec({
             )
         )
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe expected
+        viewModel.contacts().test {
+            awaitItem() shouldBe expected
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -518,12 +505,10 @@ class ContactsViewModelTest : ShouldSpec({
             cvRepository.contacts()
         } returns flow { throw RuntimeException() }
 
-        launch {
-            viewModel.contacts().test {
-                awaitItem() shouldBe listOf()
+        viewModel.contacts().test {
+            awaitItem() shouldBe listOf()
 
-                cancelAndIgnoreRemainingEvents()
-            }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 })

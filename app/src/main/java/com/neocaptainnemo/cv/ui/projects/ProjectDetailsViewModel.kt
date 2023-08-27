@@ -9,6 +9,7 @@ import com.neocaptainnemo.cv.core.model.Project
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -32,6 +33,9 @@ class ProjectDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             cvRepository
                 .project(projectId)
+                .catch {
+                    _progress.value = false
+                }
                 .onStart {
                     _progress.value = true
                 }
